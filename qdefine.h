@@ -28,6 +28,7 @@
 #include <QTreeView>
 #include <QGraphicsView>
 #include <QGraphicsScene>
+#include <QGraphicsRectItem>
 
 
 #define CLASS_TYPE_ROOT     "class"

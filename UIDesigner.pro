@@ -16,13 +16,15 @@ SOURCES += main.cpp\
         mainwindow.cpp \
     qabstracttreemodel.cpp \
     qtreeitem.cpp \
-    qccnode.cpp
+    qccnode.cpp \
+    qscene.cpp
 
 HEADERS  += mainwindow.h \
     qabstracttreemodel.h \
     qtreeitem.h \
     qccnode.h \
-    qdefine.h
+    qdefine.h \
+    qscene.h
 
 FORMS    += mainwindow.ui
 

@@ -3,6 +3,7 @@
 
 #include <QMainWindow>
 #include "qabstracttreemodel.h"
+#include "qscene.h"
 
 namespace Ui {
 class MainWindow;
@@ -16,6 +17,10 @@ public:
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
 
+private:
+    void test();
+    void setSceneSize(int width, int height);
+
 signals:
     //model;
     //scene;
@@ -26,14 +31,11 @@ public slots:
     //scene slot;
     //property slot;
 
-
 private:
-    QHBoxLayout*        m_hBoxLayout;
     QTreeView*          m_treeView;
     QGraphicsView*      m_graphicsView;
-    QGraphicsScene*     m_graphicsScene;
+    QScene*             m_scene;
 
-    
 private:
     Ui::MainWindow *ui;
 };
