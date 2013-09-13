@@ -4,6 +4,7 @@
 #include <QMainWindow>
 #include "qabstracttreemodel.h"
 #include "qscene.h"
+#include "qpropertybrowser.h"
 
 namespace Ui {
 class MainWindow;
@@ -35,6 +36,7 @@ private:
     QTreeView*          m_treeView;
     QGraphicsView*      m_graphicsView;
     QScene*             m_scene;
+    QPropertyBrowser*   m_browser;
 
 private:
     Ui::MainWindow *ui;

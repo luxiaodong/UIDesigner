@@ -17,14 +17,16 @@ SOURCES += main.cpp\
     qabstracttreemodel.cpp \
     qtreeitem.cpp \
     qccnode.cpp \
-    qscene.cpp
+    qscene.cpp \
+    qpropertybrowser.cpp
 
 HEADERS  += mainwindow.h \
     qabstracttreemodel.h \
     qtreeitem.h \
     qccnode.h \
     qdefine.h \
-    qscene.h
+    qscene.h \
+    qpropertybrowser.h
 
 FORMS    += mainwindow.ui
 

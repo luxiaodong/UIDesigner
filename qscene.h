@@ -8,6 +8,9 @@ class QScene : public QGraphicsScene
 public:
     QScene();
 
+public:
+    void test();
+
 protected:
     void mousePressEvent(QGraphicsSceneMouseEvent *event);
     void mouseMoveEvent(QGraphicsSceneMouseEvent *event);
