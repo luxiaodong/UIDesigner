@@ -14,7 +14,14 @@ public:
     int m_y;
     int m_z;
     int m_tag;
-    bool m_visible;
+    int m_width;
+    int m_height;
+    int m_rotation;
+    float m_anchorX;
+    float m_anchorY;
+    float m_scaleX;
+    float m_scaleY;
+    bool m_isVisible;
 };
 
 class QCCLayer : public QCCNode
@@ -23,14 +30,7 @@ public:
     QCCLayer();
 
 public:
-    int m_width;
-    int m_height;
-    bool m_enable;
-    float m_anchorX;
-    float m_anchorY;
-    float m_scaleX;
-    float m_scaleY;
-    float m_rotate;
+    bool m_isTouchEnable;
 };
 
 class QCCLayerColor : public QCCLayer
@@ -40,6 +40,7 @@ public:
 
 public:
     QColor m_color;
+    int m_opacity;
 };
 
 class QCCSprite : public QCCLayerColor
