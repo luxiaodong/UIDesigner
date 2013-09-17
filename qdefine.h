@@ -29,6 +29,7 @@
 #include <QGraphicsView>
 #include <QGraphicsScene>
 #include <QGraphicsRectItem>
+#include <QSettings>
 
 
 #define CLASS_TYPE_ROOT     "class"

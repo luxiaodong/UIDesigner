@@ -14,6 +14,9 @@ public:
 protected:
     void mousePressEvent(QGraphicsSceneMouseEvent *event);
     void mouseMoveEvent(QGraphicsSceneMouseEvent *event);
+
+private:
+    QGraphicsItem* m_selectItem;
 };
 
 #endif // QSCENE_H

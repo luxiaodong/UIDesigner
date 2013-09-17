@@ -1,6 +1,7 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 #include "qabstracttreemodel.h"
+#include <QDebug>
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -50,6 +51,8 @@ MainWindow::MainWindow(QWidget *parent) :
     m_browser = new QPropertyBrowser();
     boxLayout->addWidget(m_browser,3);
 
+    this->connectSignalAndSlot();
+
     //test
     this->setSceneSize(300, 300);
     this->test();
@@ -92,4 +95,70 @@ void MainWindow::setSceneSize(int width, int height)
     m_scene->setSceneRect(0, 0, width, height);
 }
 
+void MainWindow::connectSignalAndSlot()
+{
+    //model emit and window slot;
+    //scene emit and window slot;
+    //property emit and window slot
+    connect(m_browser, SIGNAL(changePropertyPoint(int,int)), this, SLOT(changedPropertyPoint(int,int)));
+    connect(m_browser, SIGNAL(changePropertyZ(int)), this, SLOT(changedPropertyZ(int)));
+    connect(m_browser, SIGNAL(changePropertyTag(int)), this, SLOT(changedPropertyTag(int)));
+    connect(m_browser, SIGNAL(changePropertySize(int,int)), this, SLOT(changedPropertySize(int,int)));
+    connect(m_browser, SIGNAL(changePropertyAnchor(float,float)), this, SLOT(changedPropertyAnchor(float,float)));
+    connect(m_browser, SIGNAL(changePropertyScale(float,float)), this, SLOT(changedPropertyScale(float,float)));
+    connect(m_browser, SIGNAL(changePropertyRotation(int)), this, SLOT(changedPropertyRotation(int)));
+    connect(m_browser, SIGNAL(changePropertyVisible(bool)), this, SLOT(changedPropertyVisible(bool)));
+    connect(m_browser, SIGNAL(changePropertyTouchEnable(bool)), this, SLOT(changedPropertyTouchEnable(bool)));
+    connect(m_browser, SIGNAL(changePropertyColor(QColor&)), this, SLOT(changedPropertyColor(QColor&)));
+    connect(m_browser, SIGNAL(changePropertyOpacity(int)), this, SLOT(changedPropertyOpacity(int)));
+    connect(m_browser, SIGNAL(changePropertyFilePath(QString&)), this, SLOT(changedPropertyFilePath(QString&)));
+    connect(m_browser, SIGNAL(changePropertyFont(QFont&)), this, SLOT(changedPropertyFont(QFont&)));
+    connect(m_browser, SIGNAL(changePropertyText(QString&)), this, SLOT(changedPropertyText(QString&)));
+}
+
+//model slot;
+//scene slot;
+//property slot;
+void MainWindow::changedPropertyPoint(int x, int y)
+{
+}
+
+void MainWindow::changedPropertyZ(int z)
+{}
+
+void MainWindow::changedPropertyTag(int tag)
+{}
+
+void MainWindow::changedPropertySize(int width, int height)
+{}
+
+void MainWindow::changedPropertyAnchor(float anchorX, float anchorY)
+{}
+
+void MainWindow::changedPropertyScale(float scaleX, float scaleY)
+{}
+
+void MainWindow::changedPropertyRotation(int rotation)
+{}
+
+void MainWindow::changedPropertyVisible(bool visible)
+{}
+
+void MainWindow::changedPropertyTouchEnable(bool touchEnable)
+{}
+
+void MainWindow::changedPropertyColor(QColor& color)
+{}
+
+void MainWindow::changedPropertyOpacity(int opacity)
+{}
+
+void MainWindow::changedPropertyFilePath(QString& filePath)
+{}
+
+void MainWindow::changedPropertyFont(QFont& font)
+{}
+
+void MainWindow::changedPropertyText(QString& text)
+{}
 

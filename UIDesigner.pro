@@ -18,7 +18,8 @@ SOURCES += main.cpp\
     qtreeitem.cpp \
     qccnode.cpp \
     qscene.cpp \
-    qpropertybrowser.cpp
+    qpropertybrowser.cpp \
+    qstoragedata.cpp
 
 HEADERS  += mainwindow.h \
     qabstracttreemodel.h \
@@ -26,7 +27,8 @@ HEADERS  += mainwindow.h \
     qccnode.h \
     qdefine.h \
     qscene.h \
-    qpropertybrowser.h
+    qpropertybrowser.h \
+    qstoragedata.h
 
 FORMS    += mainwindow.ui
 
