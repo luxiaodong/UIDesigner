@@ -8,12 +8,37 @@
 
 class QPropertyBrowser : public QtTreePropertyBrowser
 {
+    Q_OBJECT
+
 public:
     QPropertyBrowser();
 
 public:
     void test();
     void initProperty(QString& classType, QCCNode* node);
+
+signals:
+    void changePropertyPoint(int x, int y);
+    void changePropertyZ(int z);
+    void changePropertyTag(int tag);
+    void changePropertySize(int width, int height);
+    void changePropertyAnchor(float anchorX, float anchorY);
+    void changePropertyScale(float scaleX, float scaleY);
+    void changePropertyRotation(int rotation);
+    void changePropertyVisible(bool visible);
+    void changePropertyTouchEnable(bool touchEnable);
+    void changePropertyColor(QColor& color);
+    void changePropertyOpacity(int opacity);
+    void changePropertyFilePath(QString& filePath);
+    void changePropertyFont(QFont& font);
+    void changePropertyText(QString& text);
+
+private:
+    void changeProperty();
+
+public slots:
+    void valueChanged(QtProperty*,QVariant);
+    void changedPropertyPoint(int x, int y);
 
 private:
     void initPropertyCCNode(QCCNode* node);
@@ -42,9 +67,9 @@ private:
     void createPropertyTouchEnable();
     void createPropertyColor();
     void createPropertyOpacity();
-    void createPropertySpriteFilePath();
+    void createPropertyFilePath();
     void createPropertyFont();
-    void createPropertyLabelText();
+    void createPropertyText();
 
 //-- 2 level
     void createPropertyPoint();
@@ -92,10 +117,6 @@ private:
     QtVariantProperty*  m_ccLayerColor;
     QtVariantProperty*  m_ccSprite;
     QtVariantProperty*  m_ccLabelTTF;
-
-private:
-    QFont m_defaultFont;
-    QString m_defaultText;
 
 private:
     QtVariantPropertyManager*   m_manager;

@@ -5,10 +5,8 @@ QPropertyBrowser::QPropertyBrowser()
     m_manager = new VariantManager();
     m_factory = new VariantFactory();
     this->setFactoryForManager(m_manager, m_factory);
-
-    m_defaultFont = QFont();
-    m_defaultText = "cocos2d-x";
     this->createProperty();
+    connect(m_manager, SIGNAL(valueChanged(QtProperty*,QVariant)), this, SLOT(valueChanged(QtProperty*,QVariant)));
 }
 
 void QPropertyBrowser::createProperty()
@@ -29,9 +27,9 @@ void QPropertyBrowser::createProperty()
     createPropertyTouchEnable();
     createPropertyColor();
     createPropertyOpacity();
-    createPropertySpriteFilePath();
+    createPropertyFilePath();
     createPropertyFont();
-    createPropertyLabelText();
+    createPropertyText();
 
     //-- 2 level
     createPropertyPoint();
@@ -166,23 +164,23 @@ void QPropertyBrowser::createPropertyOpacity()
     m_opacity->setValue(255);
 }
 
-void QPropertyBrowser::createPropertySpriteFilePath()
+void QPropertyBrowser::createPropertyFilePath()
 {
     m_filePath = m_manager->addProperty(VariantManager::filePathTypeId(), tr("image"));
     m_filePath->setValue("");
-    m_filePath->setAttribute("filter", "Image files (*.png,*.jpg)");
+    m_filePath->setAttribute("filter", "Image files (*.png)");
 }
 
 void QPropertyBrowser::createPropertyFont()
 {
     m_font = m_manager->addProperty(QVariant::Font, tr("font"));
-    m_font->setValue(m_defaultFont);
+    m_font->setValue(QFont());
 }
 
-void QPropertyBrowser::createPropertyLabelText()
+void QPropertyBrowser::createPropertyText()
 {
     m_text = m_manager->addProperty(QVariant::String, tr("text"));
-    m_text->setValue(m_defaultText);
+    m_text->setValue(QString());
 }
 
 //-- 2 level
@@ -330,6 +328,27 @@ void QPropertyBrowser::initPropertyCCLabelTTF(QCCLabelTTF* node)
     this->addProperty(m_ccLabelTTF);
 }
 
+//slot
+void QPropertyBrowser::valueChanged(QtProperty* property, QVariant )
+{
+    if(property == m_x || property == m_y)
+    {
+        int x = m_x->value().toInt();
+        int y = m_y->value().toInt();
+        emit changePropertyPoint(x, y);
+    }
+    else if(property == m_z)
+    {
+        int z = m_z->value().toInt();
+        emit changePropertyZ(z);
+    }
+}
+
+void QPropertyBrowser::changedPropertyPoint(int x, int y)
+{
+    m_x->setValue(x);
+    m_y->setValue(y);
+}
 
 void QPropertyBrowser::test()
 {

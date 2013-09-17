@@ -33,10 +33,10 @@
 
 #define CLASS_TYPE_ROOT     "class"
 
-#define CLASS_TYPE_CCNODE   "CCNode"
-#define CLASS_TYPE_CCLAYER  "CCLayer"
+#define CLASS_TYPE_CCNODE       "CCNode"
+#define CLASS_TYPE_CCLAYER      "CCLayer"
 #define CLASS_TYPE_CCLAYERCOLOR "CCLayerColor"
-#define CLASS_TYPE_CCSPRITE "CCSprite"
+#define CLASS_TYPE_CCSPRITE     "CCSprite"
 #define CLASS_TYPE_CCLABELTTF   "CCLabelTTF"
 
 #endif // QDEFINE_H
