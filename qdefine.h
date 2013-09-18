@@ -31,6 +31,8 @@
 #include <QGraphicsScene>
 #include <QGraphicsRectItem>
 #include <QSettings>
+#include <QGraphicsPixmapItem>
+#include <QGraphicsSimpleTextItem>
 
 #define CLASS_TYPE_ROOT     "class"
 

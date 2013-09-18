@@ -55,14 +55,19 @@ void QScene::test()
 
 void QScene::changedItemPoint(int x, int y)
 {
-
+    if(m_selectItem != 0)
+    {
+        m_selectItem->setPos(x, y);
+    }
 }
 
 void QScene::changedItemZ(int z)
-{}
-
-void QScene::changedItemTag(int tag)
-{}
+{
+    if(m_selectItem != 0)
+    {
+        m_selectItem->setZValue(z);
+    }
+}
 
 void QScene::changedItemSize(int width, int height)
 {}
@@ -77,10 +82,20 @@ void QScene::changedItemRotation(int rotation)
 {}
 
 void QScene::changedItemVisible(bool visible)
-{}
+{
+    if(m_selectItem != 0)
+    {
+        m_selectItem->setVisible(visible);
+    }
+}
 
 void QScene::changedItemTouchEnable(bool touchEnable)
-{}
+{
+    if(m_selectItem != 0)
+    {
+        m_selectItem->setVisible(visible);
+    }
+}
 
 void QScene::changedItemColor(QColor& color)
 {}

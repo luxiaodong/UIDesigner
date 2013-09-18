@@ -23,7 +23,6 @@ signals:
 public slots:
     void changedItemPoint(int x, int y);
     void changedItemZ(int z);
-    void changedItemTag(int tag);
     void changedItemSize(int width, int height);
     void changedItemAnchor(float anchorX, float anchorY);
     void changedItemScale(float scaleX, float scaleY);

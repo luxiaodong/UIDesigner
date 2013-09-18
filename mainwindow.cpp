@@ -127,6 +127,12 @@ void MainWindow::connectSignalAndSlot()
 //model slot;
 void MainWindow::viewClicked(const QModelIndex& index)
 {
+    if (index.column() == 0)
+    {
+        QStringList path;
+        QModelIndex parent = current.parent();
+    }
+
     //要考虑parent.
     qDebug()<<index.data().toString();
     qDebug()<<index.column()<<index.row();
