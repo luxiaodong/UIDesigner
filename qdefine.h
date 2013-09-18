@@ -14,6 +14,7 @@
 
 #include <QList>
 #include <QVector>
+#include <QMap>
 #include <QString>
 #include <QVariant>
 #include <QString>

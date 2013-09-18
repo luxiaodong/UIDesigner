@@ -5,6 +5,7 @@
 #include "qabstracttreemodel.h"
 #include "qscene.h"
 #include "qpropertybrowser.h"
+#include "qstoragedata.h"
 
 namespace Ui {
 class MainWindow;
@@ -32,7 +33,10 @@ signals:
 
 public slots:
     //model slot;
+
     //scene slot;
+    void changedItemPoint(int x, int y);
+
     //property slot;
     void changedPropertyPoint(int x, int y);
     void changedPropertyZ(int z);
@@ -54,6 +58,7 @@ private:
     QGraphicsView*      m_graphicsView;
     QScene*             m_scene;
     QPropertyBrowser*   m_browser;
+    QStorageData*       m_storageData;
 
 private:
     Ui::MainWindow *ui;

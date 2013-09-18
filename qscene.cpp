@@ -25,6 +25,9 @@ void QScene::mouseMoveEvent(QGraphicsSceneMouseEvent *event)
     {
         qDebug()<<"scene move "<<item->data(1).toString();
         qDebug()<<"scene move "<<item->x()<<item->y();
+        int x = item->x();
+        int y = item->y();
+        emit changeItemPoint(x, y);
     }
     //emit currentItemPropertyChanged(item);
     QGraphicsScene::mouseMoveEvent(event);

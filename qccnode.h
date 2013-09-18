@@ -10,6 +10,10 @@ public:
     QCCNode();
 
 public:
+    virtual void importData(QMap<QString, QString>&);
+    virtual QMap<QString, QString> exportData();
+
+public:
     int m_x;
     int m_y;
     int m_z;
@@ -29,6 +33,9 @@ class QCCLayer : public QCCNode
 public:
     QCCLayer();
 
+    virtual void importData(QMap<QString, QString>&);
+    virtual QMap<QString, QString> exportData();
+
 public:
     bool m_isTouchEnable;
 };
@@ -37,6 +44,9 @@ class QCCLayerColor : public QCCLayer
 {
 public:
     QCCLayerColor();
+
+    virtual void importData(QMap<QString, QString>&);
+    virtual QMap<QString, QString> exportData();
 
 public:
     QColor m_color;
@@ -48,6 +58,9 @@ class QCCSprite : public QCCLayerColor
 public:
     QCCSprite();
 
+    virtual void importData(QMap<QString, QString>&);
+    virtual QMap<QString, QString> exportData();
+
 public:
     QString m_filePath;
 };
@@ -56,6 +69,9 @@ class QCCLabelTTF : public QCCLayerColor
 {
 public:
     QCCLabelTTF();
+
+    virtual void importData(QMap<QString, QString>&);
+    virtual QMap<QString, QString> exportData();
 
 public:
     QFont m_font;

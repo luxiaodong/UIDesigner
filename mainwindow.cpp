@@ -51,6 +51,8 @@ MainWindow::MainWindow(QWidget *parent) :
     m_browser = new QPropertyBrowser();
     boxLayout->addWidget(m_browser,3);
 
+    m_storageData = new QStorageData();
+
     this->connectSignalAndSlot();
 
     //test
@@ -99,6 +101,8 @@ void MainWindow::connectSignalAndSlot()
 {
     //model emit and window slot;
     //scene emit and window slot;
+    connect(m_scene, SIGNAL(changeItemPoint(int,int)),this,SLOT(changedItemPoint(int,int)));
+
     //property emit and window slot
     connect(m_browser, SIGNAL(changePropertyPoint(int,int)), this, SLOT(changedPropertyPoint(int,int)));
     connect(m_browser, SIGNAL(changePropertyZ(int)), this, SLOT(changedPropertyZ(int)));
@@ -118,9 +122,19 @@ void MainWindow::connectSignalAndSlot()
 
 //model slot;
 //scene slot;
+void MainWindow::changedItemPoint(int x, int y)
+{
+    qDebug()<<"item "<<x<<y;
+    //save x,y
+    //emit to item for change
+}
+
 //property slot;
 void MainWindow::changedPropertyPoint(int x, int y)
 {
+    qDebug()<<"property "<<x<<y;
+    //save x,y;
+    //emit to item for change
 }
 
 void MainWindow::changedPropertyZ(int z)
