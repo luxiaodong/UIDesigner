@@ -14,7 +14,6 @@ class MainWindow;
 class MainWindow : public QMainWindow
 {
     Q_OBJECT
-    
 public:
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
@@ -27,12 +26,14 @@ private:
     void connectSignalAndSlot();
 
 signals:
-    //model;
+    //view;
     //scene;
     //property;
+    void changePropertyPoint(int x, int y);
 
 public slots:
-    //model slot;
+    //view slot;
+    void viewClicked(const QModelIndex & index);
 
     //scene slot;
     void changedItemPoint(int x, int y);

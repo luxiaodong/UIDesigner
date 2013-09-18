@@ -33,9 +33,6 @@ signals:
     void changePropertyFont(QFont& font);
     void changePropertyText(QString& text);
 
-private:
-    void changeProperty();
-
 public slots:
     void valueChanged(QtProperty*,QVariant);
     void changedPropertyPoint(int x, int y);

@@ -32,7 +32,6 @@
 #include <QGraphicsRectItem>
 #include <QSettings>
 
-
 #define CLASS_TYPE_ROOT     "class"
 
 #define CLASS_TYPE_CCNODE       "CCNode"

@@ -3,6 +3,7 @@
 
 QScene::QScene()
 {
+    m_selectItem = 0;
 }
 
 void QScene::mousePressEvent(QGraphicsSceneMouseEvent *event)
@@ -12,8 +13,7 @@ void QScene::mousePressEvent(QGraphicsSceneMouseEvent *event)
      QGraphicsItem* item = this->itemAt(pt, trans);
      if(item != 0)
      {
-         qDebug()<<"scene press "<<item->data(1).toString();
-         qDebug()<<"scene press "<<item->x()<<item->y();
+         m_selectItem = item;
      }
      QGraphicsScene::mousePressEvent(event);
 }
@@ -52,4 +52,48 @@ void QScene::test()
     r3->setData(1, "r3");
     r3->setFlag(QGraphicsItem::ItemIsMovable, true);
 }
+
+void QScene::changedItemPoint(int x, int y)
+{
+
+}
+
+void QScene::changedItemZ(int z)
+{}
+
+void QScene::changedItemTag(int tag)
+{}
+
+void QScene::changedItemSize(int width, int height)
+{}
+
+void QScene::changedItemAnchor(float anchorX, float anchorY)
+{}
+
+void QScene::changedItemScale(float scaleX, float scaleY)
+{}
+
+void QScene::changedItemRotation(int rotation)
+{}
+
+void QScene::changedItemVisible(bool visible)
+{}
+
+void QScene::changedItemTouchEnable(bool touchEnable)
+{}
+
+void QScene::changedItemColor(QColor& color)
+{}
+
+void QScene::changedItemOpacity(int opacity)
+{}
+
+void QScene::changedItemFilePath(QString& filePath)
+{}
+
+void QScene::changedItemFont(QFont& font)
+{}
+
+void QScene::changedItemText(QString& text)
+{}
 

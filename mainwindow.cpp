@@ -100,6 +100,8 @@ void MainWindow::setSceneSize(int width, int height)
 void MainWindow::connectSignalAndSlot()
 {
     //model emit and window slot;
+    connect(m_treeView, SIGNAL(clicked(QModelIndex)), this, SLOT(viewClicked(const QModelIndex&)));
+
     //scene emit and window slot;
     connect(m_scene, SIGNAL(changeItemPoint(int,int)),this,SLOT(changedItemPoint(int,int)));
 
@@ -118,15 +120,25 @@ void MainWindow::connectSignalAndSlot()
     connect(m_browser, SIGNAL(changePropertyFilePath(QString&)), this, SLOT(changedPropertyFilePath(QString&)));
     connect(m_browser, SIGNAL(changePropertyFont(QFont&)), this, SLOT(changedPropertyFont(QFont&)));
     connect(m_browser, SIGNAL(changePropertyText(QString&)), this, SLOT(changedPropertyText(QString&)));
+
+    connect(this, SIGNAL(changePropertyPoint(int,int)), m_browser, SLOT(changedPropertyPoint(int,int)));
 }
 
 //model slot;
+void MainWindow::viewClicked(const QModelIndex& index)
+{
+    //要考虑parent.
+    qDebug()<<index.data().toString();
+    qDebug()<<index.column()<<index.row();
+}
+
 //scene slot;
 void MainWindow::changedItemPoint(int x, int y)
 {
     qDebug()<<"item "<<x<<y;
     //save x,y
     //emit to item for change
+    emit changePropertyPoint(x, y);
 }
 
 //property slot;
