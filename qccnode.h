@@ -4,6 +4,7 @@
 #include "qdefine.h"
 
 //remeber set default value.
+//treeView 改变的时候,目前无法获得以前的名字,导致在scene里无法找到原来的,这里需要重新考虑数据组织结构
 class QCCNode
 {
 public:

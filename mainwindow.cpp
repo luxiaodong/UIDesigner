@@ -21,25 +21,25 @@ MainWindow::MainWindow(QWidget *parent) :
 
     node->insertChildren(0, 1, 2);
     node->insertChildren(0, 1, 2);
-    node->child(0)->setData(0, QString("xxx"));
+    node->child(0)->setData(0, QString("0"));
     node->child(0)->setData(1, QString(CLASS_TYPE_CCLAYER));
-    node->child(1)->setData(0, QString("xxxx"));
+    node->child(1)->setData(0, QString("1"));
     node->child(1)->setData(1, QString(CLASS_TYPE_CCLABELTTF));
 
     node->child(0)->insertChildren(0,1,2);
     node->child(0)->insertChildren(0,1,2);
-    node->child(0)->child(0)->setData(0, QString("xxxxx"));
+    node->child(0)->child(0)->setData(0, QString("00"));
     node->child(0)->child(0)->setData(1, QString(CLASS_TYPE_CCLAYER));
-    node->child(0)->child(1)->setData(0, QString("xxxxxxx"));
+    node->child(0)->child(1)->setData(0, QString("01"));
     node->child(0)->child(1)->setData(1, QString(CLASS_TYPE_CCSPRITE));
 
     QHBoxLayout* boxLayout = new QHBoxLayout();
     boxLayout->setSizeConstraint(QLayout::SetDefaultConstraint);
     this->centralWidget()->setLayout(boxLayout);
 
+    m_model = new QAbstractTreeModel(node);
     m_treeView = new QTreeView();
-    QAbstractTreeModel* model = new QAbstractTreeModel(node);
-    m_treeView->setModel(model);
+    m_treeView->setModel(m_model);
     boxLayout->addWidget(m_treeView,2);
 
     m_scene = new QScene();
@@ -99,11 +99,20 @@ void MainWindow::setSceneSize(int width, int height)
 
 void MainWindow::connectSignalAndSlot()
 {
-    //model emit and window slot;
+    //view emit and window slot;
+    //connect(m_treeView, SIGNAL(activated(QModelIndex)), this, SLOT(viewActivated(const QModelIndex&)));
     connect(m_treeView, SIGNAL(clicked(QModelIndex)), this, SLOT(viewClicked(const QModelIndex&)));
+    //connect(m_treeView, SIGNAL(doubleClicked(QModelIndex)), this, SLOT(viewDoubleClicked(const QModelIndex&)));
+    //connect(m_treeView, SIGNAL(entered(QModelIndex)), this, SLOT(viewEntered(const QModelIndex&)));
+    //connect(m_treeView, SIGNAL(pressed(QModelIndex)), this, SLOT(viewPressed(const QModelIndex&)));
+
+    //slot
+    connect(m_model, SIGNAL(dataChanged(QModelIndex,QModelIndex,const QVector<int>)), this, SLOT(dataChanged(const QModelIndex&,const QModelIndex&,const QVector<int>&)));
 
     //scene emit and window slot;
     connect(m_scene, SIGNAL(changeItemPoint(int,int)),this,SLOT(changedItemPoint(int,int)));
+
+    connect(this, SIGNAL(changeItemSelect(QStringList&)), m_scene,SLOT(changedItemSelect(QStringList&)));
 
     //property emit and window slot
     connect(m_browser, SIGNAL(changePropertyPoint(int,int)), this, SLOT(changedPropertyPoint(int,int)));
@@ -125,17 +134,79 @@ void MainWindow::connectSignalAndSlot()
 }
 
 //model slot;
+void MainWindow::viewActivated(const QModelIndex& index)
+{
+    qDebug()<<"viewActivated "<<index.data().toString();
+}
+
+void MainWindow::viewDoubleClicked(const QModelIndex& index)
+{
+    qDebug()<<"viewDoubleClicked "<<index.data().toString();
+}
+
+void MainWindow::viewEntered(const QModelIndex& index)
+{
+    qDebug()<<"viewEntered "<<index.data().toString();
+}
+
+void MainWindow::viewPressed(const QModelIndex & index)
+{
+    qDebug()<<"viewPressed "<<index.data().toString();
+}
+
 void MainWindow::viewClicked(const QModelIndex& index)
 {
     if (index.column() == 0)
     {
-        QStringList path;
-        QModelIndex parent = current.parent();
-    }
+        QStringList nameTrace;
+        nameTrace.append( index.data().toString() );
+        QModelIndex parent = index.parent();
+        while(parent != QModelIndex())
+        {
+            nameTrace.append( parent.data().toString() );
+            parent = parent.parent();
+        }
 
-    //要考虑parent.
-    qDebug()<<index.data().toString();
-    qDebug()<<index.column()<<index.row();
+        m_treeView->setCurrentIndex(index);
+        emit changeItemSelect(nameTrace);
+
+        //切换item
+        //1.给scene发消息
+        //2.给property发消息
+    }
+}
+
+//model slot
+void MainWindow::dataChanged(const QModelIndex & topLeft, const QModelIndex & bottomRight, const QVector<int> & roles)
+{
+    if(topLeft == bottomRight)
+    {
+        if(topLeft.column() == 0)
+        {
+            int rowCount = m_model->rowCount(topLeft.parent());
+            bool isConflict = false;
+            for(int i =0; i < rowCount; ++i)
+            {
+                QModelIndex index = m_model->index(i,0,topLeft.parent());
+                if(index != topLeft)
+                {
+                    if(index.data().toString() == topLeft.data().toString())
+                    {
+                        isConflict = true;
+                        break;
+                    }
+                }
+            }
+
+            //名字有冲突
+            if(isConflict == true)
+            {
+                QMessageBox::warning(this,"warning",QString("the same name\n%1").arg(topLeft.data().toString()));
+            }
+
+            //先该底层的数据,再改上层的东西
+        }
+    }
 }
 
 //scene slot;

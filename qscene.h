@@ -3,6 +3,9 @@
 
 #include "qdefine.h"
 
+#define GRAPHICS_ITEM_NAME_TAG  1
+#define GRAPHICS_ITEM_CLASS_TAG  2
+
 //少了一个切换select的item
 class QScene : public QGraphicsScene
 {
@@ -21,6 +24,8 @@ signals:
     void changeItemPoint(int x, int y);
 
 public slots:
+    void changedItemSelect(QStringList& list);
+
     void changedItemPoint(int x, int y);
     void changedItemZ(int z);
     void changedItemSize(int width, int height);

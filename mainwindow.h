@@ -28,12 +28,21 @@ private:
 signals:
     //view;
     //scene;
+    void changeItemSelect(QStringList& list);
+
     //property;
     void changePropertyPoint(int x, int y);
 
 public slots:
     //view slot;
-    void viewClicked(const QModelIndex & index);
+    void viewActivated(const QModelIndex& index);
+    void viewClicked(const QModelIndex& index);
+    void viewDoubleClicked(const QModelIndex& index);
+    void viewEntered(const QModelIndex& index);
+    void viewPressed(const QModelIndex & index);
+
+    //model slot;
+    void dataChanged(const QModelIndex & topLeft, const QModelIndex & bottomRight, const QVector<int> & roles);
 
     //scene slot;
     void changedItemPoint(int x, int y);
@@ -57,6 +66,7 @@ public slots:
 private:
     QTreeView*          m_treeView;
     QGraphicsView*      m_graphicsView;
+    QAbstractTreeModel* m_model;
     QScene*             m_scene;
     QPropertyBrowser*   m_browser;
     QStorageData*       m_storageData;

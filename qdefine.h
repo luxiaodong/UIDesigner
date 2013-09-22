@@ -33,6 +33,7 @@
 #include <QSettings>
 #include <QGraphicsPixmapItem>
 #include <QGraphicsSimpleTextItem>
+#include <QMessageBox>
 
 #define CLASS_TYPE_ROOT     "class"
 
