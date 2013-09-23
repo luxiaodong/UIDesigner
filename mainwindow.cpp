@@ -265,3 +265,10 @@ void MainWindow::changedPropertyFont(QFont& font)
 void MainWindow::changedPropertyText(QString& text)
 {}
 
+
+void MainWindow::on_actionResource_triggered()
+{
+    QString oldDir = m_storageData->resourceDir();
+    QString newDir = QFileDialog::getExistingDirectory(this,oldDir);
+    m_storageData->setResourceDir(newDir);
+}

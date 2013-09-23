@@ -39,6 +39,7 @@
 #include <QGraphicsPixmapItem>
 #include <QGraphicsSimpleTextItem>
 #include <QMessageBox>
+#include <QFileDialog>
 
 #define CLASS_TYPE_ROOT     "class"
 

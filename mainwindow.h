@@ -63,6 +63,9 @@ public slots:
     void changedPropertyFont(QFont& font);
     void changedPropertyText(QString& text);
 
+private slots:
+    void on_actionResource_triggered();
+
 private:
     QTreeView*          m_treeView;
     QGraphicsView*      m_graphicsView;
