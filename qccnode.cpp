@@ -2,6 +2,8 @@
 
 QCCNode::QCCNode()
 {
+    m_name = "undefined";
+    m_classType = CLASS_TYPE_CCNODE;
     m_x = 0;
     m_y = 0;
     m_z = 0;
@@ -18,6 +20,8 @@ QCCNode::QCCNode()
 
 void QCCNode::importData(QMap<QString, QString>& map)
 {
+    m_name = map.value("name", QString("undefined"));
+    m_classType = map.value("classType", QString("%1").arg(CLASS_TYPE_CCNODE));
     m_x = map.value("x", QString("0")).toInt();
     m_y = map.value("y", QString("0")).toInt();
     m_z = map.value("z", QString("0")).toInt();

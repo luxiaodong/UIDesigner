@@ -11,6 +11,11 @@
 //select_item --> tree scene property
 //data --> tree
 //data --> scene
+//先制定存储的数据格式标准，实现底层的数据导入导出
+//再支持treeView的选中，增加，删除，拷贝等操作
+//再将treeView的操作消息影响到scene
+//scene接受到后作出改变，再反过来影响treeView
+//最后实现property的控制
 
 #include <QList>
 #include <QVector>

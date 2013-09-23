@@ -12,6 +12,9 @@ public:
     void setResourceDir(QString&);
 
     //void writeSingleNode();
+
+public:
+    QCCNode* m_root;
 };
 
 #endif // QSTORAGEDATA_H

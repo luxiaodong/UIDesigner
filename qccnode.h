@@ -15,6 +15,8 @@ public:
     virtual QMap<QString, QString> exportData();
 
 public:
+    QString m_name;
+    QString m_classType;
     int m_x;
     int m_y;
     int m_z;
@@ -27,6 +29,9 @@ public:
     float m_scaleX;
     float m_scaleY;
     bool m_isVisible;
+
+public:
+    QList<QCCNode*> m_children;
 };
 
 class QCCLayer : public QCCNode
