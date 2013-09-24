@@ -68,6 +68,8 @@ private slots:
     void on_actionResource_triggered();
     void on_actionOpen_File_triggered();
 
+    void on_actionSave_triggered();
+
 private:
     QTreeView*          m_treeView;
     QGraphicsView*      m_graphicsView;
@@ -75,6 +77,9 @@ private:
     QScene*             m_scene;
     QPropertyBrowser*   m_browser;
     QStorageData*       m_storageData;
+
+private:
+    QString             m_currentOpenFile;
 
 private:
     Ui::MainWindow *ui;

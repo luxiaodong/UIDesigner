@@ -4,43 +4,63 @@ QDataParser::QDataParser()
 {
 }
 
+QDataParser::~QDataParser()
+{}
+
 QCCNode* QDataParser::parse(QString& str)
 {
     return 0;
+}
+
+QString QDataParser::parse(QCCNode*)
+{
+    return "";
 }
 
 QCCNode* QXmlDataParser::parse(QString& str)
 {
     QXmlStreamReader reader(str);
 
+    QCCNode* root = 0;
+    QCCNode* parent = 0;
     while(reader.atEnd() == false)
     {
         QXmlStreamReader::TokenType token = reader.readNext();
 
-        if(token == QXmlStreamReader::StartDocument)
-        {
-        }
-        else if(token == QXmlStreamReader::EndDocument)
-        {}
-        else if(token == QXmlStreamReader::StartElement)
+        if(token == QXmlStreamReader::StartElement)
         {
             QXmlStreamAttributes attr = reader.attributes();
-            if (reader.name() == "sprite")
+
+            QCCLayer* node = 0;
+            if(reader.name() == CLASS_TYPE_CCLAYER)
             {
-                QCCSprite* node = new QCCSprite();
-                this->parseCCSprite(node, attr);
+                node = new QCCLayer();
+                this->parseCCLayer((QCCLayer*)node, attr);
+                node->m_classType = CLASS_TYPE_CCLAYER;
+            }
+            else if (reader.name() == CLASS_TYPE_CCSPRITE)
+            {
+                node = new QCCSprite();
+                this->parseCCSprite((QCCSprite*)node, attr);
+                node->m_classType = CLASS_TYPE_CCSPRITE;
+            }
+
+            if(root == 0)
+            {
+                root = node;
+                parent = node;
+            }
+            else
+            {
+                parent->m_children.append(node);
+                node->m_parent = parent;
+                parent = node;
             }
         }
         else if(token == QXmlStreamReader::EndElement)
-        {}
-        else if(token == QXmlStreamReader::Characters)
         {
-            //qDebug()<<reader.text();
+            parent = parent->m_parent;
         }
-        else if(token == QXmlStreamReader::Comment)
-        {}
-        else
-        {}
     }
 
     if (reader.hasError() == true)
@@ -49,11 +69,16 @@ QCCNode* QXmlDataParser::parse(QString& str)
         return 0;
     }
 
-    return 0;
+    return root;
 }
 
 void QXmlDataParser::parseCCNode(QCCNode* node, QXmlStreamAttributes& attr)
 {
+    if(attr.hasAttribute("name") == true)
+    {
+        node->m_name = attr.value("name").toString();
+    }
+
     if(attr.hasAttribute("x") == true)
     {
         node->m_x = attr.value("x").toInt();
@@ -67,6 +92,16 @@ void QXmlDataParser::parseCCNode(QCCNode* node, QXmlStreamAttributes& attr)
     if(attr.hasAttribute("z") == true)
     {
         node->m_z = attr.value("z").toInt();
+    }
+
+    if(attr.hasAttribute("width") == true)
+    {
+        node->m_width = attr.value("width").toInt();
+    }
+
+    if(attr.hasAttribute("height") == true)
+    {
+        node->m_height = attr.value("height").toInt();
     }
 }
 
@@ -94,6 +129,92 @@ void QXmlDataParser::parseCCSprite(QCCSprite* node, QXmlStreamAttributes& attr)
 
     this->parseCCLayerColor(node, attr);
 }
+
+
+QString QXmlDataParser::parse(QCCNode* node)
+{
+    QString str = QString();
+    QXmlStreamWriter stream(&str);
+    stream.writeStartDocument();
+    this->parseNode(node, &stream);
+    stream.writeEndDocument();
+    return str;
+}
+
+void QXmlDataParser::parseNode(QCCNode* node, QXmlStreamWriter* stream)
+{
+    stream->writeStartElement(node->m_classType);
+
+    if(node->m_classType == CLASS_TYPE_CCLAYER)
+    {
+        this->parseCCLayer( (QCCLayer*)node, stream);
+    }
+    else if(node->m_classType == CLASS_TYPE_CCSPRITE)
+    {
+        this->parseCCSprite( (QCCSprite*)node, stream);
+    }
+
+    for(int i = 0; i < node->m_children.size(); ++i)
+    {
+        QCCNode* subNode = node->m_children.at(i);
+        this->parseNode(subNode, stream);
+    }
+
+    stream->writeEndElement();
+}
+
+void QXmlDataParser::parseCCNode(QCCNode* node, QXmlStreamWriter* stream)
+{
+    stream->writeAttribute("name", node->m_name);
+
+    if(node->m_x != 0)
+    {
+        stream->writeAttribute("x", QString("%1").arg(node->m_x));
+    }
+
+    if(node->m_y != 0)
+    {
+        stream->writeAttribute("y", QString("%1").arg(node->m_y));
+    }
+
+    if(node->m_z != 0)
+    {
+        stream->writeAttribute("z", QString("%1").arg(node->m_z));
+    }
+
+    if(node->m_width != 0)
+    {
+        stream->writeAttribute("width", QString("%1").arg(node->m_width));
+    }
+
+    if(node->m_height != 0)
+    {
+        stream->writeAttribute("height", QString("%1").arg(node->m_height));
+    }
+}
+
+void QXmlDataParser::parseCCLayer(QCCLayer* node, QXmlStreamWriter* stream)
+{
+    this->parseCCNode(node, stream);
+}
+
+void QXmlDataParser::parseCCLayerColor(QCCLayerColor* node, QXmlStreamWriter* stream)
+{
+    this->parseCCLayer(node, stream);
+
+    if(node->m_opacity != 255)
+    {
+        stream->writeAttribute("opacity", QString("%1").arg(node->m_opacity));
+    }
+}
+
+void QXmlDataParser::parseCCSprite(QCCSprite* node, QXmlStreamWriter* stream)
+{
+    this->parseCCLayerColor(node, stream);
+
+    stream->writeAttribute("filePath", QString("%1").arg(node->m_filePath));
+}
+
 
 QCCNode* QLuaDataParser::parse(QString& str)
 {

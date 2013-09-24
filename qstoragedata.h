@@ -13,7 +13,8 @@ public:
     QString resourceDir();
     void setResourceDir(QString&);
 
-    QCCNode* parseUIFile(QString filePath);
+    QCCNode* readUIFile(QString filePath);
+    bool writeUIFile(QString filePath);
 
 private:
     QCCNode* m_root;

@@ -23,7 +23,7 @@ void QStorageData::setResourceDir(QString& dir)
     settings.setValue("resourceDir", dir);
 }
 
-QCCNode* QStorageData::parseUIFile(QString filePath)
+QCCNode* QStorageData::readUIFile(QString filePath)
 {
     if(filePath.isEmpty() == true)
     {
@@ -63,10 +63,65 @@ QCCNode* QStorageData::parseUIFile(QString filePath)
     file.close();
 
     m_root = parser->parse(str);
+    delete parser;
+
     if(m_root == 0)
     {
         m_lastError = QString("parse file failed.");
     }
 
     return m_root;
+}
+
+bool QStorageData::writeUIFile(QString filePath)
+{
+    if(filePath.isEmpty() == true)
+    {
+        m_lastError = QString("an empty filePath");
+        return false;
+    }
+
+    QDataParser* parser = 0;
+    int dataFormat = 0;
+    QString suffix = filePath.right(3);
+    if(suffix == "xml")
+    {
+        parser = new QXmlDataParser();
+        dataFormat = DATA_FORMAT_XML;
+    }
+    else if(suffix == "lua")
+    {
+        parser = new QLuaDataParser();
+        dataFormat = DATA_FORMAT_LUA;
+    }
+    else
+    {
+        m_lastError = QString("unknow file format");
+        return false;
+    }
+
+    QString str = parser->parse(m_root);
+    delete parser;
+
+    if(str == "")
+    {
+        m_lastError = QString("parse file failed.");
+        return false;
+    }
+
+    QFile file(filePath);
+    if(file.open(QIODevice::WriteOnly) == false)
+    {
+        m_lastError = QString("open file failed");
+        return 0;
+    }
+
+    str.replace(">",">\n");
+
+    QTextStream stream(&file);
+    stream.setCodec("UTF-8");
+    stream<<str;
+    file.close();
+
+    return true;
 }

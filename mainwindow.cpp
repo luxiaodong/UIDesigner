@@ -29,6 +29,7 @@ MainWindow::MainWindow(QWidget *parent) :
 
     this->connectSignalAndSlot();
 
+    m_currentOpenFile.clear();
     //test
     //this->setSceneSize(300, 300);
     //this->test();
@@ -294,9 +295,15 @@ void MainWindow::on_actionOpen_File_triggered()
 {
     QString oldDir = m_storageData->resourceDir();
     QString filePath = QFileDialog::getOpenFileName(this,oldDir);
-    QCCNode* node = m_storageData->parseUIFile(filePath);
+    QCCNode* node = m_storageData->readUIFile(filePath);
     if(node != 0)
     {
+        m_currentOpenFile = filePath;
         this->replaceTreeModel(node);
     }
+}
+
+void MainWindow::on_actionSave_triggered()
+{
+    m_storageData->writeUIFile(m_currentOpenFile);
 }

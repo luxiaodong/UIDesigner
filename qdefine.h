@@ -43,6 +43,7 @@
 #include <QFile>
 #include <QTextStream>
 #include <QXmlStreamReader>
+#include <QXmlStreamWriter>
 #include <QXmlStreamAttributes>
 
 #define CLASS_TYPE_ROOT     "class"
