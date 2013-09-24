@@ -1,7 +1,12 @@
 #include "qabstracttreemodel.h"
 
-QAbstractTreeModel::QAbstractTreeModel(QTreeItem* root, QObject *parent): QAbstractItemModel(parent),m_root(root)
+QAbstractTreeModel::QAbstractTreeModel(QObject *parent): QAbstractItemModel(parent)
 {
+}
+
+void QAbstractTreeModel::setRoot(QTreeItem* root)
+{
+    m_root = root;
 }
 
 int QAbstractTreeModel::columnCount(const QModelIndex & /* parent */) const

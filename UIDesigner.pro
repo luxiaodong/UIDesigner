@@ -4,7 +4,7 @@
 #
 #-------------------------------------------------
 
-QT       += core gui
+QT       += core gui xml
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
@@ -19,7 +19,8 @@ SOURCES += main.cpp\
     qccnode.cpp \
     qscene.cpp \
     qpropertybrowser.cpp \
-    qstoragedata.cpp
+    qstoragedata.cpp \
+    qdataparser.cpp
 
 HEADERS  += mainwindow.h \
     qabstracttreemodel.h \
@@ -28,7 +29,8 @@ HEADERS  += mainwindow.h \
     qdefine.h \
     qscene.h \
     qpropertybrowser.h \
-    qstoragedata.h
+    qstoragedata.h \
+    qdataparser.h
 
 FORMS    += mainwindow.ui
 

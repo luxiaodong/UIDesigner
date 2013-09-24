@@ -40,6 +40,10 @@
 #include <QGraphicsSimpleTextItem>
 #include <QMessageBox>
 #include <QFileDialog>
+#include <QFile>
+#include <QTextStream>
+#include <QXmlStreamReader>
+#include <QXmlStreamAttributes>
 
 #define CLASS_TYPE_ROOT     "class"
 

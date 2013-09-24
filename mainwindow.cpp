@@ -5,41 +5,15 @@
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
-    ui(new Ui::MainWindow)
+    ui(new Ui::MainWindow),m_model(0)
 {
     ui->setupUi(this);
-
-    QVector<QVariant> data;
-    data.append(QString("name"));
-    data.append(QString(CLASS_TYPE_ROOT));
-
-    QVector<QVariant> temp1;
-    temp1.append(QString("xxx"));
-    temp1.append(QString(CLASS_TYPE_CCLAYER));
-
-    QTreeItem* node = new QTreeItem(data);
-
-    node->insertChildren(0, 1, 2);
-    node->insertChildren(0, 1, 2);
-    node->child(0)->setData(0, QString("0"));
-    node->child(0)->setData(1, QString(CLASS_TYPE_CCLAYER));
-    node->child(1)->setData(0, QString("1"));
-    node->child(1)->setData(1, QString(CLASS_TYPE_CCLABELTTF));
-
-    node->child(0)->insertChildren(0,1,2);
-    node->child(0)->insertChildren(0,1,2);
-    node->child(0)->child(0)->setData(0, QString("00"));
-    node->child(0)->child(0)->setData(1, QString(CLASS_TYPE_CCLAYER));
-    node->child(0)->child(1)->setData(0, QString("01"));
-    node->child(0)->child(1)->setData(1, QString(CLASS_TYPE_CCSPRITE));
 
     QHBoxLayout* boxLayout = new QHBoxLayout();
     boxLayout->setSizeConstraint(QLayout::SetDefaultConstraint);
     this->centralWidget()->setLayout(boxLayout);
 
-    m_model = new QAbstractTreeModel(node);
     m_treeView = new QTreeView();
-    m_treeView->setModel(m_model);
     boxLayout->addWidget(m_treeView,2);
 
     m_scene = new QScene();
@@ -56,8 +30,8 @@ MainWindow::MainWindow(QWidget *parent) :
     this->connectSignalAndSlot();
 
     //test
-    this->setSceneSize(300, 300);
-    this->test();
+    //this->setSceneSize(300, 300);
+    //this->test();
 }
 
 MainWindow::~MainWindow()
@@ -67,8 +41,54 @@ MainWindow::~MainWindow()
 
 void MainWindow::test()
 {
+    QCCNode* root = new QCCNode();
+    QCCNode* node1 = new QCCNode();
+    QCCNode* node11 = new QCCNode();
+    QCCNode* node12 = new QCCNode();
+    QCCNode* node2 = new QCCNode();
+
+    root->m_name = "name_1";
+    root->m_classType = "class_1";
+    node1->m_name = "1";
+    node11->m_name = "11";
+    node12->m_name = "12";
+    node2->m_name = "2";
+
+    node1->m_classType = CLASS_TYPE_CCSPRITE;
+    node11->m_classType = CLASS_TYPE_CCSPRITE;
+    node12->m_classType = CLASS_TYPE_CCSPRITE;
+    node2->m_classType = CLASS_TYPE_CCSPRITE;
+
+    root->m_children.append(node1);
+    root->m_children.append(node2);
+
+    node1->m_children.append(node11);
+    node1->m_children.append(node12);
+
+    this->replaceTreeModel(root);
+
     m_scene->test();
     m_browser->test();
+}
+
+void MainWindow::replaceTreeModel(QCCNode* node)
+{
+    if(m_model != 0)
+    {
+        delete m_model;
+    }
+
+    QVector<QVariant> data;
+    data.append(QString("name"));    //暂时这样,可能有bug.只支持layr,不支持sprite.
+    data.append(QString(CLASS_TYPE_ROOT));
+    QTreeItem* item = new QTreeItem(data);
+    item->recursionCreateSubItem(node);
+
+    m_model = new QAbstractTreeModel();
+    m_model->setRoot(item);
+    m_treeView->setModel(m_model);
+
+    connect(m_model, SIGNAL(dataChanged(QModelIndex,QModelIndex,const QVector<int>)), this, SLOT(dataChanged(const QModelIndex&,const QModelIndex&,const QVector<int>&)));
 }
 
 void MainWindow::setSceneSize(int width, int height)
@@ -106,8 +126,6 @@ void MainWindow::connectSignalAndSlot()
     //connect(m_treeView, SIGNAL(entered(QModelIndex)), this, SLOT(viewEntered(const QModelIndex&)));
     //connect(m_treeView, SIGNAL(pressed(QModelIndex)), this, SLOT(viewPressed(const QModelIndex&)));
 
-    //slot
-    connect(m_model, SIGNAL(dataChanged(QModelIndex,QModelIndex,const QVector<int>)), this, SLOT(dataChanged(const QModelIndex&,const QModelIndex&,const QVector<int>&)));
 
     //scene emit and window slot;
     connect(m_scene, SIGNAL(changeItemPoint(int,int)),this,SLOT(changedItemPoint(int,int)));
@@ -265,10 +283,20 @@ void MainWindow::changedPropertyFont(QFont& font)
 void MainWindow::changedPropertyText(QString& text)
 {}
 
-
 void MainWindow::on_actionResource_triggered()
 {
     QString oldDir = m_storageData->resourceDir();
     QString newDir = QFileDialog::getExistingDirectory(this,oldDir);
     m_storageData->setResourceDir(newDir);
+}
+
+void MainWindow::on_actionOpen_File_triggered()
+{
+    QString oldDir = m_storageData->resourceDir();
+    QString filePath = QFileDialog::getOpenFileName(this,oldDir);
+    QCCNode* node = m_storageData->parseUIFile(filePath);
+    if(node != 0)
+    {
+        this->replaceTreeModel(node);
+    }
 }

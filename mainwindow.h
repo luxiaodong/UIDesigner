@@ -24,6 +24,7 @@ private:
 private:
     void setSceneSize(int width, int height);
     void connectSignalAndSlot();
+    void replaceTreeModel(QCCNode* root);
 
 signals:
     //view;
@@ -65,6 +66,7 @@ public slots:
 
 private slots:
     void on_actionResource_triggered();
+    void on_actionOpen_File_triggered();
 
 private:
     QTreeView*          m_treeView;

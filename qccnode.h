@@ -9,6 +9,7 @@ class QCCNode
 {
 public:
     QCCNode();
+    ~QCCNode();
 
 public:
     virtual void importData(QMap<QString, QString>&);
@@ -32,6 +33,7 @@ public:
 
 public:
     QList<QCCNode*> m_children;
+    QCCNode* m_parent;
 };
 
 class QCCLayer : public QCCNode

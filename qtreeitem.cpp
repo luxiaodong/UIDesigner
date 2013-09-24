@@ -147,6 +147,19 @@ bool QTreeItem::setData(int column, const QVariant &value)
     return true;
 }
 
+void QTreeItem::recursionCreateSubItem(QCCNode* node)
+{
+    m_node = node;
+    for(int i = 0; i < node->m_children.size(); ++i)
+    {
+        QCCNode* subNode = node->m_children.at(i);
+        this->insertChildren(i);
+        this->child(i)->setData(0, subNode->m_name);
+        this->child(i)->setData(1, subNode->m_classType);
+        this->child(i)->recursionCreateSubItem(subNode);
+    }
+}
+
 QCCNode* QTreeItem::createCCNodeByType(QString type)
 {
     QCCNode* node = 0;

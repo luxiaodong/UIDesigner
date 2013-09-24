@@ -4,6 +4,9 @@ QCCNode::QCCNode()
 {
     m_name = "undefined";
     m_classType = CLASS_TYPE_CCNODE;
+    m_children.clear();
+    m_parent = 0;
+
     m_x = 0;
     m_y = 0;
     m_z = 0;
@@ -17,6 +20,9 @@ QCCNode::QCCNode()
     m_scaleY = 1.0f;
     m_isVisible = true;
 }
+
+QCCNode::~QCCNode()
+{}
 
 void QCCNode::importData(QMap<QString, QString>& map)
 {
