@@ -67,8 +67,11 @@ public slots:
 private slots:
     void on_actionResource_triggered();
     void on_actionOpen_File_triggered();
-
     void on_actionSave_triggered();
+    void on_actionCCSprite_triggered();
+    void on_actionCopy_triggered();
+    void on_actionParse_triggered();
+    void on_actionDel_triggered();
 
 private:
     QTreeView*          m_treeView;
@@ -80,6 +83,7 @@ private:
 
 private:
     QString             m_currentOpenFile;
+    QMap<QString, QString> m_copyBuffer;
 
 private:
     Ui::MainWindow *ui;

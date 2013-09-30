@@ -22,7 +22,12 @@ QCCNode::QCCNode()
 }
 
 QCCNode::~QCCNode()
-{}
+{
+    foreach(QCCNode* node, m_children)
+    {
+        delete node;
+    }
+}
 
 void QCCNode::importData(QMap<QString, QString>& map)
 {
@@ -45,6 +50,8 @@ void QCCNode::importData(QMap<QString, QString>& map)
 QMap<QString, QString> QCCNode::exportData()
 {
     QMap<QString, QString> map;
+    map.insert("name", m_name);
+    map.insert("classType", m_classType);
     map.insert("x", QString("%1").arg(m_x));
     map.insert("y", QString("%1").arg(m_y));
     map.insert("z", QString("%1").arg(m_z));

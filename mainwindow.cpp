@@ -30,6 +30,8 @@ MainWindow::MainWindow(QWidget *parent) :
     this->connectSignalAndSlot();
 
     m_currentOpenFile.clear();
+    m_copyBuffer.clear();
+
     //test
     //this->setSceneSize(300, 300);
     //this->test();
@@ -80,7 +82,7 @@ void MainWindow::replaceTreeModel(QCCNode* node)
     }
 
     QVector<QVariant> data;
-    data.append(QString("name"));    //暂时这样,可能有bug.只支持layr,不支持sprite.
+    data.append(QString("name"));
     data.append(QString(CLASS_TYPE_ROOT));
     QTreeItem* item = new QTreeItem(data);
     item->recursionCreateSubItem(node);
@@ -88,6 +90,9 @@ void MainWindow::replaceTreeModel(QCCNode* node)
     m_model = new QAbstractTreeModel();
     m_model->setRoot(item);
     m_treeView->setModel(m_model);
+
+    //默认选中第一个
+    m_treeView->setCurrentIndex( m_model->index(0,0) );
 
     connect(m_model, SIGNAL(dataChanged(QModelIndex,QModelIndex,const QVector<int>)), this, SLOT(dataChanged(const QModelIndex&,const QModelIndex&,const QVector<int>&)));
 }
@@ -187,7 +192,7 @@ void MainWindow::viewClicked(const QModelIndex& index)
         }
 
         m_treeView->setCurrentIndex(index);
-        emit changeItemSelect(nameTrace);
+        //emit changeItemSelect(nameTrace);
 
         //切换item
         //1.给scene发消息
@@ -306,4 +311,101 @@ void MainWindow::on_actionOpen_File_triggered()
 void MainWindow::on_actionSave_triggered()
 {
     m_storageData->writeUIFile(m_currentOpenFile);
+}
+
+//这里要api细分,独立创建,树更新,设置数据,选择等操作, copy的时候应该 copy整个树
+//创建和删除核心的程序,应该只有一个.保证树的正确和内部内存的正确
+//代码需要重构了
+void MainWindow::on_actionCCSprite_triggered()
+{
+    static int count = 1;
+    QModelIndex index = m_treeView->currentIndex();
+    if(index.isValid() == true)
+    {
+        //更新左边的树
+        QTreeItem* item = m_model->itemAt(index);
+        int itemIndex = item->childCount();
+        QString name = QString("sprite_%1").arg(count++);
+        m_model->insertRows(itemIndex, 1, index);
+        QModelIndex newIndexName = m_model->index(itemIndex,0, index);
+        m_model->setData(newIndexName, name );
+        QModelIndex newIndexClass = m_model->index(itemIndex, 1, index);
+        m_model->setData(newIndexClass, CLASS_TYPE_CCSPRITE );
+
+        //同步内部数据
+        QTreeItem* sonItem = m_model->itemAt(newIndexName);
+        QCCNode* parentNode = item->m_node;
+        QCCNode* sonNode = sonItem->m_node;
+        sonNode->m_parent = parentNode;
+        sonNode->m_name = name;
+        sonNode->m_classType = CLASS_TYPE_CCSPRITE;
+        parentNode->m_children.append(sonNode);
+
+        //更换当前选择
+        //m_treeView->setCurrentIndex( newIndexName );
+        this->viewClicked( newIndexName );
+
+        qDebug()<<index.data();
+    }
+}
+
+void MainWindow::on_actionCopy_triggered()
+{
+    QModelIndex index = m_treeView->currentIndex();
+    if(index.isValid() == true)
+    {
+        QTreeItem* item = m_model->itemAt(index);
+        m_copyBuffer = item->m_node->exportData();
+        this->statusBar()->showMessage("copy ok");
+    }
+}
+
+void MainWindow::on_actionParse_triggered()
+{
+    QModelIndex index = m_treeView->currentIndex();
+    if(index.isValid() == true)
+    {
+        if(m_copyBuffer.isEmpty() == true)
+        {
+            return ;
+        }
+
+        QString classType = m_copyBuffer.value("classType", QString(""));
+        Q_ASSERT(classType.isEmpty() == false);
+
+        if(classType == CLASS_TYPE_CCSPRITE)
+        {
+            on_actionCCSprite_triggered();
+        }
+
+        QTreeItem* item = m_model->itemAt(index);
+        int itemIndex = item->childCount();
+        QTreeItem* newItem = item->child( itemIndex - 1 );
+        newItem->m_node->importData(m_copyBuffer);
+
+        QModelIndex newIndexName = m_model->index(itemIndex - 1, 0, index);
+        m_model->setData(newIndexName, m_copyBuffer.value("name"));
+
+        this->statusBar()->showMessage("Parse ok");
+    }
+}
+
+void MainWindow::on_actionDel_triggered()
+{
+    QModelIndex index = m_treeView->currentIndex();
+    if(index.isValid() == true)
+    {
+        if( QMessageBox::question(this,"delete",QString("remove this and all children")) ==  QMessageBox::Yes)
+        {
+            int rowIndex = index.row();
+            QCCNode* node = m_model->itemAt(index)->m_node;
+            m_model->removeRows(rowIndex, 1, index.parent());
+            if(node->m_parent != 0)
+            {
+                node->m_parent->m_children.removeAt(rowIndex);
+            }
+
+            delete node;
+        }
+    }
 }

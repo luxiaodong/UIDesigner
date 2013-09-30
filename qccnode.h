@@ -9,7 +9,7 @@ class QCCNode
 {
 public:
     QCCNode();
-    ~QCCNode();
+    virtual ~QCCNode();
 
 public:
     virtual void importData(QMap<QString, QString>&);
