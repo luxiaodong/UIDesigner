@@ -1,5 +1,32 @@
 #include "qccnode.h"
 
+QCCNode* QCCNode::createCCNodeByType(QString type)
+{
+    QCCNode* node = 0;
+    if(type == CLASS_TYPE_CCNODE)
+    {
+        node = new QCCNode();
+    }
+    else if(type == CLASS_TYPE_CCLAYER || type == CLASS_TYPE_ROOT)
+    {
+        node = new QCCLayer();
+    }
+    else if(type == CLASS_TYPE_CCLAYERCOLOR)
+    {
+        node = new QCCLayerColor();
+    }
+    else if(type == CLASS_TYPE_CCSPRITE)
+    {
+        node = new QCCSprite();
+    }
+    else if(type == CLASS_TYPE_CCLABELTTF)
+    {
+        node = new QCCLabelTTF();
+    }
+
+    return node;
+}
+
 QCCNode::QCCNode()
 {
     m_name = "undefined";
@@ -70,6 +97,7 @@ QMap<QString, QString> QCCNode::exportData()
 QCCLayer::QCCLayer()
 {
     m_isTouchEnable = false;
+    m_classType = CLASS_TYPE_CCLAYER;
 }
 
 void QCCLayer::importData(QMap<QString, QString>& map)
@@ -89,6 +117,7 @@ QCCLayerColor::QCCLayerColor()
 {
     m_color = QColor(Qt::white);
     m_opacity = 0xff;
+    m_classType = CLASS_TYPE_CCLAYERCOLOR;
 }
 
 void QCCLayerColor::importData(QMap<QString, QString>& map)
@@ -116,6 +145,7 @@ QMap<QString, QString> QCCLayerColor::exportData()
 QCCSprite::QCCSprite()
 {
     m_filePath = "";
+    m_classType = CLASS_TYPE_CCSPRITE;
 }
 
 void QCCSprite::importData(QMap<QString, QString>& map)
@@ -135,6 +165,7 @@ QCCLabelTTF::QCCLabelTTF()
 {
     m_text = "";
     m_font = QFont();
+    m_classType = CLASS_TYPE_CCLABELTTF;
 }
 
 void QCCLabelTTF::importData(QMap<QString, QString>& map)

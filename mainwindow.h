@@ -24,7 +24,12 @@ private:
 private:
     void setSceneSize(int width, int height);
     void connectSignalAndSlot();
+
+private:
     void replaceTreeModel(QCCNode* root);
+    void createTreeItemByCCNode(QCCNode* node, QModelIndex parentIndex);
+
+    //void createTreeModelByRoot(QCCNode* root);
 
 signals:
     //view;
@@ -72,6 +77,7 @@ private slots:
     void on_actionCopy_triggered();
     void on_actionParse_triggered();
     void on_actionDel_triggered();
+    void on_actionCut_triggered();
 
 private:
     QTreeView*          m_treeView;

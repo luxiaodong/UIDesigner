@@ -22,16 +22,12 @@ public:
     bool setData(int column, const QVariant &value);
 
 public:
-    void recursionCreateSubItem(QCCNode* node); //递归创建QTreeItem.
-
-public:
     QList<QTreeItem*> m_children;
     QVector<QVariant> m_data; //name & type
     QTreeItem* m_parent;
-    QCCNode* m_node;
 
-private:
-    QCCNode* createCCNodeByType(QString type);
+public:
+    QCCNode* m_node;
 };
 
 #endif // QTREEITEM_H

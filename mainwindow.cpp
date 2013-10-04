@@ -85,16 +85,36 @@ void MainWindow::replaceTreeModel(QCCNode* node)
     data.append(QString("name"));
     data.append(QString(CLASS_TYPE_ROOT));
     QTreeItem* item = new QTreeItem(data);
-    item->recursionCreateSubItem(node);
+    //item->m_node = node; //first is cclayer, not displayed. can be 0.
 
     m_model = new QAbstractTreeModel();
     m_model->setRoot(item);
     m_treeView->setModel(m_model);
+    connect(m_model, SIGNAL(dataChanged(QModelIndex,QModelIndex,const QVector<int>)), this, SLOT(dataChanged(const QModelIndex&,const QModelIndex&,const QVector<int>&)));
+
+    //not clear the root relation between, ccnode, cctreeitem.
+    this->createTreeItemByCCNode(node, QModelIndex());
 
     //默认选中第一个
     m_treeView->setCurrentIndex( m_model->index(0,0) );
+}
 
-    connect(m_model, SIGNAL(dataChanged(QModelIndex,QModelIndex,const QVector<int>)), this, SLOT(dataChanged(const QModelIndex&,const QModelIndex&,const QVector<int>&)));
+void MainWindow::createTreeItemByCCNode(QCCNode* node, QModelIndex parentIndex)
+{
+    int itemCount = m_model->rowCount( parentIndex );
+    m_model->insertRows(itemCount,1,parentIndex);
+    QModelIndex nameIndex = m_model->index(itemCount, 0 , parentIndex);
+    m_model->setData(nameIndex, node->m_name);
+    QModelIndex classIndex = m_model->index(itemCount, 1 , parentIndex);
+    m_model->setData(classIndex, node->m_classType);
+    m_model->itemAt(nameIndex)->m_node = node;
+
+    //-R
+    foreach (QCCNode* son, node->m_children)
+    {
+        //why nameIndex, relation with QModelIndex and colum
+        this->createTreeItemByCCNode(son, nameIndex);
+    }
 }
 
 void MainWindow::setSceneSize(int width, int height)
@@ -225,7 +245,8 @@ void MainWindow::dataChanged(const QModelIndex & topLeft, const QModelIndex & bo
             //名字有冲突
             if(isConflict == true)
             {
-                QMessageBox::warning(this,"warning",QString("the same name\n%1").arg(topLeft.data().toString()));
+                //QMessageBox::warning(this,"warning",QString("the same name\n%1").arg(topLeft.data().toString()));
+                return ;
             }
 
             //先该底层的数据,再改上层的东西
@@ -304,7 +325,7 @@ void MainWindow::on_actionOpen_File_triggered()
     if(node != 0)
     {
         m_currentOpenFile = filePath;
-        this->replaceTreeModel(node);
+        this->replaceTreeModel(node->m_children.at(0));
     }
 }
 
@@ -322,28 +343,20 @@ void MainWindow::on_actionCCSprite_triggered()
     QModelIndex index = m_treeView->currentIndex();
     if(index.isValid() == true)
     {
-        //更新左边的树
-        QTreeItem* item = m_model->itemAt(index);
-        int itemIndex = item->childCount();
-        QString name = QString("sprite_%1").arg(count++);
-        m_model->insertRows(itemIndex, 1, index);
-        QModelIndex newIndexName = m_model->index(itemIndex,0, index);
-        m_model->setData(newIndexName, name );
-        QModelIndex newIndexClass = m_model->index(itemIndex, 1, index);
-        m_model->setData(newIndexClass, CLASS_TYPE_CCSPRITE );
+        //create and sync
+        QCCNode* node = QCCNode::createCCNodeByType(CLASS_TYPE_CCSPRITE);
+        node->m_name = QString("sprite_%1").arg(count++);
+        node->m_classType = CLASS_TYPE_CCSPRITE;
+        QCCNode* parentNode = m_model->itemAt(index)->m_node;
+        parentNode->m_children.append(node);
+        node->m_parent = parentNode;
 
-        //同步内部数据
-        QTreeItem* sonItem = m_model->itemAt(newIndexName);
-        QCCNode* parentNode = item->m_node;
-        QCCNode* sonNode = sonItem->m_node;
-        sonNode->m_parent = parentNode;
-        sonNode->m_name = name;
-        sonNode->m_classType = CLASS_TYPE_CCSPRITE;
-        parentNode->m_children.append(sonNode);
+        //add to treeItem
+        this->createTreeItemByCCNode(node, index);
 
         //更换当前选择
         //m_treeView->setCurrentIndex( newIndexName );
-        this->viewClicked( newIndexName );
+        this->viewClicked( m_model->index( m_model->rowCount(index) - 1 , 1, index) );
 
         qDebug()<<index.data();
     }
@@ -373,18 +386,19 @@ void MainWindow::on_actionParse_triggered()
         QString classType = m_copyBuffer.value("classType", QString(""));
         Q_ASSERT(classType.isEmpty() == false);
 
-        if(classType == CLASS_TYPE_CCSPRITE)
-        {
-            on_actionCCSprite_triggered();
-        }
+        //create and sync
+        QCCNode* node = QCCNode::createCCNodeByType(classType);
+        node->importData(m_copyBuffer);
+        QCCNode* parentNode = m_model->itemAt(index)->m_node;
+        parentNode->m_children.append(node);
+        node->m_parent = parentNode;
 
-        QTreeItem* item = m_model->itemAt(index);
-        int itemIndex = item->childCount();
-        QTreeItem* newItem = item->child( itemIndex - 1 );
-        newItem->m_node->importData(m_copyBuffer);
+        //add to treeItem
+        this->createTreeItemByCCNode(node, index);
 
-        QModelIndex newIndexName = m_model->index(itemIndex - 1, 0, index);
-        m_model->setData(newIndexName, m_copyBuffer.value("name"));
+        //更换当前选择
+        //m_treeView->setCurrentIndex( newIndexName );
+        this->viewClicked( m_model->index( m_model->rowCount(index) - 1 , 1, index) );
 
         this->statusBar()->showMessage("Parse ok");
     }
@@ -399,13 +413,19 @@ void MainWindow::on_actionDel_triggered()
         {
             int rowIndex = index.row();
             QCCNode* node = m_model->itemAt(index)->m_node;
-            m_model->removeRows(rowIndex, 1, index.parent());
             if(node->m_parent != 0)
             {
                 node->m_parent->m_children.removeAt(rowIndex);
             }
 
+            m_model->removeRows(rowIndex, 1, index);
             delete node;
         }
     }
+}
+
+void MainWindow::on_actionCut_triggered()
+{
+    this->on_actionCopy_triggered();
+    this->on_actionDel_triggered();
 }

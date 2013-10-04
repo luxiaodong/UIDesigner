@@ -4,16 +4,10 @@ QTreeItem::QTreeItem(const QVector<QVariant> &data, QTreeItem *parent)
 {
     m_parent = parent;
     m_data = data;
-    m_node = 0;
 }
 
 QTreeItem::~QTreeItem()
 {
-    if(m_node != 0)
-    {
-        delete m_node;
-    }
-
     qDeleteAll(m_children);
 }
 
@@ -131,59 +125,7 @@ bool QTreeItem::setData(int column, const QVariant &value)
         return false;
     }
 
-    if (column == 1)
-    {
-        QString type = value.toString();
-        m_node = this->createCCNodeByType(type);
-
-        if( m_node == 0)
-        {
-            qDebug()<<type;
-            Q_ASSERT(0);
-        }
-    }
-
     m_data[column] = value;
     return true;
-}
-
-void QTreeItem::recursionCreateSubItem(QCCNode* node)
-{
-    m_node = node;
-    for(int i = 0; i < node->m_children.size(); ++i)
-    {
-        QCCNode* subNode = node->m_children.at(i);
-        this->insertChildren(i);
-        this->child(i)->setData(0, subNode->m_name);
-        this->child(i)->setData(1, subNode->m_classType);
-        this->child(i)->recursionCreateSubItem(subNode);
-    }
-}
-
-QCCNode* QTreeItem::createCCNodeByType(QString type)
-{
-    QCCNode* node = 0;
-    if(type == CLASS_TYPE_CCNODE)
-    {
-        node = new QCCNode();
-    }
-    else if(type == CLASS_TYPE_CCLAYER || type == CLASS_TYPE_ROOT)
-    {
-        node = new QCCLayer();
-    }
-    else if(type == CLASS_TYPE_CCLAYERCOLOR)
-    {
-        node = new QCCLayerColor();
-    }
-    else if(type == CLASS_TYPE_CCSPRITE)
-    {
-        node = new QCCSprite();
-    }
-    else if(type == CLASS_TYPE_CCLABELTTF)
-    {
-        node = new QCCLabelTTF();
-    }
-
-    return node;
 }
 

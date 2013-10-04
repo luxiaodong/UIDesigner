@@ -8,6 +8,8 @@
 class QCCNode
 {
 public:
+    static QCCNode* createCCNodeByType(QString type);
+public:
     QCCNode();
     virtual ~QCCNode();
 
