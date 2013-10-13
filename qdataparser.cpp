@@ -31,19 +31,22 @@ QCCNode* QXmlDataParser::parse(QString& str)
         {
             QXmlStreamAttributes attr = reader.attributes();
 
-            QCCLayer* node = 0;
+            //QCCNode* node = QCCNode::createCCNodeByType( reader.name() );
+
+            QCCNode* node = 0;
             if(reader.name() == CLASS_TYPE_CCLAYER)
             {
-                node = new QCCLayer();
+                node = QCCNode::createCCNodeByType(CLASS_TYPE_CCLAYER);
                 this->parseCCLayer((QCCLayer*)node, attr);
-                node->m_classType = CLASS_TYPE_CCLAYER;
             }
             else if (reader.name() == CLASS_TYPE_CCSPRITE)
             {
-                node = new QCCSprite();
+                node = QCCNode::createCCNodeByType(CLASS_TYPE_CCSPRITE);
                 this->parseCCSprite((QCCSprite*)node, attr);
-                node->m_classType = CLASS_TYPE_CCSPRITE;
             }
+
+            //qDebug()<<reader.name();
+            Q_ASSERT(node != 0);
 
             if(root == 0)
             {

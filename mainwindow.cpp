@@ -14,7 +14,7 @@ MainWindow::MainWindow(QWidget *parent) :
     this->centralWidget()->setLayout(boxLayout);
 
     m_treeView = new QTreeView();
-    boxLayout->addWidget(m_treeView,2);
+    boxLayout->addWidget(m_treeView,20);
 
     m_scene = new QScene();
     m_scene->setBackgroundBrush(QBrush(QColor(Qt::black)));
@@ -90,10 +90,11 @@ void MainWindow::replaceTreeModel(QCCNode* node)
     m_model = new QAbstractTreeModel();
     m_model->setRoot(item);
     m_treeView->setModel(m_model);
-    connect(m_model, SIGNAL(dataChanged(QModelIndex,QModelIndex,const QVector<int>)), this, SLOT(dataChanged(const QModelIndex&,const QModelIndex&,const QVector<int>&)));
 
     //not clear the root relation between, ccnode, cctreeitem.
     this->createTreeItemByCCNode(node, QModelIndex());
+
+    connect(m_model, SIGNAL(dataChanged(QModelIndex,QModelIndex,const QVector<int>)), this, SLOT(dataChanged(const QModelIndex&,const QModelIndex&,const QVector<int>&)));
 
     //默认选中第一个
     m_treeView->setCurrentIndex( m_model->index(0,0) );
@@ -249,6 +250,8 @@ void MainWindow::dataChanged(const QModelIndex & topLeft, const QModelIndex & bo
                 return ;
             }
 
+            QTreeItem* treeItem = m_model->itemAt(topLeft);
+            treeItem->m_node->m_name = topLeft.data().toString();
             //先该底层的数据,再改上层的东西
         }
     }
@@ -339,14 +342,12 @@ void MainWindow::on_actionSave_triggered()
 //代码需要重构了
 void MainWindow::on_actionCCSprite_triggered()
 {
-    static int count = 1;
     QModelIndex index = m_treeView->currentIndex();
     if(index.isValid() == true)
     {
-        //create and sync
+        //create
         QCCNode* node = QCCNode::createCCNodeByType(CLASS_TYPE_CCSPRITE);
-        node->m_name = QString("sprite_%1").arg(count++);
-        node->m_classType = CLASS_TYPE_CCSPRITE;
+        //sync
         QCCNode* parentNode = m_model->itemAt(index)->m_node;
         parentNode->m_children.append(node);
         node->m_parent = parentNode;
@@ -355,13 +356,13 @@ void MainWindow::on_actionCCSprite_triggered()
         this->createTreeItemByCCNode(node, index);
 
         //更换当前选择
-        //m_treeView->setCurrentIndex( newIndexName );
-        this->viewClicked( m_model->index( m_model->rowCount(index) - 1 , 1, index) );
+        this->viewClicked( m_model->index( m_model->rowCount(index) - 1 , 0, index) );
 
-        qDebug()<<index.data();
+        //qDebug()<<index.data();
     }
 }
 
+//is need copy all children, en, copy all children can process at save doc.
 void MainWindow::on_actionCopy_triggered()
 {
     QModelIndex index = m_treeView->currentIndex();
@@ -389,6 +390,7 @@ void MainWindow::on_actionParse_triggered()
         //create and sync
         QCCNode* node = QCCNode::createCCNodeByType(classType);
         node->importData(m_copyBuffer);
+
         QCCNode* parentNode = m_model->itemAt(index)->m_node;
         parentNode->m_children.append(node);
         node->m_parent = parentNode;
@@ -396,9 +398,8 @@ void MainWindow::on_actionParse_triggered()
         //add to treeItem
         this->createTreeItemByCCNode(node, index);
 
-        //更换当前选择
-        //m_treeView->setCurrentIndex( newIndexName );
-        this->viewClicked( m_model->index( m_model->rowCount(index) - 1 , 1, index) );
+        //is need 更换当前选择
+        //this->viewClicked( m_model->index( m_model->rowCount(index) - 1 , 0, index) );
 
         this->statusBar()->showMessage("Parse ok");
     }
@@ -412,20 +413,15 @@ void MainWindow::on_actionDel_triggered()
         if( QMessageBox::question(this,"delete",QString("remove this and all children")) ==  QMessageBox::Yes)
         {
             int rowIndex = index.row();
+            //first remove from data.
             QCCNode* node = m_model->itemAt(index)->m_node;
             if(node->m_parent != 0)
             {
                 node->m_parent->m_children.removeAt(rowIndex);
             }
-
-            m_model->removeRows(rowIndex, 1, index);
+            //second remove from ui.
+            m_model->removeRows(rowIndex, 1, index.parent());
             delete node;
         }
     }
-}
-
-void MainWindow::on_actionCut_triggered()
-{
-    this->on_actionCopy_triggered();
-    this->on_actionDel_triggered();
 }

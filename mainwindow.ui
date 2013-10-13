@@ -20,7 +20,7 @@
      <x>0</x>
      <y>0</y>
      <width>658</width>
-     <height>22</height>
+     <height>20</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">
@@ -36,7 +36,6 @@
     <property name="title">
      <string>Edit</string>
     </property>
-    <addaction name="actionCut"/>
     <addaction name="actionCopy"/>
     <addaction name="actionParse"/>
     <addaction name="actionDel"/>
@@ -96,15 +95,16 @@
    <property name="text">
     <string>copy</string>
    </property>
-  </action>
-  <action name="actionCut">
-   <property name="text">
-    <string>cut</string>
+   <property name="shortcut">
+    <string>Ctrl+C</string>
    </property>
   </action>
   <action name="actionParse">
    <property name="text">
     <string>paste</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+V</string>
    </property>
   </action>
   <action name="actionCCNode">
@@ -145,6 +145,9 @@
   <action name="actionDel">
    <property name="text">
     <string>del</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+D</string>
    </property>
   </action>
  </widget>

@@ -24,6 +24,10 @@ QCCNode* QCCNode::createCCNodeByType(QString type)
         node = new QCCLabelTTF();
     }
 
+    Q_ASSERT(node != 0);
+    static int count = 1;
+    node->m_name = QString("node_%1").arg(count++);
+    node->m_classType = type;
     return node;
 }
 
