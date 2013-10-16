@@ -179,6 +179,20 @@ bool QAbstractTreeModel::setHeaderData(int section, Qt::Orientation orientation,
     return result;
 }
 
-//void QAbstractTreeModel::initData()
-//{
-//}
+void QAbstractTreeModel::createTreeItemByCCNode(QCCNode* node, QModelIndex parentIndex)
+{
+    int itemCount = this->rowCount( parentIndex );
+    this->insertRows(itemCount,1,parentIndex);
+    QModelIndex nameIndex = this->index(itemCount, 0 , parentIndex);
+    this->setData(nameIndex, node->m_name);
+    QModelIndex classIndex = this->index(itemCount, 1 , parentIndex);
+    this->setData(classIndex, node->m_classType);
+    this->itemAt(nameIndex)->m_node = node;
+
+    //-R
+    foreach (QCCNode* son, node->m_children)
+    {
+        //why nameIndex, relation with QModelIndex and colum
+        this->createTreeItemByCCNode(son, nameIndex);
+    }
+}

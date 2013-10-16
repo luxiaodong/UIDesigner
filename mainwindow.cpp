@@ -20,7 +20,7 @@ MainWindow::MainWindow(QWidget *parent) :
     m_scene->setBackgroundBrush(QBrush(QColor(Qt::black)));
     m_graphicsView = new QGraphicsView();
     m_graphicsView->setScene(m_scene);
-    boxLayout->addWidget(m_graphicsView,4);
+    boxLayout->addWidget(m_graphicsView,20);
 
     m_browser = new QPropertyBrowser();
     boxLayout->addWidget(m_browser,3);
@@ -92,30 +92,13 @@ void MainWindow::replaceTreeModel(QCCNode* node)
     m_treeView->setModel(m_model);
 
     //not clear the root relation between, ccnode, cctreeitem.
-    this->createTreeItemByCCNode(node, QModelIndex());
+    m_model->createTreeItemByCCNode(node, QModelIndex());
+    m_scene->createGraphicsItemByCCNode(node, 0);
 
     connect(m_model, SIGNAL(dataChanged(QModelIndex,QModelIndex,const QVector<int>)), this, SLOT(dataChanged(const QModelIndex&,const QModelIndex&,const QVector<int>&)));
 
     //默认选中第一个
     m_treeView->setCurrentIndex( m_model->index(0,0) );
-}
-
-void MainWindow::createTreeItemByCCNode(QCCNode* node, QModelIndex parentIndex)
-{
-    int itemCount = m_model->rowCount( parentIndex );
-    m_model->insertRows(itemCount,1,parentIndex);
-    QModelIndex nameIndex = m_model->index(itemCount, 0 , parentIndex);
-    m_model->setData(nameIndex, node->m_name);
-    QModelIndex classIndex = m_model->index(itemCount, 1 , parentIndex);
-    m_model->setData(classIndex, node->m_classType);
-    m_model->itemAt(nameIndex)->m_node = node;
-
-    //-R
-    foreach (QCCNode* son, node->m_children)
-    {
-        //why nameIndex, relation with QModelIndex and colum
-        this->createTreeItemByCCNode(son, nameIndex);
-    }
 }
 
 void MainWindow::setSceneSize(int width, int height)
@@ -157,7 +140,7 @@ void MainWindow::connectSignalAndSlot()
     //scene emit and window slot;
     connect(m_scene, SIGNAL(changeItemPoint(int,int)),this,SLOT(changedItemPoint(int,int)));
 
-    connect(this, SIGNAL(changeItemSelect(QStringList&)), m_scene,SLOT(changedItemSelect(QStringList&)));
+    connect(this, SIGNAL(changeItemSelect(QCCNode*)), m_scene,SLOT(changedItemSelect(QCCNode*)));
 
     //property emit and window slot
     connect(m_browser, SIGNAL(changePropertyPoint(int,int)), this, SLOT(changedPropertyPoint(int,int)));
@@ -203,16 +186,19 @@ void MainWindow::viewClicked(const QModelIndex& index)
 {
     if (index.column() == 0)
     {
-        QStringList nameTrace;
-        nameTrace.append( index.data().toString() );
-        QModelIndex parent = index.parent();
-        while(parent != QModelIndex())
-        {
-            nameTrace.append( parent.data().toString() );
-            parent = parent.parent();
-        }
+        QTreeItem* item = m_model->itemAt(index);
+        emit changeItemSelect(item->m_node);
 
-        m_treeView->setCurrentIndex(index);
+//        QStringList nameTrace;
+//        nameTrace.append( index.data().toString() );
+//        QModelIndex parent = index.parent();
+//        while(parent != QModelIndex())
+//        {
+//            nameTrace.append( parent.data().toString() );
+//            parent = parent.parent();
+//        }
+
+//        m_treeView->setCurrentIndex(index);
         //emit changeItemSelect(nameTrace);
 
         //切换item
@@ -258,6 +244,11 @@ void MainWindow::dataChanged(const QModelIndex & topLeft, const QModelIndex & bo
 }
 
 //scene slot;
+void MainWindow::changedItemSelect(QGraphicsItem* item)
+{
+    //add a address in item.data, so can find director.
+}
+
 void MainWindow::changedItemPoint(int x, int y)
 {
     qDebug()<<"item "<<x<<y;
@@ -316,14 +307,14 @@ void MainWindow::changedPropertyText(QString& text)
 void MainWindow::on_actionResource_triggered()
 {
     QString oldDir = m_storageData->resourceDir();
-    QString newDir = QFileDialog::getExistingDirectory(this,oldDir);
+    QString newDir = QFileDialog::getExistingDirectory(this, QString("Open Directory"), oldDir);
     m_storageData->setResourceDir(newDir);
 }
 
 void MainWindow::on_actionOpen_File_triggered()
 {
     QString oldDir = m_storageData->resourceDir();
-    QString filePath = QFileDialog::getOpenFileName(this,oldDir);
+    QString filePath = QFileDialog::getOpenFileName(this, QString("Open Directory"), oldDir);
     QCCNode* node = m_storageData->readUIFile(filePath);
     if(node != 0)
     {
@@ -352,8 +343,13 @@ void MainWindow::on_actionCCSprite_triggered()
         parentNode->m_children.append(node);
         node->m_parent = parentNode;
 
+        disconnect(m_model, SIGNAL(dataChanged(QModelIndex,QModelIndex,const QVector<int>)), this, SLOT(dataChanged(const QModelIndex&,const QModelIndex&,const QVector<int>&)));
+
         //add to treeItem
-        this->createTreeItemByCCNode(node, index);
+        m_model->createTreeItemByCCNode(node, index);
+        m_scene->createGraphicsItemByCCNode(node, parentNode->m_graphicsItem);
+
+        connect(m_model, SIGNAL(dataChanged(QModelIndex,QModelIndex,const QVector<int>)), this, SLOT(dataChanged(const QModelIndex&,const QModelIndex&,const QVector<int>&)));
 
         //更换当前选择
         this->viewClicked( m_model->index( m_model->rowCount(index) - 1 , 0, index) );
@@ -396,7 +392,8 @@ void MainWindow::on_actionParse_triggered()
         node->m_parent = parentNode;
 
         //add to treeItem
-        this->createTreeItemByCCNode(node, index);
+        m_model->createTreeItemByCCNode(node, index);
+        m_scene->createGraphicsItemByCCNode(node, parentNode->m_graphicsItem);
 
         //is need 更换当前选择
         //this->viewClicked( m_model->index( m_model->rowCount(index) - 1 , 0, index) );
@@ -413,14 +410,20 @@ void MainWindow::on_actionDel_triggered()
         if( QMessageBox::question(this,"delete",QString("remove this and all children")) ==  QMessageBox::Yes)
         {
             int rowIndex = index.row();
-            //first remove from data.
             QCCNode* node = m_model->itemAt(index)->m_node;
+
+            //1. remove from model.
+            m_model->removeRows(rowIndex, 1, index.parent());
+
+            //2. remove from scene.
+            m_scene->removeItem(node->m_graphicsItem);
+
+            //3. remove from data.
             if(node->m_parent != 0)
             {
                 node->m_parent->m_children.removeAt(rowIndex);
             }
-            //second remove from ui.
-            m_model->removeRows(rowIndex, 1, index.parent());
+
             delete node;
         }
     }

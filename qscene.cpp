@@ -14,6 +14,7 @@ void QScene::mousePressEvent(QGraphicsSceneMouseEvent *event)
      if(item != 0)
      {
          m_selectItem = item;
+         emit changeItemSelect(item);
      }
      QGraphicsScene::mousePressEvent(event);
 }
@@ -59,44 +60,28 @@ void QScene::test()
     r4->setFlag(QGraphicsItem::ItemIsMovable, true);
 }
 
-void QScene::changedItemSelect(QStringList& list)
+void QScene::createGraphicsItemByCCNode(QCCNode* node, QGraphicsItem* parentItem)
 {
-    //找到并选择该节点
-    QGraphicsItem* parentItem = 0;
-    for(int i = 0; i < list.size(); ++i)
+    QGraphicsItem* item = node->createGraphicsItem();
+    if(parentItem == 0)
     {
-        QString name = list.at(list.size() - 1 - i);
-        QList<QGraphicsItem*> items;
-        bool isFind = false;
-
-        if(parentItem != 0)
-        {
-            items = parentItem->childItems();
-        }
-        else
-        {
-            items = this->items();
-        }
-
-        foreach (QGraphicsItem* item, items)
-        {
-            QString data = item->data(GRAPHICS_ITEM_NAME_TAG).toString();
-            if(name == data)
-            {
-                parentItem = item;
-                isFind = true;
-            }
-        }
-
-        if(isFind == false)
-        {
-            qDebug()<<"failed find item "<<list;
-            return ;
-        }
+        this->addItem(item);
+    }
+    else
+    {
+        item->setParentItem(parentItem);
     }
 
-    qDebug()<<"find ok";
-    m_selectItem = parentItem;
+    foreach(QCCNode* son, node->m_children)
+    {
+        this->createGraphicsItemByCCNode(son, item);
+    }
+}
+
+void QScene::changedItemSelect(QCCNode* node)
+{
+    QGraphicsItem* item = node->m_graphicsItem;
+    item->setPos( qrand()%200, qrand()%200 );
 }
 
 void QScene::changedItemPoint(int x, int y)

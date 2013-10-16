@@ -29,6 +29,7 @@ public:
     bool removeRows(int position, int rows,const QModelIndex &parent = QModelIndex());
     
     QTreeItem* itemAt(const QModelIndex &index) const;
+    void createTreeItemByCCNode(QCCNode* node, QModelIndex parentIndex);
 
 private:
     QTreeItem *m_root;

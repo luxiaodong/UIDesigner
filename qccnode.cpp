@@ -17,7 +17,9 @@ QCCNode* QCCNode::createCCNodeByType(QString type)
     }
     else if(type == CLASS_TYPE_CCSPRITE)
     {
-        node = new QCCSprite();
+        QCCSprite* temp = new QCCSprite();
+        temp->m_filePath = QString("atten_tit.png");
+        node = temp;
     }
     else if(type == CLASS_TYPE_CCLABELTTF)
     {
@@ -29,6 +31,14 @@ QCCNode* QCCNode::createCCNodeByType(QString type)
     node->m_name = QString("node_%1").arg(count++);
     node->m_classType = type;
     return node;
+}
+
+QString QCCNode::resourceFullPath(QString relationPath)
+{
+    QSettings settings("UIDesigner");
+    QString prefix = settings.value("resourceDir",QString("")).toString();
+    QString fullPath = QString("%1/%2").arg(prefix, relationPath);
+    return QDir::toNativeSeparators(fullPath);
 }
 
 QCCNode::QCCNode()
@@ -98,6 +108,11 @@ QMap<QString, QString> QCCNode::exportData()
     return map;
 }
 
+QGraphicsItem* QCCNode::createGraphicsItem()
+{
+    return 0;
+}
+
 QCCLayer::QCCLayer()
 {
     m_isTouchEnable = false;
@@ -115,6 +130,15 @@ QMap<QString, QString> QCCLayer::exportData()
     QMap<QString, QString> map = QCCNode::exportData();
     map.insert("isTouchEnable", QString("%1").arg( (m_isTouchEnable == true) ? 1 : 0 ));
     return map;
+}
+
+QGraphicsItem* QCCLayer::createGraphicsItem()
+{
+    QGraphicsRectItem* item = new QGraphicsRectItem();
+    item->setRect(0,0,m_width,m_height);
+    item->setPos(m_x,m_y);
+    m_graphicsItem = item;
+    return item;
 }
 
 QCCLayerColor::QCCLayerColor()
@@ -146,6 +170,17 @@ QMap<QString, QString> QCCLayerColor::exportData()
     return map;
 }
 
+QGraphicsItem* QCCLayerColor::createGraphicsItem()
+{
+    QGraphicsRectItem* item = new QGraphicsRectItem();
+    item->setRect(0,0,m_width,m_height);
+    item->setPos(m_x,m_y);
+    item->setBrush( QBrush(QColor(m_color)) );
+    item->setOpacity( rand()%m_opacity );
+    m_graphicsItem = item;
+    return item;
+}
+
 QCCSprite::QCCSprite()
 {
     m_filePath = "";
@@ -163,6 +198,14 @@ QMap<QString, QString> QCCSprite::exportData()
     QMap<QString, QString> map = QCCLayerColor::exportData();
     map.insert("filePath", m_filePath);
     return map;
+}
+
+QGraphicsItem* QCCSprite::createGraphicsItem()
+{
+    QGraphicsPixmapItem* item = new QGraphicsPixmapItem();
+    item->setPixmap(QPixmap( this->resourceFullPath(m_filePath)) );
+    m_graphicsItem = item;
+    return item;
 }
 
 QCCLabelTTF::QCCLabelTTF()
@@ -188,4 +231,13 @@ QMap<QString, QString> QCCLabelTTF::exportData()
     map.insert("family", m_font.family());
     map.insert("pointSize", QString("%1").arg(m_font.pointSize()));
     return map;
+}
+
+QGraphicsItem* QCCLabelTTF::createGraphicsItem()
+{
+    QGraphicsSimpleTextItem* item = new QGraphicsSimpleTextItem();
+    item->setFont(m_font);
+    item->setText(m_text);
+    m_graphicsItem = item;
+    return item;
 }

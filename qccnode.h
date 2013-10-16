@@ -2,6 +2,9 @@
 #define QCCNODE_H
 
 #include "qdefine.h"
+#include <QGraphicsItem>
+#include <QGraphicsPixmapItem>
+#include <QGraphicsSimpleTextItem>
 
 //remeber set default value.
 //treeView 改变的时候,目前无法获得以前的名字,导致在scene里无法找到原来的,这里需要重新考虑数据组织结构
@@ -16,6 +19,10 @@ public:
 public:
     virtual void importData(QMap<QString, QString>&);
     virtual QMap<QString, QString> exportData();
+    virtual QGraphicsItem* createGraphicsItem();
+
+protected:
+    QString resourceFullPath(QString relationPath);
 
 public:
     QString m_name;
@@ -36,6 +43,9 @@ public:
 public:
     QList<QCCNode*> m_children;
     QCCNode* m_parent;
+
+public:
+    QGraphicsItem* m_graphicsItem;
 };
 
 class QCCLayer : public QCCNode
@@ -45,6 +55,7 @@ public:
 
     virtual void importData(QMap<QString, QString>&);
     virtual QMap<QString, QString> exportData();
+    virtual QGraphicsItem* createGraphicsItem();
 
 public:
     bool m_isTouchEnable;
@@ -57,6 +68,7 @@ public:
 
     virtual void importData(QMap<QString, QString>&);
     virtual QMap<QString, QString> exportData();
+    virtual QGraphicsItem* createGraphicsItem();
 
 public:
     QColor m_color;
@@ -70,6 +82,7 @@ public:
 
     virtual void importData(QMap<QString, QString>&);
     virtual QMap<QString, QString> exportData();
+    virtual QGraphicsItem* createGraphicsItem();
 
 public:
     QString m_filePath;
@@ -82,6 +95,7 @@ public:
 
     virtual void importData(QMap<QString, QString>&);
     virtual QMap<QString, QString> exportData();
+    virtual QGraphicsItem* createGraphicsItem();
 
 public:
     QFont m_font;

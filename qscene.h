@@ -2,6 +2,7 @@
 #define QSCENE_H
 
 #include "qdefine.h"
+#include "qccnode.h"
 
 #define GRAPHICS_ITEM_NAME_TAG  1
 #define GRAPHICS_ITEM_CLASS_TAG  2
@@ -15,16 +16,18 @@ public:
 
 public:
     void test();
+    void createGraphicsItemByCCNode(QCCNode* node, QGraphicsItem* parentItem);
 
 protected:
     void mousePressEvent(QGraphicsSceneMouseEvent *event);
     void mouseMoveEvent(QGraphicsSceneMouseEvent *event);
 
 signals:
+    void changeItemSelect(QGraphicsItem* item);
     void changeItemPoint(int x, int y);
 
 public slots:
-    void changedItemSelect(QStringList& list);
+    void changedItemSelect(QCCNode* node);
 
     void changedItemPoint(int x, int y);
     void changedItemZ(int z);

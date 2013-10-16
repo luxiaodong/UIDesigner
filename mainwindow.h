@@ -27,14 +27,11 @@ private:
 
 private:
     void replaceTreeModel(QCCNode* root);
-    void createTreeItemByCCNode(QCCNode* node, QModelIndex parentIndex);
-
-    //void createTreeModelByRoot(QCCNode* root);
 
 signals:
     //view;
     //scene;
-    void changeItemSelect(QStringList& list);
+    void changeItemSelect(QCCNode* node);
 
     //property;
     void changePropertyPoint(int x, int y);
@@ -51,6 +48,7 @@ public slots:
     void dataChanged(const QModelIndex & topLeft, const QModelIndex & bottomRight, const QVector<int> & roles);
 
     //scene slot;
+    void changedItemSelect(QGraphicsItem* item);
     void changedItemPoint(int x, int y);
 
     //property slot;
