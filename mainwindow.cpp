@@ -33,8 +33,8 @@ MainWindow::MainWindow(QWidget *parent) :
     m_copyBuffer.clear();
 
     //test
-    //this->setSceneSize(300, 300);
-    //this->test();
+//    this->setSceneSize(300, 300);
+//    this->test();
 }
 
 MainWindow::~MainWindow()
@@ -93,12 +93,44 @@ void MainWindow::replaceTreeModel(QCCNode* node)
 
     //not clear the root relation between, ccnode, cctreeitem.
     m_model->createTreeItemByCCNode(node, QModelIndex());
+
+    //must set scene size first.
+    this->setSceneSize(node->m_parent->m_width, node->m_parent->m_height);
     m_scene->createGraphicsItemByCCNode(node, 0);
 
     connect(m_model, SIGNAL(dataChanged(QModelIndex,QModelIndex,const QVector<int>)), this, SLOT(dataChanged(const QModelIndex&,const QModelIndex&,const QVector<int>&)));
 
     //默认选中第一个
     m_treeView->setCurrentIndex( m_model->index(0,0) );
+}
+
+QModelIndex MainWindow::searchIndex(QModelIndex parentIndex, QGraphicsItem* item)
+{
+    QTreeItem* items = m_model->itemAt(parentIndex);
+    for(int i=0; i < items->m_children.size(); ++i)
+    {
+        QTreeItem* treeItem = items->m_children.at(i);
+        if(treeItem->m_node != 0)
+        {
+            QModelIndex currentIndex = m_model->index(i, 0, parentIndex);
+
+            if(treeItem->m_node->m_graphicsItem == item)
+            {
+                return currentIndex;
+            }
+
+            if( treeItem->m_children.size() > 0 )
+            {
+                QModelIndex subIndex = this->searchIndex(currentIndex, item);
+                if(subIndex != QModelIndex())
+                {
+                    return subIndex;
+                }
+            }
+        }
+    }
+
+    return QModelIndex();
 }
 
 void MainWindow::setSceneSize(int width, int height)
@@ -138,9 +170,12 @@ void MainWindow::connectSignalAndSlot()
 
 
     //scene emit and window slot;
+    connect(m_scene, SIGNAL(showMessage(QString)), this->statusBar(), SLOT(showMessage(QString)));
+    connect(m_scene, SIGNAL(changeItemSelect(QGraphicsItem*)), this, SLOT(changedItemSelect(QGraphicsItem*)));
     connect(m_scene, SIGNAL(changeItemPoint(int,int)),this,SLOT(changedItemPoint(int,int)));
 
     connect(this, SIGNAL(changeItemSelect(QCCNode*)), m_scene,SLOT(changedItemSelect(QCCNode*)));
+
 
     //property emit and window slot
     connect(m_browser, SIGNAL(changePropertyPoint(int,int)), this, SLOT(changedPropertyPoint(int,int)));
@@ -188,22 +223,7 @@ void MainWindow::viewClicked(const QModelIndex& index)
     {
         QTreeItem* item = m_model->itemAt(index);
         emit changeItemSelect(item->m_node);
-
-//        QStringList nameTrace;
-//        nameTrace.append( index.data().toString() );
-//        QModelIndex parent = index.parent();
-//        while(parent != QModelIndex())
-//        {
-//            nameTrace.append( parent.data().toString() );
-//            parent = parent.parent();
-//        }
-
-//        m_treeView->setCurrentIndex(index);
-        //emit changeItemSelect(nameTrace);
-
-        //切换item
-        //1.给scene发消息
-        //2.给property发消息
+        m_browser->initProperty(item->m_node);
     }
 }
 
@@ -246,7 +266,17 @@ void MainWindow::dataChanged(const QModelIndex & topLeft, const QModelIndex & bo
 //scene slot;
 void MainWindow::changedItemSelect(QGraphicsItem* item)
 {
-    //add a address in item.data, so can find director.
+    QModelIndex index = this->searchIndex(QModelIndex(), item);
+    if(index != QModelIndex())
+    {
+        m_treeView->setCurrentIndex(index);
+        QTreeItem* treeItem = m_model->itemAt(index);
+        m_browser->initProperty(treeItem->m_node);
+    }
+
+    //属性更新
+    //iter for search item.
+    //ma fan le.
 }
 
 void MainWindow::changedItemPoint(int x, int y)

@@ -15,7 +15,7 @@ public:
 
 public:
     void test();
-    void initProperty(QString& classType, QCCNode* node);
+    void initProperty(QCCNode* node);
 
 signals:
     void changePropertyPoint(int x, int y);

@@ -256,9 +256,10 @@ void QPropertyBrowser::createPropertyCCLabelTTF()
     m_ccLabelTTF->addSubProperty(m_font);
 }
 
-void QPropertyBrowser::initProperty(QString& classType, QCCNode* node)
+void QPropertyBrowser::initProperty(QCCNode* node)
 {
     this->clear();
+    QString classType = node->m_classType;
     if (classType == CLASS_TYPE_CCNODE)
     {
         this->initPropertyCCNode(node);

@@ -17,12 +17,14 @@ public:
 public:
     void test();
     void createGraphicsItemByCCNode(QCCNode* node, QGraphicsItem* parentItem);
+    void changedItemSelect(QGraphicsItem* item);
 
 protected:
     void mousePressEvent(QGraphicsSceneMouseEvent *event);
     void mouseMoveEvent(QGraphicsSceneMouseEvent *event);
 
 signals:
+    void showMessage(QString msg);
     void changeItemSelect(QGraphicsItem* item);
     void changeItemPoint(int x, int y);
 
@@ -45,6 +47,7 @@ public slots:
 
 private:
     QGraphicsItem* m_selectItem;
+    QGraphicsRectItem* m_boundingRect;
 };
 
 #endif // QSCENE_H

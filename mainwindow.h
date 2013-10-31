@@ -27,6 +27,7 @@ private:
 
 private:
     void replaceTreeModel(QCCNode* root);
+    QModelIndex searchIndex(QModelIndex parentIndex,QGraphicsItem* item);
 
 signals:
     //view;

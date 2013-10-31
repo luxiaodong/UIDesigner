@@ -110,6 +110,8 @@ QMap<QString, QString> QCCNode::exportData()
 
 QGraphicsItem* QCCNode::createGraphicsItem()
 {
+    qDebug()<<"ccnode can't be draw to GraphicsItem";
+    Q_ASSERT(0);
     return 0;
 }
 
@@ -203,7 +205,12 @@ QMap<QString, QString> QCCSprite::exportData()
 QGraphicsItem* QCCSprite::createGraphicsItem()
 {
     QGraphicsPixmapItem* item = new QGraphicsPixmapItem();
-    item->setPixmap(QPixmap( this->resourceFullPath(m_filePath)) );
+    QPixmap pixmap = this->resourceFullPath(m_filePath);
+    //pixmap.fill(QColor(qrand()%255, qrand()%255, qrand()%255));
+    item->setPixmap(pixmap);
+    QTransform t = QTransform::fromTranslate(-pixmap.size().width()/2, -pixmap.size().height()/2);
+    item->setTransform(t);
+    item->setFlag(QGraphicsItem::ItemIsMovable, true);
     m_graphicsItem = item;
     return item;
 }
