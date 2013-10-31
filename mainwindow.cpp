@@ -14,16 +14,16 @@ MainWindow::MainWindow(QWidget *parent) :
     this->centralWidget()->setLayout(boxLayout);
 
     m_treeView = new QTreeView();
-    boxLayout->addWidget(m_treeView,20);
+    boxLayout->addWidget(m_treeView,2);
 
     m_scene = new QScene();
     m_scene->setBackgroundBrush(QBrush(QColor(Qt::black)));
     m_graphicsView = new QGraphicsView();
     m_graphicsView->setScene(m_scene);
-    boxLayout->addWidget(m_graphicsView,20);
+    boxLayout->addWidget(m_graphicsView,3);
 
     m_browser = new QPropertyBrowser();
-    boxLayout->addWidget(m_browser,3);
+    boxLayout->addWidget(m_browser,2);
 
     m_storageData = new QStorageData();
 
@@ -102,6 +102,9 @@ void MainWindow::replaceTreeModel(QCCNode* node)
 
     //默认选中第一个
     m_treeView->setCurrentIndex( m_model->index(0,0) );
+    this->viewClicked( m_model->index(0,0) );
+//    m_treeView->setCurrentIndex( m_model->index(0,0) );
+//    m_browser->initProperty(node);
 }
 
 QModelIndex MainWindow::searchIndex(QModelIndex parentIndex, QGraphicsItem* item)
@@ -131,6 +134,19 @@ QModelIndex MainWindow::searchIndex(QModelIndex parentIndex, QGraphicsItem* item
     }
 
     return QModelIndex();
+}
+
+QCCNode* MainWindow::currentSelectNode()
+{
+    QModelIndex index = m_treeView->selectionModel()->currentIndex();
+    if(index != QModelIndex())
+    {
+        QTreeItem* treeItem = m_model->itemAt(index);
+        QCCNode* node = treeItem->m_node;
+        return node;
+    }
+
+    return 0;
 }
 
 void MainWindow::setSceneSize(int width, int height)
@@ -197,26 +213,6 @@ void MainWindow::connectSignalAndSlot()
 }
 
 //model slot;
-void MainWindow::viewActivated(const QModelIndex& index)
-{
-    qDebug()<<"viewActivated "<<index.data().toString();
-}
-
-void MainWindow::viewDoubleClicked(const QModelIndex& index)
-{
-    qDebug()<<"viewDoubleClicked "<<index.data().toString();
-}
-
-void MainWindow::viewEntered(const QModelIndex& index)
-{
-    qDebug()<<"viewEntered "<<index.data().toString();
-}
-
-void MainWindow::viewPressed(const QModelIndex & index)
-{
-    qDebug()<<"viewPressed "<<index.data().toString();
-}
-
 void MainWindow::viewClicked(const QModelIndex& index)
 {
     if (index.column() == 0)
@@ -281,18 +277,35 @@ void MainWindow::changedItemSelect(QGraphicsItem* item)
 
 void MainWindow::changedItemPoint(int x, int y)
 {
-    qDebug()<<"item "<<x<<y;
-    //save x,y
-    //emit to item for change
+    QCCNode* node = this->currentSelectNode();
+    if(node != 0)
+    {
+        node->m_x = x;
+        node->m_y = y;
+    }
+    else
+    {
+        qDebug()<<"xxxxxxxx";
+    }
+
     emit changePropertyPoint(x, y);
 }
 
 //property slot;
 void MainWindow::changedPropertyPoint(int x, int y)
 {
-    qDebug()<<"property "<<x<<y;
-    //save x,y;
-    //emit to item for change
+    QCCNode* node = this->currentSelectNode();
+    if(node != 0)
+    {
+        node->m_x = x;
+        node->m_y = y;
+    }
+    else
+    {
+        qDebug()<<"yyyyyy";
+    }
+
+    emit changedItemPoint(x, y);
 }
 
 void MainWindow::changedPropertyZ(int z)

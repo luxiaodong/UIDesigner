@@ -4,18 +4,19 @@
 QScene::QScene()
 {
     m_selectItem = 0;
-    m_boundingRect = new QGraphicsRectItem();
-    m_boundingRect->setPen(QPen(QColor(Qt::red)));
+    //m_boundingRect = new QGraphicsRectItem();
+    //m_boundingRect->setPen(QPen(QColor(Qt::red)));
 }
 
 void QScene::mousePressEvent(QGraphicsSceneMouseEvent *event)
 {
      QPointF pt = event->scenePos();
-     QTransform trans;
-     QGraphicsItem* item = this->itemAt(pt, trans);
-     if(item != 0)
+     //QTransform trans;
+     QList<QGraphicsItem*> items = this->items(pt);
+     if(items.size() > 0)
      {
-         this->changedItemSelect(item);
+         QGraphicsItem* item = items.at(0);
+         m_selectItem = item;
          emit changeItemSelect(item);
      }
      QGraphicsScene::mousePressEvent(event);
@@ -25,12 +26,23 @@ void QScene::mouseMoveEvent(QGraphicsSceneMouseEvent *event)
 {
     emit showMessage( QString("%1,%2").arg( event->scenePos().x() ).arg( this->height() - event->scenePos().y()) );
     QGraphicsItem* item = this->mouseGrabberItem();
-    if (item != 0)
+    if (item != 0 && item == m_selectItem)
     {
-        qDebug()<<"scene move "<<item->data(1).toString();
-        qDebug()<<"scene move "<<item->x()<<item->y();
+        //qDebug()<<"scene move "<<item->data(1).toString();
+        //qDebug()<<"scene move "<<item->x()<<item->y();
         int x = item->x();
         int y = item->y();
+
+        QGraphicsItem* parentItem = item->parentItem();
+        if(parentItem != 0)
+        {
+            y = parentItem->boundingRect().size().height() - y;
+        }
+        else
+        {
+            y = this->height() - y;
+        }
+
         emit changeItemPoint(x, y);
     }
     //emit currentItemPropertyChanged(item);
@@ -102,21 +114,11 @@ void QScene::createGraphicsItemByCCNode(QCCNode* node, QGraphicsItem* parentItem
     }
 }
 
-void QScene::changedItemSelect(QGraphicsItem* item)
-{
-    if(m_selectItem != item && item != m_boundingRect)
-    {
-        m_selectItem = item;
-        m_boundingRect->setParentItem(item);
-        m_boundingRect->setRect( item->boundingRect() );
-    }
-}
-
 void QScene::changedItemSelect(QCCNode* node)
 {
     //add 红色边框
     QGraphicsItem* item = node->m_graphicsItem;
-    this->changedItemSelect(item);
+    m_selectItem = item;
 }
 
 void QScene::changedItemPoint(int x, int y)

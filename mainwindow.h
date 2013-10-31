@@ -28,6 +28,7 @@ private:
 private:
     void replaceTreeModel(QCCNode* root);
     QModelIndex searchIndex(QModelIndex parentIndex,QGraphicsItem* item);
+    QCCNode* currentSelectNode();
 
 signals:
     //view;
@@ -39,11 +40,7 @@ signals:
 
 public slots:
     //view slot;
-    void viewActivated(const QModelIndex& index);
     void viewClicked(const QModelIndex& index);
-    void viewDoubleClicked(const QModelIndex& index);
-    void viewEntered(const QModelIndex& index);
-    void viewPressed(const QModelIndex & index);
 
     //model slot;
     void dataChanged(const QModelIndex & topLeft, const QModelIndex & bottomRight, const QVector<int> & roles);
