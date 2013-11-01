@@ -35,6 +35,7 @@ signals:
     //scene;
     void changeItemSelect(QCCNode* node);
     void changeItemPoint(int x, int y);
+    void changeItemZ(int z);
     void changeItemFilePath(QString&);
 
     //property;

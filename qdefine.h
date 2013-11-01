@@ -15,6 +15,7 @@
 //再支持treeView的选中，增加，删除，拷贝等操作
 //再将treeView的操作消息影响到scene
 //scene接受到后作出改变，再反过来影响treeView
+//add a GraphicsItem that can load xml as child.
 //最后实现property的控制
 
 #include <QList>

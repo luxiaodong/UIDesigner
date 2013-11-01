@@ -191,6 +191,7 @@ void MainWindow::connectSignalAndSlot()
 
     connect(this, SIGNAL(changeItemSelect(QCCNode*)), m_scene,SLOT(changedItemSelect(QCCNode*)));
     connect(this, SIGNAL(changeItemPoint(int, int)), m_scene,SLOT(changedItemPoint(int, int)));
+    connect(this, SIGNAL(changeItemZ(int)), m_scene, SLOT(changedItemZ(int)));
     connect(this, SIGNAL(changeItemFilePath(QString&)), m_scene,SLOT(changedItemFilePath(QString&)));
 
     //property emit and window slot
@@ -283,9 +284,8 @@ void MainWindow::changedItemPoint(int x, int y)
     {
         node->m_x = x;
         node->m_y = y;
+        emit changePropertyPoint(x, y);
     }
-
-    emit changePropertyPoint(x, y);
 }
 
 //property slot;
@@ -296,13 +296,19 @@ void MainWindow::changedPropertyPoint(int x, int y)
     {
         node->m_x = x;
         node->m_y = y;
+        emit changeItemPoint(x, y);
     }
-
-    emit changeItemPoint(x, y);
 }
 
 void MainWindow::changedPropertyZ(int z)
-{}
+{
+    QCCNode* node = this->currentSelectNode();
+    if(node != 0)
+    {
+        node->m_z = z;
+        emit changeItemZ(z);
+    }
+}
 
 void MainWindow::changedPropertyTag(int tag)
 {}
