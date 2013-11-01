@@ -125,7 +125,12 @@ void QScene::changedItemPoint(int x, int y)
 {
     if(m_selectItem != 0)
     {
-        m_selectItem->setPos(x, y);
+        int height = this->height();
+        if(m_selectItem->parentItem() != 0)
+        {
+            height = m_selectItem->parentItem()->boundingRect().height();
+        }
+        m_selectItem->setPos(x, height - y);
     }
 }
 
@@ -172,7 +177,16 @@ void QScene::changedItemOpacity(int opacity)
 {}
 
 void QScene::changedItemFilePath(QString& filePath)
-{}
+{
+    QGraphicsPixmapItem* item = dynamic_cast<QGraphicsPixmapItem*>(m_selectItem);
+    QPixmap pixmap(filePath);
+    item->setPixmap(pixmap);
+
+    //要做些相应调整,对于放大缩小等东西
+    QSize s = pixmap.size();
+    QTransform t = QTransform::fromTranslate(-s.width()/2, -s.height()/2);
+    item->setTransform(t);
+}
 
 void QScene::changedItemFont(QFont& font)
 {}

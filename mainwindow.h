@@ -34,9 +34,12 @@ signals:
     //view;
     //scene;
     void changeItemSelect(QCCNode* node);
+    void changeItemPoint(int x, int y);
+    void changeItemFilePath(QString&);
 
     //property;
     void changePropertyPoint(int x, int y);
+    void changePropertySize(int width, int height);
 
 public slots:
     //view slot;

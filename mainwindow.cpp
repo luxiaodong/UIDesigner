@@ -184,14 +184,14 @@ void MainWindow::connectSignalAndSlot()
     //connect(m_treeView, SIGNAL(entered(QModelIndex)), this, SLOT(viewEntered(const QModelIndex&)));
     //connect(m_treeView, SIGNAL(pressed(QModelIndex)), this, SLOT(viewPressed(const QModelIndex&)));
 
-
     //scene emit and window slot;
     connect(m_scene, SIGNAL(showMessage(QString)), this->statusBar(), SLOT(showMessage(QString)));
     connect(m_scene, SIGNAL(changeItemSelect(QGraphicsItem*)), this, SLOT(changedItemSelect(QGraphicsItem*)));
     connect(m_scene, SIGNAL(changeItemPoint(int,int)),this,SLOT(changedItemPoint(int,int)));
 
     connect(this, SIGNAL(changeItemSelect(QCCNode*)), m_scene,SLOT(changedItemSelect(QCCNode*)));
-
+    connect(this, SIGNAL(changeItemPoint(int, int)), m_scene,SLOT(changedItemPoint(int, int)));
+    connect(this, SIGNAL(changeItemFilePath(QString&)), m_scene,SLOT(changedItemFilePath(QString&)));
 
     //property emit and window slot
     connect(m_browser, SIGNAL(changePropertyPoint(int,int)), this, SLOT(changedPropertyPoint(int,int)));
@@ -210,6 +210,7 @@ void MainWindow::connectSignalAndSlot()
     connect(m_browser, SIGNAL(changePropertyText(QString&)), this, SLOT(changedPropertyText(QString&)));
 
     connect(this, SIGNAL(changePropertyPoint(int,int)), m_browser, SLOT(changedPropertyPoint(int,int)));
+    connect(this, SIGNAL(changePropertySize(int,int)), m_browser, SLOT(changedPropertySize(int,int)));
 }
 
 //model slot;
@@ -283,10 +284,6 @@ void MainWindow::changedItemPoint(int x, int y)
         node->m_x = x;
         node->m_y = y;
     }
-    else
-    {
-        qDebug()<<"xxxxxxxx";
-    }
 
     emit changePropertyPoint(x, y);
 }
@@ -300,12 +297,8 @@ void MainWindow::changedPropertyPoint(int x, int y)
         node->m_x = x;
         node->m_y = y;
     }
-    else
-    {
-        qDebug()<<"yyyyyy";
-    }
 
-    emit changedItemPoint(x, y);
+    emit changeItemPoint(x, y);
 }
 
 void MainWindow::changedPropertyZ(int z)
@@ -339,7 +332,25 @@ void MainWindow::changedPropertyOpacity(int opacity)
 {}
 
 void MainWindow::changedPropertyFilePath(QString& filePath)
-{}
+{
+    //check if a image.
+    QPixmap pixmap(filePath);
+    if(pixmap.isNull() == true)
+    {
+        QMessageBox::warning(this,QString("warning"), QString("picture is null. %1").arg(filePath));
+        return ;
+    }
+
+    QCCNode* node = this->currentSelectNode();
+    QCCSprite* sprite = dynamic_cast<QCCSprite*>(node);
+    QString relationFilePath = filePath;
+    relationFilePath.remove( QString("%1/").arg(m_storageData->resourceDir()) );
+    sprite->m_filePath = relationFilePath;
+    QSize s = pixmap.size();
+    sprite->m_width = s.width();
+    sprite->m_height = s.height(); //send message to property width & height.
+    emit changeItemFilePath(filePath);
+}
 
 void MainWindow::changedPropertyFont(QFont& font)
 {}

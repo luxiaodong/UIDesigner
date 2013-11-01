@@ -18,7 +18,7 @@ QCCNode* QCCNode::createCCNodeByType(QString type)
     else if(type == CLASS_TYPE_CCSPRITE)
     {
         QCCSprite* temp = new QCCSprite();
-        temp->m_filePath = QString("atten_tit.png");
+        //warning, filePath is empty.
         node = temp;
     }
     else if(type == CLASS_TYPE_CCLABELTTF)
@@ -205,10 +205,23 @@ QMap<QString, QString> QCCSprite::exportData()
 QGraphicsItem* QCCSprite::createGraphicsItem()
 {
     QGraphicsPixmapItem* item = new QGraphicsPixmapItem();
-    QPixmap pixmap = this->resourceFullPath(m_filePath);
+    QPixmap pixmap;
+    if(m_filePath.isEmpty() == false)
+    {
+        pixmap = this->resourceFullPath(m_filePath);
+    }
+    else
+    {
+        pixmap = QPixmap(100,100); //default
+        pixmap.fill();
+    }
+
     //pixmap.fill(QColor(qrand()%255, qrand()%255, qrand()%255));
     item->setPixmap(pixmap);
-    QTransform t = QTransform::fromTranslate(-pixmap.size().width()/2, -pixmap.size().height()/2);
+    QSize s = pixmap.size();
+    this->m_width = s.width();
+    this->m_height = s.height();
+    QTransform t = QTransform::fromTranslate(-s.width()/2, -s.height()/2);
     item->setTransform(t);
     item->setFlag(QGraphicsItem::ItemIsMovable, true);
     m_graphicsItem = item;

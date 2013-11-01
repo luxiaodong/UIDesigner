@@ -259,6 +259,7 @@ void QPropertyBrowser::createPropertyCCLabelTTF()
 void QPropertyBrowser::initProperty(QCCNode* node)
 {
     this->clear();
+    this->blockSignals(true);
     QString classType = node->m_classType;
     if (classType == CLASS_TYPE_CCNODE)
     {
@@ -280,6 +281,7 @@ void QPropertyBrowser::initProperty(QCCNode* node)
     {
         this->initPropertyCCLabelTTF((QCCLabelTTF*)(node));
     }
+    this->blockSignals(false);
 }
 
 void QPropertyBrowser::initPropertyCCNode(QCCNode* node)
@@ -410,8 +412,18 @@ void QPropertyBrowser::valueChanged(QtProperty* property, QVariant )
 
 void QPropertyBrowser::changedPropertyPoint(int x, int y)
 {
+    this->blockSignals(true);
     m_x->setValue(x);
     m_y->setValue(y);
+    this->blockSignals(false);
+}
+
+void QPropertyBrowser::changedPropertySize(int width, int height)
+{
+    this->blockSignals(true);
+    m_width->setValue(width);
+    m_height->setValue(height);
+    this->blockSignals(false);
 }
 
 void QPropertyBrowser::test()
