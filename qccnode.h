@@ -102,4 +102,17 @@ public:
     QString m_text;
 };
 
+class CCContainer : public QCCNode
+{
+public:
+    CCContainer();
+
+    virtual void importData(QMap<QString, QString>&);
+    virtual QMap<QString, QString> exportData();
+    virtual QGraphicsItem* createGraphicsItem();
+
+public:
+    QString m_containerConfigFilePath;
+};
+
 #endif // QCCNODE_H

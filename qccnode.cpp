@@ -261,3 +261,27 @@ QGraphicsItem* QCCLabelTTF::createGraphicsItem()
     m_graphicsItem = item;
     return item;
 }
+
+CCContainer::CCContainer()
+{
+    m_containerConfigFilePath = "";
+}
+
+void CCContainer::importData(QMap<QString, QString> &map)
+{
+    QCCNode::importData(map);
+    m_containerConfigFilePath = map.value("containerConfigFilePath", QString(""));
+}
+
+QMap<QString, QString> CCContainer::exportData()
+{
+    QMap<QString, QString> map = QCCNode::exportData();
+    map.insert("containerConfigFilePath", m_containerConfigFilePath);
+    return map;
+}
+
+QGraphicsItem* CCContainer::createGraphicsItem()
+{
+    //这里需要调用前面那些生成文档的类,注意递归
+    //需要生成一张图片,然后变成ccsprite吗?
+}
