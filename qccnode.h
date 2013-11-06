@@ -102,10 +102,10 @@ public:
     QString m_text;
 };
 
-class CCContainer : public QCCNode
+class QCCContainerLayer : public QCCLayer
 {
 public:
-    CCContainer();
+    QCCContainerLayer();
 
     virtual void importData(QMap<QString, QString>&);
     virtual QMap<QString, QString> exportData();

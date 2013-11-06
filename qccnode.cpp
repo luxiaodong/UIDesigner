@@ -1,4 +1,8 @@
 #include "qccnode.h"
+#include "qscene.h"
+#include "qstoragedata.h"
+#include <QImage>
+#include <QPainter>
 
 QCCNode* QCCNode::createCCNodeByType(QString type)
 {
@@ -24,6 +28,10 @@ QCCNode* QCCNode::createCCNodeByType(QString type)
     else if(type == CLASS_TYPE_CCLABELTTF)
     {
         node = new QCCLabelTTF();
+    }
+    else if(type == CLASS_TYPE_CCCONTAINERLAYER)
+    {
+        node = new QCCContainerLayer();
     }
 
     Q_ASSERT(node != 0);
@@ -204,11 +212,12 @@ QMap<QString, QString> QCCSprite::exportData()
 
 QGraphicsItem* QCCSprite::createGraphicsItem()
 {
+    //qDebug()<<" sprite name -> "<<this->m_name;
     QGraphicsPixmapItem* item = new QGraphicsPixmapItem();
     QPixmap pixmap;
     if(m_filePath.isEmpty() == false)
     {
-        pixmap = this->resourceFullPath(m_filePath);
+        pixmap = QPixmap(this->resourceFullPath(m_filePath));
     }
     else
     {
@@ -262,26 +271,46 @@ QGraphicsItem* QCCLabelTTF::createGraphicsItem()
     return item;
 }
 
-CCContainer::CCContainer()
+QCCContainerLayer::QCCContainerLayer()
 {
     m_containerConfigFilePath = "";
 }
 
-void CCContainer::importData(QMap<QString, QString> &map)
+void QCCContainerLayer::importData(QMap<QString, QString> &map)
 {
-    QCCNode::importData(map);
+    QCCLayer::importData(map);
     m_containerConfigFilePath = map.value("containerConfigFilePath", QString(""));
 }
 
-QMap<QString, QString> CCContainer::exportData()
+QMap<QString, QString> QCCContainerLayer::exportData()
 {
-    QMap<QString, QString> map = QCCNode::exportData();
+    QMap<QString, QString> map = QCCLayer::exportData();
     map.insert("containerConfigFilePath", m_containerConfigFilePath);
     return map;
 }
 
-QGraphicsItem* CCContainer::createGraphicsItem()
+QGraphicsItem* QCCContainerLayer::createGraphicsItem()
 {
-    //这里需要调用前面那些生成文档的类,注意递归
-    //需要生成一张图片,然后变成ccsprite吗?
+    QString fullPath = this->resourceFullPath(m_containerConfigFilePath);
+    QStorageData storageData;
+    QCCNode* root = storageData.readUIFile(fullPath);
+    QScene scene;
+    scene.setSceneRect(0,0,root->m_width, root->m_height);
+    scene.createGraphicsItemByCCNode( root->m_children.at(0), 0);
+
+    QImage image = QImage(root->m_width, root->m_height, QImage::Format_RGB32);
+    QPainter painter(&image);
+    scene.render(&painter);
+    //image.save(QString("%1.png").arg(fullPath), "png");
+    QGraphicsPixmapItem* item = new QGraphicsPixmapItem();
+    item->setPixmap( QPixmap::fromImage(image) );
+
+    this->m_width = root->m_width;
+    this->m_height = root->m_height;
+    QTransform t = QTransform::fromTranslate(-this->m_width/2, -this->m_height/2);
+    item->setTransform(t);
+    item->setFlag(QGraphicsItem::ItemIsMovable, true);
+    m_graphicsItem = item;
+
+    return item;
 }

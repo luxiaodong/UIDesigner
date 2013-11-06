@@ -39,10 +39,15 @@ QCCNode* QXmlDataParser::parse(QString& str)
                 node = QCCNode::createCCNodeByType(CLASS_TYPE_CCLAYER);
                 this->parseCCLayer((QCCLayer*)node, attr);
             }
-            else if (reader.name() == CLASS_TYPE_CCSPRITE)
+            else if(reader.name() == CLASS_TYPE_CCSPRITE)
             {
                 node = QCCNode::createCCNodeByType(CLASS_TYPE_CCSPRITE);
                 this->parseCCSprite((QCCSprite*)node, attr);
+            }
+            else if(reader.name() == CLASS_TYPE_CCCONTAINERLAYER)
+            {
+                node = QCCNode::createCCNodeByType(CLASS_TYPE_CCCONTAINERLAYER);
+                this->parseCCContainerLayer((QCCContainerLayer*)node, attr);
             }
 
             //qDebug()<<reader.name();
@@ -133,6 +138,15 @@ void QXmlDataParser::parseCCSprite(QCCSprite* node, QXmlStreamAttributes& attr)
     this->parseCCLayerColor(node, attr);
 }
 
+void QXmlDataParser::parseCCContainerLayer(QCCContainerLayer* node, QXmlStreamAttributes& attr)
+{
+    if(attr.hasAttribute("containerConfigFilePath") == true)
+    {
+        node->m_containerConfigFilePath = attr.value("containerConfigFilePath").toString();
+    }
+
+    this->parseCCLayer(node, attr);
+}
 
 QString QXmlDataParser::parse(QCCNode* node)
 {
@@ -155,6 +169,10 @@ void QXmlDataParser::parseNode(QCCNode* node, QXmlStreamWriter* stream)
     else if(node->m_classType == CLASS_TYPE_CCSPRITE)
     {
         this->parseCCSprite( (QCCSprite*)node, stream);
+    }
+    else if(node->m_classType == CLASS_TYPE_CCCONTAINERLAYER)
+    {
+        this->parseCCContainerLayer( (QCCContainerLayer*)node, stream );
     }
 
     for(int i = 0; i < node->m_children.size(); ++i)
@@ -218,6 +236,11 @@ void QXmlDataParser::parseCCSprite(QCCSprite* node, QXmlStreamWriter* stream)
     stream->writeAttribute("filePath", QString("%1").arg(node->m_filePath));
 }
 
+void QXmlDataParser::parseCCContainerLayer(QCCContainerLayer* node, QXmlStreamWriter* stream)
+{
+    this->parseCCLayer(node, stream);
+    stream->writeAttribute("containerConfigFilePath", QString("%1").arg(node->m_containerConfigFilePath));
+}
 
 QCCNode* QLuaDataParser::parse(QString& str)
 {

@@ -26,12 +26,14 @@ private:
     void parseCCLayer(QCCLayer*, QXmlStreamAttributes&);
     void parseCCLayerColor(QCCLayerColor*, QXmlStreamAttributes&);
     void parseCCSprite(QCCSprite*, QXmlStreamAttributes&);
+    void parseCCContainerLayer(QCCContainerLayer*, QXmlStreamAttributes&attr);
 
     void parseNode(QCCNode*, QXmlStreamWriter*);
     void parseCCNode(QCCNode*, QXmlStreamWriter*);
     void parseCCLayer(QCCLayer*, QXmlStreamWriter*);
     void parseCCLayerColor(QCCLayerColor*, QXmlStreamWriter*);
     void parseCCSprite(QCCSprite*, QXmlStreamWriter*);
+    void parseCCContainerLayer(QCCContainerLayer*, QXmlStreamWriter*);
 };
 
 class QLuaDataParser : public QDataParser
