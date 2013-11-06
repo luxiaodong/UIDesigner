@@ -100,8 +100,6 @@ void QScene::createGraphicsItemByCCNode(QCCNode* node, QGraphicsItem* parentItem
     item->setPos(node->m_x, height - node->m_y);
     item->setZValue(node->m_z);
 
-    //qDebug()<<node->m_name<<node->m_x<<node->m_y<<height<<height - node->m_y;
-
     foreach(QCCNode* son, node->m_children)
     {
         this->createGraphicsItemByCCNode(son, item);

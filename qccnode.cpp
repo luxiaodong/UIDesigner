@@ -218,6 +218,37 @@ QGraphicsItem* QCCSprite::createGraphicsItem()
     if(m_filePath.isEmpty() == false)
     {
         pixmap = QPixmap(this->resourceFullPath(m_filePath));
+        QSize s = pixmap.size();
+        QImage image = QImage(s.width(), s.height(), QImage::Format_RGB32);
+
+        for(int j = 0; j < s.height(); ++j)
+        {
+            for(int i = 0;i < s.width(); ++i)
+            {
+                if(i == 0 || i == s.width() -1 || j == 0 || j == s.height() - 1)
+                {
+                    image.setPixel(i,j,0xFFFFFF);
+                }
+                else if(i == 1 || i == s.width() -2 || j == 1 || j == s.height() - 2)
+                {
+                    image.setPixel(i,j,0xFFFFFF);
+                }
+                else if(i == 2 || i == s.width() -3 || j == 2 || j == s.height() - 3)
+                {
+                    image.setPixel(i,j,0xFF0000);
+                }
+                else if(i == 3 || i == s.width() -4 || j == 3 || j == s.height() - 4)
+                {
+                    image.setPixel(i,j,0xFF0000);
+                }
+                else
+                {
+                    image.setPixel(i,j,0x0);
+                }
+            }
+        }
+
+        pixmap = QPixmap::fromImage(image);
     }
     else
     {
@@ -230,7 +261,7 @@ QGraphicsItem* QCCSprite::createGraphicsItem()
     QSize s = pixmap.size();
     this->m_width = s.width();
     this->m_height = s.height();
-    QTransform t = QTransform::fromTranslate(-s.width()/2, -s.height()/2);
+    QTransform t = QTransform::fromTranslate(-this->m_width/2, -this->m_height/2);
     item->setTransform(t);
     item->setFlag(QGraphicsItem::ItemIsMovable, true);
     m_graphicsItem = item;
