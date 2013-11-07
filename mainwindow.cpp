@@ -68,13 +68,13 @@ void MainWindow::test()
     node1->m_children.append(node11);
     node1->m_children.append(node12);
 
-    this->replaceTreeModel(root);
+    this->replaceRootNode(root);
 
     m_scene->test();
     m_browser->test();
 }
 
-void MainWindow::replaceTreeModel(QCCNode* node)
+void MainWindow::replaceRootNode(QCCNode* node)
 {
     if(m_model != 0)
     {
@@ -95,6 +95,7 @@ void MainWindow::replaceTreeModel(QCCNode* node)
     m_model->createTreeItemByCCNode(node, QModelIndex());
 
     //must set scene size first.
+    m_scene->clear();
     this->setSceneSize(node->m_parent->m_width, node->m_parent->m_height);
     m_scene->createGraphicsItemByCCNode(node, 0);
 
@@ -171,6 +172,7 @@ void MainWindow::setSceneSize(int width, int height)
         m_graphicsView->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     }
 
+    //need +2, is a bug ?
     m_graphicsView->setFixedSize(width, height);
     m_scene->setSceneRect(0, 0, width, height);
 }
@@ -379,7 +381,7 @@ void MainWindow::on_actionOpen_File_triggered()
     if(node != 0)
     {
         m_currentOpenFile = filePath;
-        this->replaceTreeModel(node->m_children.at(0));
+        this->replaceRootNode(node->m_children.at(0));
     }
 }
 
