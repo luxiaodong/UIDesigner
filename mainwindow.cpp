@@ -411,8 +411,8 @@ void MainWindow::on_actionNew_triggered()
 
             QCCNode* node = QCCNode::createCCNodeByType(CLASS_TYPE_CCSPRITE);
             QCCSprite* sprite = dynamic_cast<QCCSprite*>(node);
-            sprite->m_filePath = filePath;
             QImage image(filePath);
+            sprite->m_filePath = filePath.remove(QString("%1/").arg(m_storageData->resourceDir()));
             QSize s = image.size();
             node->m_width = s.width();
             node->m_height = s.height();
@@ -473,7 +473,7 @@ void MainWindow::on_actionCCSprite_triggered()
         //create
         QCCNode* node = QCCNode::createCCNodeByType(CLASS_TYPE_CCSPRITE);
         QCCSprite* sprite = dynamic_cast<QCCSprite*>(node);
-        sprite->m_filePath = filePath;
+        sprite->m_filePath = filePath.remove(QString("%1/").arg(m_storageData->resourceDir()));
         //sync
         QCCNode* parentNode = m_model->itemAt(index)->m_node;
         parentNode->m_children.append(node);
