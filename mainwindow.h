@@ -2,6 +2,7 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
+#include "qselectsizedialog.h"
 #include "qabstracttreemodel.h"
 #include "qscene.h"
 #include "qpropertybrowser.h"
@@ -71,8 +72,10 @@ public slots:
 
 private slots:
     void on_actionResource_triggered();
+    void on_actionNew_triggered();
     void on_actionOpen_File_triggered();
     void on_actionSave_triggered();
+    void on_actionSave_As_triggered();
     void on_actionCCSprite_triggered();
     void on_actionCopy_triggered();
     void on_actionParse_triggered();

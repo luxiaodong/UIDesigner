@@ -33,7 +33,7 @@ MainWindow::MainWindow(QWidget *parent) :
     m_copyBuffer.clear();
 
     //test
-//    this->setSceneSize(300, 300);
+//    this->setSceneSize(9, 9);
 //    this->test();
 }
 
@@ -68,10 +68,10 @@ void MainWindow::test()
     node1->m_children.append(node11);
     node1->m_children.append(node12);
 
-    this->replaceTreeModel(root);
+    //this->replaceTreeModel(root);
 
-    m_scene->test();
-    m_browser->test();
+//    m_scene->test();
+//    m_browser->test();
 }
 
 void MainWindow::replaceTreeModel(QCCNode* node)
@@ -371,6 +371,15 @@ void MainWindow::on_actionResource_triggered()
     m_storageData->setResourceDir(newDir);
 }
 
+void MainWindow::on_actionNew_triggered()
+{
+    QSelectSizeDialog dialog;
+    if(dialog.exec() == QDialog::Accepted)
+    {
+        this->setSceneSize(dialog.m_width, dialog.m_height);
+    }
+}
+
 void MainWindow::on_actionOpen_File_triggered()
 {
     QString oldDir = m_storageData->resourceDir();
@@ -388,6 +397,20 @@ void MainWindow::on_actionSave_triggered()
     m_storageData->writeUIFile(m_currentOpenFile);
 }
 
+void MainWindow::on_actionSave_As_triggered()
+{
+    QString filePath = QFileDialog::getSaveFileName(this, QString("Save As"), m_currentOpenFile);
+    if(filePath.isEmpty())
+    {
+        return ;
+    }
+
+    QString tempFile = m_currentOpenFile;
+    m_currentOpenFile = filePath;
+    this->on_actionSave_triggered();
+    m_currentOpenFile = tempFile;
+}
+
 //这里要api细分,独立创建,树更新,设置数据,选择等操作, copy的时候应该 copy整个树
 //创建和删除核心的程序,应该只有一个.保证树的正确和内部内存的正确
 //代码需要重构了
@@ -396,8 +419,23 @@ void MainWindow::on_actionCCSprite_triggered()
     QModelIndex index = m_treeView->currentIndex();
     if(index.isValid() == true)
     {
+        QString filePath = QFileDialog::getOpenFileName(this, QString("Open File"), m_storageData->resourceDir());
+        if(filePath.isEmpty() == true)
+        {
+            return ;
+        }
+
+        QPixmap pixmap(filePath);
+        if(pixmap.isNull() == true)
+        {
+            this->statusBar()->showMessage(QString("%1 not a picture.").arg(filePath));
+            return ;
+        }
+
         //create
         QCCNode* node = QCCNode::createCCNodeByType(CLASS_TYPE_CCSPRITE);
+        QCCSprite* sprite = dynamic_cast<QCCSprite*>(node);
+        sprite->m_filePath = filePath;
         //sync
         QCCNode* parentNode = m_model->itemAt(index)->m_node;
         parentNode->m_children.append(node);
@@ -415,6 +453,9 @@ void MainWindow::on_actionCCSprite_triggered()
         this->viewClicked( m_model->index( m_model->rowCount(index) - 1 , 0, index) );
 
         //qDebug()<<index.data();
+    }
+    else
+    {
     }
 }
 
@@ -488,3 +529,7 @@ void MainWindow::on_actionDel_triggered()
         }
     }
 }
+
+
+
+

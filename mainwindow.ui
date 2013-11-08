@@ -20,14 +20,14 @@
      <x>0</x>
      <y>0</y>
      <width>788</width>
-     <height>22</height>
+     <height>20</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">
     <property name="title">
      <string>File</string>
     </property>
-    <addaction name="actionOpen"/>
+    <addaction name="actionNew"/>
     <addaction name="actionOpen_File"/>
     <addaction name="actionSave"/>
     <addaction name="actionSave_As"/>
@@ -71,7 +71,7 @@
    </attribute>
   </widget>
   <widget class="QStatusBar" name="statusBar"/>
-  <action name="actionOpen">
+  <action name="actionNew">
    <property name="text">
     <string>New File...</string>
    </property>

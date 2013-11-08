@@ -51,9 +51,9 @@ void QScene::mouseMoveEvent(QGraphicsSceneMouseEvent *event)
 
 void QScene::test()
 {
-    QGraphicsRectItem* r1 = this->addRect(-25,-25,50,50,QPen(Qt::red),QBrush(QColor(Qt::red)));
-    QGraphicsRectItem* r2 = this->addRect(-100,-100,200,200,QPen(Qt::green), QBrush(QColor(Qt::green)));
-    QGraphicsRectItem* r3 = new QGraphicsRectItem(0,0,50,50, r2);
+    QGraphicsRectItem* r1 = this->addRect(-3,-3,6,6,QPen(Qt::red),QBrush(QColor(Qt::red)));
+    QGraphicsRectItem* r2 = this->addRect(-6,-6,12,12,QPen(Qt::green), QBrush(QColor(Qt::green)));
+    QGraphicsRectItem* r3 = new QGraphicsRectItem(0,0,3,3, r2);
     QGraphicsRectItem* r4 = new QGraphicsRectItem(-25,-25,50,50, r2);
 
     QTransform t1;

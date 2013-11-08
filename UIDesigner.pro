@@ -20,7 +20,8 @@ SOURCES += main.cpp\
     qscene.cpp \
     qpropertybrowser.cpp \
     qstoragedata.cpp \
-    qdataparser.cpp
+    qdataparser.cpp \
+    qselectsizedialog.cpp
 
 HEADERS  += mainwindow.h \
     qabstracttreemodel.h \
@@ -30,9 +31,11 @@ HEADERS  += mainwindow.h \
     qscene.h \
     qpropertybrowser.h \
     qstoragedata.h \
-    qdataparser.h
+    qdataparser.h \
+    qselectsizedialog.h
 
-FORMS    += mainwindow.ui
+FORMS    += mainwindow.ui \
+    qselectsizedialog.ui
 
 include(extension/extension.pri)
 include(qtpropertybrowser/qtpropertybrowser.pri)
