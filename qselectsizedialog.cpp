@@ -19,6 +19,6 @@ void QSelectSizeDialog::clickOk()
 {
     m_width = ui->spinWidth->value();
     m_height = ui->spinHeight->value();
-    m_rootClassName = ui->comboBox->currentText();
+    m_rootClassType = ui->comboBox->currentText();
     this->accept();
 }

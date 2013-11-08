@@ -31,6 +31,9 @@ private:
     QModelIndex searchIndex(QModelIndex parentIndex,QGraphicsItem* item);
     QCCNode* currentSelectNode();
 
+private:
+    bool isCCSpriteCanBeCreate(QString filePath);
+
 signals:
     //view;
     //scene;

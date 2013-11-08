@@ -16,7 +16,7 @@ public:
     QCCNode* readUIFile(QString filePath);
     bool writeUIFile(QString filePath);
 
-private:
+public:
     QCCNode* m_root;
 
 public:

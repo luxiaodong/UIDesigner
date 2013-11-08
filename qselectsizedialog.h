@@ -22,7 +22,7 @@ public slots:
 public:
     int m_width;
     int m_height;
-    QString m_rootClassName;
+    QString m_rootClassType;
 
 private:
     Ui::QSelectSizeDialog *ui;

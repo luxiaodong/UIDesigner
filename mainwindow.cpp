@@ -95,7 +95,7 @@ void MainWindow::replaceTreeModel(QCCNode* node)
     m_model->createTreeItemByCCNode(node, QModelIndex());
 
     //must set scene size first.
-    this->setSceneSize(node->m_parent->m_width, node->m_parent->m_height);
+    this->setSceneSize(node->m_width, node->m_height);
     m_scene->createGraphicsItemByCCNode(node, 0);
 
     connect(m_model, SIGNAL(dataChanged(QModelIndex,QModelIndex,const QVector<int>)), this, SLOT(dataChanged(const QModelIndex&,const QModelIndex&,const QVector<int>&)));
@@ -173,6 +173,23 @@ void MainWindow::setSceneSize(int width, int height)
 
     m_graphicsView->setFixedSize(width, height);
     m_scene->setSceneRect(0, 0, width, height);
+}
+
+bool MainWindow::isCCSpriteCanBeCreate(QString filePath)
+{
+    if(filePath.isEmpty() == true)
+    {
+        return false;
+    }
+
+    QPixmap pixmap(filePath);
+    if(pixmap.isNull() == true)
+    {
+        this->statusBar()->showMessage(QString("%1 not a picture.").arg(filePath));
+        return false;
+    }
+
+    return true;
 }
 
 void MainWindow::connectSignalAndSlot()
@@ -373,10 +390,36 @@ void MainWindow::on_actionResource_triggered()
 
 void MainWindow::on_actionNew_triggered()
 {
+    QString openFile = QFileDialog::getSaveFileName(this, QString("New File"), m_storageData->resourceDir());
+    if(openFile.isEmpty())
+    {
+        return ;
+    }
+
     QSelectSizeDialog dialog;
     if(dialog.exec() == QDialog::Accepted)
     {
-        this->setSceneSize(dialog.m_width, dialog.m_height);
+        if(dialog.m_rootClassType == CLASS_TYPE_CCSPRITE)
+        {
+            QString filePath = QFileDialog::getOpenFileName(this, QString("Open File"), m_storageData->resourceDir());
+            if(this->isCCSpriteCanBeCreate(filePath) == false)
+            {
+                return;
+            }
+
+            QCCNode* node = QCCNode::createCCNodeByType(CLASS_TYPE_CCSPRITE);
+            QCCSprite* sprite = dynamic_cast<QCCSprite*>(node);
+            sprite->m_filePath = filePath;
+            QImage image(filePath);
+            QSize s = image.size();
+            node->m_width = s.width();
+            node->m_height = s.height();
+            node->m_x = s.width()/2;
+            node->m_y = s.height()/2;
+            m_storageData->m_root = node;
+            m_currentOpenFile = openFile;
+            this->replaceTreeModel(node);
+        }
     }
 }
 
@@ -388,7 +431,7 @@ void MainWindow::on_actionOpen_File_triggered()
     if(node != 0)
     {
         m_currentOpenFile = filePath;
-        this->replaceTreeModel(node->m_children.at(0));
+        this->replaceTreeModel(node);
     }
 }
 
@@ -420,16 +463,9 @@ void MainWindow::on_actionCCSprite_triggered()
     if(index.isValid() == true)
     {
         QString filePath = QFileDialog::getOpenFileName(this, QString("Open File"), m_storageData->resourceDir());
-        if(filePath.isEmpty() == true)
+        if(this->isCCSpriteCanBeCreate(filePath) == false)
         {
-            return ;
-        }
-
-        QPixmap pixmap(filePath);
-        if(pixmap.isNull() == true)
-        {
-            this->statusBar()->showMessage(QString("%1 not a picture.").arg(filePath));
-            return ;
+            return;
         }
 
         //create

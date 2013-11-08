@@ -96,14 +96,7 @@ void QScene::test()
 void QScene::createGraphicsItemByCCNode(QCCNode* node, QGraphicsItem* parentItem)
 {
     QGraphicsItem* item = node->createGraphicsItem();
-    int height = node->m_parent->m_height;
-    item->setPos(node->m_x, height - node->m_y);
-    item->setZValue(node->m_z);
-
-    foreach(QCCNode* son, node->m_children)
-    {
-        this->createGraphicsItemByCCNode(son, item);
-    }
+    int height = node->m_height;
 
     if(parentItem == 0)
     {
@@ -112,7 +105,18 @@ void QScene::createGraphicsItemByCCNode(QCCNode* node, QGraphicsItem* parentItem
     else
     {
         item->setParentItem(parentItem);
+        height = node->m_parent->m_height;
     }
+
+    item->setPos(node->m_x, height - node->m_y);
+    item->setZValue(node->m_z);
+
+    foreach(QCCNode* son, node->m_children)
+    {
+        this->createGraphicsItemByCCNode(son, item);
+    }
+
+
 }
 
 void QScene::changedItemSelect(QCCNode* node)
