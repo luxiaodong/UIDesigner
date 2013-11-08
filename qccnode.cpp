@@ -261,6 +261,17 @@ QGraphicsItem* QCCSprite::createGraphicsItem()
     QSize s = pixmap.size();
     this->m_width = s.width();
     this->m_height = s.height();
+
+//    if(s.width()%2 == 1)
+//    {
+//        this->m_width = s.width() + 1;
+//    }
+
+//    if(s.height()%2 == 1)
+//    {
+//        this->m_height = s.height() + 1;
+//    }
+
     QTransform t = QTransform::fromTranslate(-this->m_width/2, -this->m_height/2);
     item->setTransform(t);
     item->setFlag(QGraphicsItem::ItemIsMovable, true);

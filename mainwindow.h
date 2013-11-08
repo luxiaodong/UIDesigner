@@ -27,7 +27,7 @@ private:
     void connectSignalAndSlot();
 
 private:
-    void replaceTreeModel(QCCNode* root);
+    void replaceRootNode(QCCNode* root);
     QModelIndex searchIndex(QModelIndex parentIndex,QGraphicsItem* item);
     QCCNode* currentSelectNode();
 

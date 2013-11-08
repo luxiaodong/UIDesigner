@@ -36,11 +36,11 @@ void QScene::mouseMoveEvent(QGraphicsSceneMouseEvent *event)
         QGraphicsItem* parentItem = item->parentItem();
         if(parentItem != 0)
         {
-            y = parentItem->boundingRect().size().height() - y;
+            y = parentItem->boundingRect().size().height() - 1 - y;
         }
         else
         {
-            y = this->height() - y;
+            y = this->height() - 1 - y;
         }
 
         emit changeItemPoint(x, y);
@@ -97,7 +97,6 @@ void QScene::createGraphicsItemByCCNode(QCCNode* node, QGraphicsItem* parentItem
 {
     QGraphicsItem* item = node->createGraphicsItem();
     int height = node->m_height;
-
     if(parentItem == 0)
     {
         this->addItem(item);
@@ -138,7 +137,7 @@ void QScene::changedItemPoint(int x, int y)
 
 //        qDebug()<<height;
 //        qDebug()<<height - y;
-        m_selectItem->setPos(x, height - y);
+        m_selectItem->setPos(x, height - 1 - y);
     }
 }
 
