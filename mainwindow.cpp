@@ -213,6 +213,8 @@ void MainWindow::connectSignalAndSlot()
     connect(this, SIGNAL(changeItemPoint(int, int)), m_scene,SLOT(changedItemPoint(int, int)));
     connect(this, SIGNAL(changeItemZ(int)), m_scene, SLOT(changedItemZ(int)));
     connect(this, SIGNAL(changeItemScaleAndRotation(float,float,int)), m_scene, SLOT(changedItemScaleAndRotation(float,float,int)));
+    connect(this, SIGNAL(changeItemOpacity(int)), m_scene, SLOT(changedItemOpacity(int)));
+    connect(this, SIGNAL(changeItemVisible(bool)), m_scene, SLOT(changedItemVisible(bool)));
     connect(this, SIGNAL(changeItemFilePath(QString&)), m_scene,SLOT(changedItemFilePath(QString&)));
 
     //property emit and window slot
@@ -379,7 +381,14 @@ void MainWindow::changedPropertyRotation(int rotation)
 }
 
 void MainWindow::changedPropertyVisible(bool visible)
-{}
+{
+    QCCNode* node = this->currentSelectNode();
+    if(node != 0)
+    {
+        node->m_isVisible = visible;
+        emit changeItemVisible(visible);
+    }
+}
 
 void MainWindow::changedPropertyTouchEnable(bool touchEnable)
 {}
@@ -388,7 +397,15 @@ void MainWindow::changedPropertyColor(QColor& color)
 {}
 
 void MainWindow::changedPropertyOpacity(int opacity)
-{}
+{
+    QCCNode* node = this->currentSelectNode();
+    if(node != 0)
+    {
+        QCCLayerColor* temp = dynamic_cast<QCCLayerColor*>(node);
+        temp->m_opacity = opacity;
+        emit changeItemOpacity(opacity);
+    }
+}
 
 void MainWindow::changedPropertyFilePath(QString& filePath)
 {

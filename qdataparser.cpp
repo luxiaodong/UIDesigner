@@ -213,11 +213,6 @@ void QXmlDataParser::parseCCNode(QCCNode* node, QXmlStreamWriter* stream)
 {
     stream->writeAttribute("name", node->m_name);
 
-    if(node->m_isFixed == false)
-    {
-        stream->writeAttribute("fixed", QString("%1").arg(node->m_isFixed == true ? 1 : 0));
-    }
-
     if(node->m_x != 0)
     {
         stream->writeAttribute("x", QString("%1").arg(node->m_x));
@@ -243,11 +238,6 @@ void QXmlDataParser::parseCCNode(QCCNode* node, QXmlStreamWriter* stream)
         stream->writeAttribute("height", QString("%1").arg(node->m_height));
     }
 
-    if(node->m_isVisible == false)
-    {
-        stream->writeAttribute("visible", QString("%1").arg(node->m_isVisible == true ? 1 : 0));
-    }
-
     if(node->m_rotation != 0)
     {
         stream->writeAttribute("rotation", QString("%1").arg(node->m_rotation));
@@ -261,6 +251,16 @@ void QXmlDataParser::parseCCNode(QCCNode* node, QXmlStreamWriter* stream)
     if(node->m_scaleY < -1.001 || node->m_scaleY > 1.001)
     {
         stream->writeAttribute("scaleY", QString("%1").arg(node->m_scaleY));
+    }
+
+    if(node->m_isFixed == true)
+    {
+        stream->writeAttribute("fixed", "1");
+    }
+
+    if(node->m_isVisible == false)
+    {
+        stream->writeAttribute("visible", "0");
     }
 }
 

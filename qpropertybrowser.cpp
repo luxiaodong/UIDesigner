@@ -205,6 +205,7 @@ void QPropertyBrowser::createPropertySize()
     m_size->addSubProperty(m_width);
     m_size->addSubProperty(m_height);
     m_size->setValue(QString(""));
+    m_size->setEnabled(false);
 }
 
 void QPropertyBrowser::createPropertyAnchor()
@@ -233,7 +234,7 @@ void QPropertyBrowser::createPropertyCCNode()
     m_ccNode->addSubProperty(m_tag);
     m_ccNode->addSubProperty(m_point);
     m_ccNode->addSubProperty(m_size);
-    m_ccNode->addSubProperty(m_anchor);
+    //m_ccNode->addSubProperty(m_anchor);
     m_ccNode->addSubProperty(m_scale);
     m_ccNode->addSubProperty(m_rotation);
 }

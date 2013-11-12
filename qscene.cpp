@@ -199,7 +199,12 @@ void QScene::changedItemColor(QColor& color)
 {}
 
 void QScene::changedItemOpacity(int opacity)
-{}
+{
+    if(m_selectItem != 0)
+    {
+        m_selectItem->setOpacity(opacity/255.0f);
+    }
+}
 
 void QScene::changedItemFilePath(QString& filePath)
 {

@@ -17,6 +17,7 @@
 //scene接受到后作出改变，再反过来影响treeView
 //add a GraphicsItem that can load xml as child.
 //最后实现property的控制
+//color may be use colorIndex.
 
 #include <QList>
 #include <QVector>
