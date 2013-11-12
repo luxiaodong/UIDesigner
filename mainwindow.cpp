@@ -209,11 +209,14 @@ void MainWindow::connectSignalAndSlot()
     connect(m_scene, SIGNAL(changeItemPoint(int,int)),this,SLOT(changedItemPoint(int,int)));
 
     connect(this, SIGNAL(changeItemSelect(QCCNode*)), m_scene,SLOT(changedItemSelect(QCCNode*)));
+    connect(this, SIGNAL(changeItemFixed(bool)), m_scene, SLOT(changedItemFixed(bool)));
     connect(this, SIGNAL(changeItemPoint(int, int)), m_scene,SLOT(changedItemPoint(int, int)));
     connect(this, SIGNAL(changeItemZ(int)), m_scene, SLOT(changedItemZ(int)));
+    connect(this, SIGNAL(changeItemScale(float,float)), m_scene, SLOT(changedItemScale(float,float)));
     connect(this, SIGNAL(changeItemFilePath(QString&)), m_scene,SLOT(changedItemFilePath(QString&)));
 
     //property emit and window slot
+    connect(m_browser, SIGNAL(changePropertyFixed(bool)), this, SLOT(changedPropertyFixed(bool)));
     connect(m_browser, SIGNAL(changePropertyPoint(int,int)), this, SLOT(changedPropertyPoint(int,int)));
     connect(m_browser, SIGNAL(changePropertyZ(int)), this, SLOT(changedPropertyZ(int)));
     connect(m_browser, SIGNAL(changePropertyTag(int)), this, SLOT(changedPropertyTag(int)));
@@ -308,6 +311,16 @@ void MainWindow::changedItemPoint(int x, int y)
 }
 
 //property slot;
+void MainWindow::changedPropertyFixed(bool fixed)
+{
+    QCCNode* node = this->currentSelectNode();
+    if(node != 0)
+    {
+        node->m_isFixed = fixed;
+        emit changeItemFixed(fixed);
+    }
+}
+
 void MainWindow::changedPropertyPoint(int x, int y)
 {
     QCCNode* node = this->currentSelectNode();
@@ -330,7 +343,13 @@ void MainWindow::changedPropertyZ(int z)
 }
 
 void MainWindow::changedPropertyTag(int tag)
-{}
+{
+    QCCNode* node = this->currentSelectNode();
+    if(node != 0)
+    {
+        node->m_tag = tag;
+    }
+}
 
 void MainWindow::changedPropertySize(int width, int height)
 {}
@@ -339,7 +358,15 @@ void MainWindow::changedPropertyAnchor(float anchorX, float anchorY)
 {}
 
 void MainWindow::changedPropertyScale(float scaleX, float scaleY)
-{}
+{
+    QCCNode* node = this->currentSelectNode();
+    if(node != 0)
+    {
+        node->m_scaleX = scaleX;
+        node->m_scaleY = scaleY;
+        emit changeItemScale(scaleX, scaleY);
+    }
+}
 
 void MainWindow::changedPropertyRotation(int rotation)
 {}

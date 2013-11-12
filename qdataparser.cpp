@@ -87,6 +87,11 @@ void QXmlDataParser::parseCCNode(QCCNode* node, QXmlStreamAttributes& attr)
         node->m_name = attr.value("name").toString();
     }
 
+    if(attr.hasAttribute("fixed") == true)
+    {
+        node->m_isFixed = attr.value("fix").toString().toInt();
+    }
+
     if(attr.hasAttribute("x") == true)
     {
         node->m_x = attr.value("x").toInt();
@@ -110,6 +115,26 @@ void QXmlDataParser::parseCCNode(QCCNode* node, QXmlStreamAttributes& attr)
     if(attr.hasAttribute("height") == true)
     {
         node->m_height = attr.value("height").toInt();
+    }
+
+    if(attr.hasAttribute("visible") == true)
+    {
+        node->m_isVisible = attr.value("visible").toString().toInt();
+    }
+
+    if(attr.hasAttribute("rotation") == true)
+    {
+        node->m_rotation = attr.value("rotation").toString().toInt();
+    }
+
+    if(attr.hasAttribute("scaleX") == true)
+    {
+        node->m_scaleX = attr.value("scaleX").toString().toFloat();
+    }
+
+    if(attr.hasAttribute("scaleY") == true)
+    {
+        node->m_scaleY = attr.value("scaleY").toString().toFloat();
     }
 }
 
@@ -188,6 +213,11 @@ void QXmlDataParser::parseCCNode(QCCNode* node, QXmlStreamWriter* stream)
 {
     stream->writeAttribute("name", node->m_name);
 
+    if(node->m_isFixed == false)
+    {
+        stream->writeAttribute("fixed", QString("%1").arg(node->m_isFixed == true ? 1 : 0));
+    }
+
     if(node->m_x != 0)
     {
         stream->writeAttribute("x", QString("%1").arg(node->m_x));
@@ -211,6 +241,26 @@ void QXmlDataParser::parseCCNode(QCCNode* node, QXmlStreamWriter* stream)
     if(node->m_height != 0)
     {
         stream->writeAttribute("height", QString("%1").arg(node->m_height));
+    }
+
+    if(node->m_isVisible == false)
+    {
+        stream->writeAttribute("visible", QString("%1").arg(node->m_isVisible == true ? 1 : 0));
+    }
+
+    if(node->m_rotation != 0)
+    {
+        stream->writeAttribute("rotation", QString("%1").arg(node->m_rotation));
+    }
+
+    if(node->m_scaleX < -1.001 || node->m_scaleX > 1.001)
+    {
+        stream->writeAttribute("scaleX", QString("%1").arg(node->m_scaleX));
+    }
+
+    if(node->m_scaleY < -1.001 || node->m_scaleY > 1.001)
+    {
+        stream->writeAttribute("scaleY", QString("%1").arg(node->m_scaleY));
     }
 }
 
@@ -244,5 +294,10 @@ void QXmlDataParser::parseCCContainerLayer(QCCContainerLayer* node, QXmlStreamWr
 
 QCCNode* QLuaDataParser::parse(QString& str)
 {
+    QStringList lines = str.split("\n");
     return 0;
 }
+
+QString QLuaDataParser::parse(QCCNode* root)
+{}
+

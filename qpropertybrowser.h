@@ -18,6 +18,7 @@ public:
     void initProperty(QCCNode* node);
 
 signals:
+    void changePropertyFixed(bool fixed);
     void changePropertyPoint(int x, int y);
     void changePropertyZ(int z);
     void changePropertyTag(int tag);
@@ -50,6 +51,7 @@ private:
 
 private:
 //-- 1 level
+    void createPropertyFixed();
     void createPropertyX();
     void createPropertyY();
     void createPropertyZ();
@@ -84,6 +86,7 @@ private:
 
 private:
 //-- 1 level
+    QtVariantProperty*  m_fixed;
     QtVariantProperty*  m_x;
     QtVariantProperty*  m_y;
     QtVariantProperty*  m_z;

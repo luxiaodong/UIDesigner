@@ -27,6 +27,7 @@ protected:
 public:
     QString m_name;
     QString m_classType;
+    bool m_isFixed;
     int m_x;
     int m_y;
     int m_z;

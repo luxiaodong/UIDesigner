@@ -40,6 +40,7 @@ class QLuaDataParser : public QDataParser
 {
 public:
     virtual QCCNode* parse(QString&);
+    virtual QString parse(QCCNode*);
 };
 
 

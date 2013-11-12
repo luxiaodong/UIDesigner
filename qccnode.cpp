@@ -56,6 +56,7 @@ QCCNode::QCCNode()
     m_children.clear();
     m_parent = 0;
 
+    m_isFixed = false;
     m_x = 0;
     m_y = 0;
     m_z = 0;
@@ -80,6 +81,7 @@ QCCNode::~QCCNode()
 
 void QCCNode::importData(QMap<QString, QString>& map)
 {
+    m_isFixed = map.value("fixed", QString("0")).toInt();
     m_name = map.value("name", QString("undefined"));
     m_classType = map.value("classType", QString("%1").arg(CLASS_TYPE_CCNODE));
     m_x = map.value("x", QString("0")).toInt();
@@ -101,6 +103,7 @@ QMap<QString, QString> QCCNode::exportData()
     QMap<QString, QString> map;
     map.insert("name", m_name);
     map.insert("classType", m_classType);
+    map.insert("fixed", QString("%1").arg( (m_isFixed == true) ? 1 : 0 ));
     map.insert("x", QString("%1").arg(m_x));
     map.insert("y", QString("%1").arg(m_y));
     map.insert("z", QString("%1").arg(m_z));
@@ -272,7 +275,11 @@ QGraphicsItem* QCCSprite::createGraphicsItem()
 //        this->m_height = s.height() + 1;
 //    }
 
-    QTransform t = QTransform::fromTranslate(-this->m_width/2, -this->m_height/2);
+    QTransform t;
+    item->setTransformOriginPoint(-this->m_width/2, -this->m_height/2);
+    t.scale(m_scaleX, m_scaleY);
+    t.rotate(m_rotation);
+    t.translate(-this->m_width/2, -this->m_height/2);
     item->setTransform(t);
     item->setFlag(QGraphicsItem::ItemIsMovable, true);
     m_graphicsItem = item;
@@ -349,6 +356,7 @@ QGraphicsItem* QCCContainerLayer::createGraphicsItem()
 
     this->m_width = root->m_width;
     this->m_height = root->m_height;
+
     QTransform t = QTransform::fromTranslate(-this->m_width/2, -this->m_height/2);
     item->setTransform(t);
     item->setFlag(QGraphicsItem::ItemIsMovable, true);

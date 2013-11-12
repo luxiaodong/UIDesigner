@@ -38,8 +38,10 @@ signals:
     //view;
     //scene;
     void changeItemSelect(QCCNode* node);
+    void changeItemFixed(bool);
     void changeItemPoint(int x, int y);
     void changeItemZ(int z);
+    void changeItemScale(float scaleX, float scaleY);
     void changeItemFilePath(QString&);
 
     //property;
@@ -58,6 +60,7 @@ public slots:
     void changedItemPoint(int x, int y);
 
     //property slot;
+    void changedPropertyFixed(bool fixed);
     void changedPropertyPoint(int x, int y);
     void changedPropertyZ(int z);
     void changedPropertyTag(int tag);

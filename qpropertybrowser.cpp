@@ -12,6 +12,7 @@ QPropertyBrowser::QPropertyBrowser()
 void QPropertyBrowser::createProperty()
 {
     //-- 1 level
+    createPropertyFixed();
     createPropertyX();
     createPropertyY();
     createPropertyZ();
@@ -43,6 +44,12 @@ void QPropertyBrowser::createProperty()
     createPropertyCCLayerColor();
     createPropertyCCSprite();
     createPropertyCCLabelTTF();
+}
+
+void QPropertyBrowser::createPropertyFixed()
+{
+    m_fixed = m_manager->addProperty(QVariant::Bool, tr("fixed"));
+    m_fixed->setValue(false);
 }
 
 //-- 1 level
@@ -147,7 +154,7 @@ void QPropertyBrowser::createPropertyVisible()
 void QPropertyBrowser::createPropertyTouchEnable()
 {
     m_touchEnable = m_manager->addProperty(QVariant::Bool, tr("touchEnable"));
-    m_visible->setValue(false);
+    m_touchEnable->setValue(false);
 }
 
 void QPropertyBrowser::createPropertyColor()
@@ -220,6 +227,7 @@ void QPropertyBrowser::createPropertyScale()
 void QPropertyBrowser::createPropertyCCNode()
 {
     m_ccNode = m_manager->addProperty(QVariant::String, tr("CCNode"));
+    m_ccNode->addSubProperty(m_fixed);
     m_ccNode->addSubProperty(m_visible);
     m_ccNode->addSubProperty(m_z);
     m_ccNode->addSubProperty(m_tag);
@@ -286,6 +294,7 @@ void QPropertyBrowser::initProperty(QCCNode* node)
 
 void QPropertyBrowser::initPropertyCCNode(QCCNode* node)
 {
+    m_fixed->setValue(node->m_isFixed);
     m_visible->setValue(node->m_isVisible );
     m_z->setValue(node->m_z);
     m_tag->setValue(node->m_tag);
@@ -334,7 +343,12 @@ void QPropertyBrowser::initPropertyCCLabelTTF(QCCLabelTTF* node)
 //slot
 void QPropertyBrowser::valueChanged(QtProperty* property, QVariant )
 {
-    if(property == m_x || property == m_y)
+    if(property == m_fixed)
+    {
+        int isFixed = m_fixed->value().toBool();
+        emit changePropertyFixed(isFixed);
+    }
+    else if(property == m_x || property == m_y)
     {
         int x = m_x->value().toInt();
         int y = m_y->value().toInt();

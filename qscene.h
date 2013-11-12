@@ -30,6 +30,7 @@ signals:
 public slots:
     void changedItemSelect(QCCNode* node);
 
+    void changedItemFixed(bool);
     void changedItemPoint(int x, int y);
     void changedItemZ(int z);
     void changedItemSize(int width, int height);
