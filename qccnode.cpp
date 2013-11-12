@@ -275,12 +275,13 @@ QGraphicsItem* QCCSprite::createGraphicsItem()
 //        this->m_height = s.height() + 1;
 //    }
 
-    QTransform t;
     item->setTransformOriginPoint(-this->m_width/2, -this->m_height/2);
-    t.scale(m_scaleX, m_scaleY);
-    t.rotate(m_rotation);
-    t.translate(-this->m_width/2, -this->m_height/2);
-    item->setTransform(t);
+
+    item->resetTransform();
+    item->setTransform(QTransform().rotate(m_rotation), true);
+    item->setTransform(QTransform::fromScale(m_scaleX,m_scaleY), true);
+    item->setTransform(QTransform::fromTranslate(-m_width/2, -m_height/2), true);
+
     item->setFlag(QGraphicsItem::ItemIsMovable, true);
     m_graphicsItem = item;
     return item;

@@ -163,42 +163,19 @@ void QScene::changedItemSize(int width, int height)
 void QScene::changedItemAnchor(float anchorX, float anchorY)
 {}
 
-void QScene::changedItemScale(float scaleX, float scaleY)
+void QScene::changedItemScaleAndRotation(float scaleX, float scaleY, int rotation)
 {
     if(m_selectItem != 0)
     {
         //必须是sprite才可以设置
+        //
         QRectF r = m_selectItem->boundingRect();
-        QTransform t1 = m_selectItem->transform();
-        QTransform t2;
+        m_selectItem->setTransformOriginPoint(-r.width()/2, -r.height()/2);
 
-        item->setTransformOriginPoint(-r.width()/2, -r.height()/2);
-        t2.scale(scaleX, scaleY);
-        t2.rotate(t1);
-        t2.translate(-this->m_width/2, -this->m_height/2);
-        item->setTransform(t);
-
-        qreal rotation = m_selectItem->rotation();
-
-        t.scale(scaleX, scaleY);
-        t.rotate(rotation);
-        t.translate(r.width()/2, r.height()/2);
-        m_selectItem->setTransform(t);
-    }
-}
-
-void QScene::changedItemRotation(int rotation)
-{
-    if(m_selectItem != 0)
-    {
-        //必须是sprite才可以设置
-        QRectF r = m_selectItem->boundingRect();
-        qreal rotation = m_selectItem->rotation();
-        QTransform t;
-        t.scale(scaleX, scaleY);
-        t.rotate(rotation);
-        t.translate(r.width()/2, r.height()/2);
-        m_selectItem->setTransform(t, true);
+        m_selectItem->resetTransform();
+        m_selectItem->setTransform(QTransform().rotate(rotation), true);
+        m_selectItem->setTransform(QTransform::fromScale(scaleX,scaleY), true);
+        m_selectItem->setTransform(QTransform::fromTranslate(-r.width()/2, -r.height()/2), true);
     }
 }
 

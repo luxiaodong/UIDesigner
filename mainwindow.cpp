@@ -212,7 +212,7 @@ void MainWindow::connectSignalAndSlot()
     connect(this, SIGNAL(changeItemFixed(bool)), m_scene, SLOT(changedItemFixed(bool)));
     connect(this, SIGNAL(changeItemPoint(int, int)), m_scene,SLOT(changedItemPoint(int, int)));
     connect(this, SIGNAL(changeItemZ(int)), m_scene, SLOT(changedItemZ(int)));
-    connect(this, SIGNAL(changeItemScale(float,float)), m_scene, SLOT(changedItemScale(float,float)));
+    connect(this, SIGNAL(changeItemScaleAndRotation(float,float,int)), m_scene, SLOT(changedItemScaleAndRotation(float,float,int)));
     connect(this, SIGNAL(changeItemFilePath(QString&)), m_scene,SLOT(changedItemFilePath(QString&)));
 
     //property emit and window slot
@@ -364,12 +364,19 @@ void MainWindow::changedPropertyScale(float scaleX, float scaleY)
     {
         node->m_scaleX = scaleX;
         node->m_scaleY = scaleY;
-        emit changeItemScale(scaleX, scaleY);
+        emit changeItemScaleAndRotation(scaleX, scaleY, node->m_rotation);
     }
 }
 
 void MainWindow::changedPropertyRotation(int rotation)
-{}
+{
+    QCCNode* node = this->currentSelectNode();
+    if(node != 0)
+    {
+        node->m_rotation = rotation;
+        emit changeItemScaleAndRotation(node->m_scaleX, node->m_scaleY, rotation);
+    }
+}
 
 void MainWindow::changedPropertyVisible(bool visible)
 {}

@@ -41,7 +41,7 @@ signals:
     void changeItemFixed(bool);
     void changeItemPoint(int x, int y);
     void changeItemZ(int z);
-    void changeItemScale(float scaleX, float scaleY);
+    void changeItemScaleAndRotation(float scaleX, float scaleY,int rotation);
     void changeItemFilePath(QString&);
 
     //property;

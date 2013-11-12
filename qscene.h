@@ -35,8 +35,7 @@ public slots:
     void changedItemZ(int z);
     void changedItemSize(int width, int height);
     void changedItemAnchor(float anchorX, float anchorY);
-    void changedItemScale(float scaleX, float scaleY);
-    void changedItemRotation(int rotation);
+    void changedItemScaleAndRotation(float scaleX, float scaleY, int rotation);
     void changedItemVisible(bool visible);
     void changedItemTouchEnable(bool touchEnable);
     void changedItemColor(QColor& color);
