@@ -50,7 +50,10 @@ FileEdit::FileEdit(QWidget *parent)
 }
 
 void FileEdit::buttonClicked()
-{
+{ 
+    //setAttribute("filter", "Images (*.png *.jpg)"); don't work.
+    //so set it here.
+    theFilter = QString("Images (*.png *.jpg)");
     QString filePath = QFileDialog::getOpenFileName(this, tr("Choose a file"), theLineEdit->text(), theFilter);
     if (filePath.isNull())
         return;
