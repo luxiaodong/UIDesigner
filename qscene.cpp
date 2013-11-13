@@ -209,13 +209,14 @@ void QScene::changedItemOpacity(int opacity)
 void QScene::changedItemFilePath(QString& filePath)
 {
     QGraphicsPixmapItem* item = dynamic_cast<QGraphicsPixmapItem*>(m_selectItem);
+    QTransform t = item->transform();
     QPixmap pixmap(filePath);
     item->setPixmap(pixmap);
+    QSize r = pixmap.size();
+    m_selectItem->setTransformOriginPoint(-r.width()/2, -r.height()/2);
 
-    //要做些相应调整,对于放大缩小等东西
-    QSize s = pixmap.size();
-    QTransform t = QTransform::fromTranslate(-s.width()/2, -s.height()/2);
-    item->setTransform(t);
+    m_selectItem->resetTransform();
+    m_selectItem->setTransform(t, true);
 }
 
 void QScene::changedItemFont(QFont& font)

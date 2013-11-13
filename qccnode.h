@@ -21,7 +21,7 @@ public:
     virtual QMap<QString, QString> exportData();
     virtual QGraphicsItem* createGraphicsItem();
 
-protected:
+public:
     QString resourceFullPath(QString relationPath);
 
 public:

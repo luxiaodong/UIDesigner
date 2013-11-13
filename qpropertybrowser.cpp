@@ -1,4 +1,5 @@
 #include "qpropertybrowser.h"
+#include "qstoragedata.h"
 
 QPropertyBrowser::QPropertyBrowser()
 {
@@ -329,7 +330,7 @@ void QPropertyBrowser::initPropertyCCLayerColor(QCCLayerColor* node)
 void QPropertyBrowser::initPropertyCCSprite(QCCSprite* node)
 {
     this->initPropertyCCLayerColor(node);
-    m_filePath->setValue(node->m_filePath);
+    m_filePath->setValue( node->resourceFullPath(node->m_filePath) );
     this->addProperty(m_ccSprite);
 }
 
@@ -443,7 +444,7 @@ void QPropertyBrowser::changedPropertySize(int width, int height)
 
 void QPropertyBrowser::test()
 {
-    this->addProperty(m_ccNode);\
+    this->addProperty(m_ccNode);
     this->addProperty(m_ccLayer);
     this->addProperty(m_ccLayerColor);
     this->addProperty(m_ccSprite);

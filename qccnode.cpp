@@ -346,9 +346,9 @@ QGraphicsItem* QCCContainerLayer::createGraphicsItem()
     QCCNode* root = storageData.readUIFile(fullPath);
     QScene scene;
     scene.setSceneRect(0,0,root->m_width, root->m_height);
-    scene.createGraphicsItemByCCNode( root->m_children.at(0), 0);
+    scene.createGraphicsItemByCCNode( root, 0);
 
-    QImage image = QImage(root->m_width, root->m_height, QImage::Format_RGB32);
+    QImage image = QImage(root->m_width, root->m_height, QImage::Format_ARGB32);
     QPainter painter(&image);
     scene.render(&painter);
     //image.save(QString("%1.png").arg(fullPath), "png");
@@ -358,8 +358,11 @@ QGraphicsItem* QCCContainerLayer::createGraphicsItem()
     this->m_width = root->m_width;
     this->m_height = root->m_height;
 
-    QTransform t = QTransform::fromTranslate(-this->m_width/2, -this->m_height/2);
-    item->setTransform(t);
+    item->resetTransform();
+    item->setTransform(QTransform().rotate(m_rotation), true);
+    item->setTransform(QTransform::fromScale(m_scaleX,m_scaleY), true);
+    item->setTransform(QTransform::fromTranslate(-m_width/2, -m_height/2), true);
+
     item->setFlag(QGraphicsItem::ItemIsMovable, true);
     m_graphicsItem = item;
 
