@@ -26,6 +26,7 @@ private:
     void parseCCLayer(QCCLayer*, QXmlStreamAttributes&);
     void parseCCLayerColor(QCCLayerColor*, QXmlStreamAttributes&);
     void parseCCSprite(QCCSprite*, QXmlStreamAttributes&);
+    void parseCCLabelTTF(QCCLabelTTF*, QXmlStreamAttributes&);
     void parseCCContainerLayer(QCCContainerLayer*, QXmlStreamAttributes&attr);
 
     void parseNode(QCCNode*, QXmlStreamWriter*);
@@ -33,6 +34,7 @@ private:
     void parseCCLayer(QCCLayer*, QXmlStreamWriter*);
     void parseCCLayerColor(QCCLayerColor*, QXmlStreamWriter*);
     void parseCCSprite(QCCSprite*, QXmlStreamWriter*);
+    void parseCCLabelTTF(QCCLabelTTF*, QXmlStreamWriter*);
     void parseCCContainerLayer(QCCContainerLayer*, QXmlStreamWriter*);
 };
 

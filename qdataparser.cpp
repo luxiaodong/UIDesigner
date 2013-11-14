@@ -39,10 +39,20 @@ QCCNode* QXmlDataParser::parse(QString& str)
                 node = QCCNode::createCCNodeByType(CLASS_TYPE_CCLAYER);
                 this->parseCCLayer((QCCLayer*)node, attr);
             }
+            else if(reader.name() == CLASS_TYPE_CCLAYERCOLOR)
+            {
+                node = QCCNode::createCCNodeByType(CLASS_TYPE_CCLAYERCOLOR);
+                this->parseCCLayerColor((QCCLayerColor*)node, attr);
+            }
             else if(reader.name() == CLASS_TYPE_CCSPRITE)
             {
                 node = QCCNode::createCCNodeByType(CLASS_TYPE_CCSPRITE);
                 this->parseCCSprite((QCCSprite*)node, attr);
+            }
+            else if(reader.name() == CLASS_TYPE_CCLABELTTF)
+            {
+                node = QCCNode::createCCNodeByType(CLASS_TYPE_CCLABELTTF);
+                this->parseCCLabelTTF((QCCLabelTTF*)node, attr);
             }
             else if(reader.name() == CLASS_TYPE_CCCONTAINERLAYER)
             {
@@ -150,6 +160,14 @@ void QXmlDataParser::parseCCLayerColor(QCCLayerColor* node, QXmlStreamAttributes
         node->m_opacity = attr.value("opacity").toInt();
     }
 
+    if(attr.hasAttribute("color_r") || attr.hasAttribute("color_g") || attr.hasAttribute("color_b"))
+    {
+        int r = attr.value("color_r").toInt();
+        int g = attr.value("color_g").toInt();
+        int b = attr.value("color_b").toInt();
+        node->m_color = QColor(r,g,b);
+    }
+
     this->parseCCLayer(node, attr);
 }
 
@@ -159,6 +177,24 @@ void QXmlDataParser::parseCCSprite(QCCSprite* node, QXmlStreamAttributes& attr)
     {
         node->m_filePath = attr.value("filePath").toString();
     }
+
+    this->parseCCLayer(node, attr);
+}
+
+void QXmlDataParser::parseCCLabelTTF(QCCLabelTTF* node, QXmlStreamAttributes& attr)
+{
+    if(attr.hasAttribute("text") == true)
+    {
+        node->m_text = attr.value("text").toString();
+    }
+
+    int fontSize = attr.value("font_size").toInt();
+    QString fontName = attr.value("font_name").toString();
+
+    QFont font;
+    font.setFamily(fontName);
+    font.setPointSize(fontSize);
+    node->m_font = font;
 
     this->parseCCLayerColor(node, attr);
 }
@@ -191,9 +227,17 @@ void QXmlDataParser::parseNode(QCCNode* node, QXmlStreamWriter* stream)
     {
         this->parseCCLayer( (QCCLayer*)node, stream);
     }
+    else if(node->m_classType == CLASS_TYPE_CCLAYERCOLOR)
+    {
+        this->parseCCLayerColor( (QCCLayerColor*)node, stream);
+    }
     else if(node->m_classType == CLASS_TYPE_CCSPRITE)
     {
         this->parseCCSprite( (QCCSprite*)node, stream);
+    }
+    else if(node->m_classType == CLASS_TYPE_CCLABELTTF)
+    {
+        this->parseCCLabelTTF( (QCCLabelTTF*)node, stream);
     }
     else if(node->m_classType == CLASS_TYPE_CCCONTAINERLAYER)
     {
@@ -243,12 +287,12 @@ void QXmlDataParser::parseCCNode(QCCNode* node, QXmlStreamWriter* stream)
         stream->writeAttribute("rotation", QString("%1").arg(node->m_rotation));
     }
 
-    if(node->m_scaleX < -1.001 || node->m_scaleX > 1.001)
+    if(node->m_scaleX < 0.999 || node->m_scaleX > 1.001)
     {
         stream->writeAttribute("scaleX", QString("%1").arg(node->m_scaleX));
     }
 
-    if(node->m_scaleY < -1.001 || node->m_scaleY > 1.001)
+    if(node->m_scaleY < 0.999 || node->m_scaleY > 1.001)
     {
         stream->writeAttribute("scaleY", QString("%1").arg(node->m_scaleY));
     }
@@ -277,13 +321,30 @@ void QXmlDataParser::parseCCLayerColor(QCCLayerColor* node, QXmlStreamWriter* st
     {
         stream->writeAttribute("opacity", QString("%1").arg(node->m_opacity));
     }
+
+    int r = node->m_color.red();
+    int g = node->m_color.green();
+    int b = node->m_color.blue();
+
+    stream->writeAttribute("color_r", QString("%1").arg(r));
+    stream->writeAttribute("color_g", QString("%1").arg(g));
+    stream->writeAttribute("color_b", QString("%1").arg(b));
 }
 
 void QXmlDataParser::parseCCSprite(QCCSprite* node, QXmlStreamWriter* stream)
 {
-    this->parseCCLayerColor(node, stream);
+    this->parseCCLayer(node, stream);
 
     stream->writeAttribute("filePath", QString("%1").arg(node->m_filePath));
+}
+
+void QXmlDataParser::parseCCLabelTTF(QCCLabelTTF* node, QXmlStreamWriter* stream)
+{
+    this->parseCCLayerColor(node, stream);
+
+    stream->writeAttribute("text", QString("%1").arg(node->m_text));
+    stream->writeAttribute("font_size", QString("%1").arg(node->m_font.pointSize()));
+    stream->writeAttribute("font_name", QString("%1").arg(node->m_font.family()));
 }
 
 void QXmlDataParser::parseCCContainerLayer(QCCContainerLayer* node, QXmlStreamWriter* stream)

@@ -42,9 +42,12 @@ signals:
     void changeItemPoint(int x, int y);
     void changeItemZ(int z);
     void changeItemScaleAndRotation(float scaleX, float scaleY,int rotation);
+    void changeItemColor(QColor&, QString&);
     void changeItemOpacity(int);
     void changeItemVisible(bool);
     void changeItemFilePath(QString&);
+    void changeItemFont(QFont&);
+    void changeItemText(QString&);
 
     //property;
     void changePropertyPoint(int x, int y);
@@ -84,10 +87,11 @@ private slots:
     void on_actionOpen_File_triggered();
     void on_actionSave_triggered();
     void on_actionSave_As_triggered();
-    void on_actionCCSprite_triggered();
     void on_actionCopy_triggered();
     void on_actionParse_triggered();
     void on_actionDel_triggered();
+    void on_actionCCSprite_triggered();
+    void on_actionCCLabelTTF_triggered();
 
 private:
     QTreeView*          m_treeView;

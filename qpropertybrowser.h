@@ -70,6 +70,8 @@ private:
     void createPropertyFilePath();
     void createPropertyFont();
     void createPropertyText();
+    void createPropertyHorizontalTextAlignment();
+    void createPropertyVerticalTextAlignment();
 
 //-- 2 level
     void createPropertyPoint();
@@ -105,6 +107,8 @@ private:
     QtVariantProperty*  m_filePath;
     QtVariantProperty*  m_font;
     QtVariantProperty*  m_text;
+    QtVariantProperty*  m_horizontalTextAlignment;
+    QtVariantProperty*  m_verticalTextAlignment;
 
 //-- 2 level
     QtVariantProperty*  m_point;

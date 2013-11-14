@@ -38,7 +38,7 @@ public slots:
     void changedItemScaleAndRotation(float scaleX, float scaleY, int rotation);
     void changedItemVisible(bool visible);
     void changedItemTouchEnable(bool touchEnable);
-    void changedItemColor(QColor& color);
+    void changedItemColor(QColor&, QString&);
     void changedItemOpacity(int opacity);
     void changedItemFilePath(QString& filePath);
     void changedItemFont(QFont& font);

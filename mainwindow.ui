@@ -20,7 +20,7 @@
      <x>0</x>
      <y>0</y>
      <width>788</width>
-     <height>20</height>
+     <height>22</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">
@@ -44,8 +44,6 @@
     <property name="title">
      <string>class</string>
     </property>
-    <addaction name="actionCCNode"/>
-    <addaction name="actionCCLayerColor"/>
     <addaction name="actionCCSprite"/>
     <addaction name="actionCCLabelTTF"/>
     <addaction name="actionCCMenu"/>
@@ -108,16 +106,6 @@
    </property>
    <property name="shortcut">
     <string>Ctrl+V</string>
-   </property>
-  </action>
-  <action name="actionCCNode">
-   <property name="text">
-    <string>CCNode</string>
-   </property>
-  </action>
-  <action name="actionCCLayerColor">
-   <property name="text">
-    <string>CCLayerColor</string>
    </property>
   </action>
   <action name="actionCCSprite">

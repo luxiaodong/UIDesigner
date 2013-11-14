@@ -109,13 +109,13 @@ void QScene::createGraphicsItemByCCNode(QCCNode* node, QGraphicsItem* parentItem
 
     item->setPos(node->m_x, height - node->m_y);
     item->setZValue(node->m_z);
+    item->setVisible(node->m_isVisible);
+    item->setFlag(QGraphicsItem::ItemIsMovable, !node->m_isFixed);
 
     foreach(QCCNode* son, node->m_children)
     {
         this->createGraphicsItemByCCNode(son, item);
     }
-
-
 }
 
 void QScene::changedItemSelect(QCCNode* node)
@@ -195,8 +195,22 @@ void QScene::changedItemTouchEnable(bool touchEnable)
     }
 }
 
-void QScene::changedItemColor(QColor& color)
-{}
+void QScene::changedItemColor(QColor& color, QString& classType)
+{
+    if(m_selectItem != 0)
+    {
+        if(classType == CLASS_TYPE_CCLAYERCOLOR)
+        {
+            QGraphicsRectItem* item = dynamic_cast<QGraphicsRectItem*>(m_selectItem);
+            item->setBrush(QBrush(QColor(color)));
+        }
+        else if(classType == CLASS_TYPE_CCLABELTTF)
+        {
+            QGraphicsSimpleTextItem* item = dynamic_cast<QGraphicsSimpleTextItem*>(m_selectItem);
+            item->setBrush(QBrush(QColor(color)));
+        }
+    }
+}
 
 void QScene::changedItemOpacity(int opacity)
 {
@@ -208,20 +222,34 @@ void QScene::changedItemOpacity(int opacity)
 
 void QScene::changedItemFilePath(QString& filePath)
 {
-    QGraphicsPixmapItem* item = dynamic_cast<QGraphicsPixmapItem*>(m_selectItem);
-    QTransform t = item->transform();
-    QPixmap pixmap(filePath);
-    item->setPixmap(pixmap);
-    QSize r = pixmap.size();
-    m_selectItem->setTransformOriginPoint(-r.width()/2, -r.height()/2);
-
-    m_selectItem->resetTransform();
-    m_selectItem->setTransform(t, true);
+    if(m_selectItem != 0)
+    {
+        QGraphicsPixmapItem* item = dynamic_cast<QGraphicsPixmapItem*>(m_selectItem);
+        QTransform t = item->transform();
+        QPixmap pixmap(filePath);
+        item->setPixmap(pixmap);
+        QSize r = pixmap.size();
+        m_selectItem->setTransformOriginPoint(-r.width()/2, -r.height()/2);
+        m_selectItem->resetTransform();
+        m_selectItem->setTransform(t, true);
+    }
 }
 
 void QScene::changedItemFont(QFont& font)
-{}
+{
+    if(m_selectItem != 0)
+    {
+        QGraphicsSimpleTextItem* item = dynamic_cast<QGraphicsSimpleTextItem*>(m_selectItem);
+        item->setFont(font);
+    }
+}
 
 void QScene::changedItemText(QString& text)
-{}
+{
+    if(m_selectItem != 0)
+    {
+        QGraphicsSimpleTextItem* item = dynamic_cast<QGraphicsSimpleTextItem*>(m_selectItem);
+        item->setText(text);
+    }
+}
 
