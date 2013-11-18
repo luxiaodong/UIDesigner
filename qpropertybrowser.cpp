@@ -34,12 +34,16 @@ void QPropertyBrowser::createProperty()
     createPropertyText();
     createPropertyHorizontalTextAlignment();
     createPropertyVerticalTextAlignment();
+    createPropertyDimensionWith();
+    createPropertyDimensionHeight();
+    createPropertyContainerFilePath();
 
     //-- 2 level
     createPropertyPoint();
     createPropertySize();
     createPropertyAnchor();
     createPropertyScale();
+    createPropertyDimensionSize();
 
     //-- 3 level
     createPropertyCCNode();
@@ -47,6 +51,7 @@ void QPropertyBrowser::createProperty()
     createPropertyCCLayerColor();
     createPropertyCCSprite();
     createPropertyCCLabelTTF();
+    createPropertyCCContainerLayer();
 }
 
 void QPropertyBrowser::createPropertyFixed()
@@ -211,6 +216,29 @@ void QPropertyBrowser::createPropertyVerticalTextAlignment()
     m_verticalTextAlignment->setValue(1);
 }
 
+void QPropertyBrowser::createPropertyDimensionWith()
+{
+    m_dimensionWith = m_manager->addProperty(QVariant::String, tr("width"));
+    m_dimensionWith->setAttribute("minimum",0);
+    m_dimensionWith->setAttribute("maximum",9999);
+    m_dimensionWith->setValue(0);
+}
+
+void QPropertyBrowser::createPropertyDimensionHeight()
+{
+    m_dimensionHeight = m_manager->addProperty(QVariant::String, tr("height"));
+    m_dimensionHeight->setAttribute("minimum",0);
+    m_dimensionHeight->setAttribute("maximum",9999);
+    m_dimensionHeight->setValue(0);
+}
+
+void QPropertyBrowser::createPropertyContainerFilePath()
+{
+    m_containerLayerFilePath = m_manager->addProperty(VariantManager::filePathTypeId(), tr("filePath"));
+    m_containerLayerFilePath->setValue("");
+    m_containerLayerFilePath->setAttribute("filter", "(*.xml *.lua)");
+}
+
 //-- 2 level
 void QPropertyBrowser::createPropertyPoint()
 {
@@ -243,6 +271,14 @@ void QPropertyBrowser::createPropertyScale()
     m_scale->addSubProperty(m_scaleX);
     m_scale->addSubProperty(m_scaleY);
     m_scale->setValue(QString(""));
+}
+
+void QPropertyBrowser::createPropertyDimensionSize()
+{
+    m_dimensionSize = m_manager->addProperty(QVariant::String, tr("dimension"));
+    m_dimensionSize->addSubProperty(m_dimensionWith);
+    m_dimensionSize->addSubProperty(m_dimensionHeight);
+    m_dimensionSize->setValue(QString(""));
 }
 
 //-- 3 level
@@ -288,6 +324,12 @@ void QPropertyBrowser::createPropertyCCLabelTTF()
     m_ccLabelTTF->addSubProperty(m_verticalTextAlignment);
 }
 
+void QPropertyBrowser::createPropertyCCContainerLayer()
+{
+    m_ccContainerLayer = m_manager->addProperty(QVariant::String, tr("ContainerLayer"));
+    m_ccContainerLayer->addSubProperty(m_containerLayerFilePath);
+}
+
 void QPropertyBrowser::initProperty(QCCNode* node)
 {
     this->clear();
@@ -312,6 +354,10 @@ void QPropertyBrowser::initProperty(QCCNode* node)
     else if(classType == CLASS_TYPE_CCLABELTTF)
     {
         this->initPropertyCCLabelTTF((QCCLabelTTF*)(node));
+    }
+    else if(classType == CLASS_TYPE_CCCONTAINERLAYER)
+    {
+        this->initPropertyCCContainerLayer((QCCContainerLayer*)(node));
     }
     this->blockSignals(false);
 }
@@ -362,6 +408,13 @@ void QPropertyBrowser::initPropertyCCLabelTTF(QCCLabelTTF* node)
     m_text->setValue(node->m_text);
     m_font->setValue(node->m_font);
     this->addProperty(m_ccLabelTTF);
+}
+
+void QPropertyBrowser::initPropertyCCContainerLayer(QCCContainerLayer* node)
+{
+    this->initPropertyCCNode(node);
+    m_containerLayerFilePath->setValue(node->resourceFullPath(node->m_containerConfigFilePath));
+    this->addProperty(m_ccContainerLayer);
 }
 
 //slot

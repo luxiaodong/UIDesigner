@@ -45,6 +45,7 @@ private:
     void initPropertyCCLayerColor(QCCLayerColor* node);
     void initPropertyCCSprite(QCCSprite* node);
     void initPropertyCCLabelTTF(QCCLabelTTF* node);
+    void initPropertyCCContainerLayer(QCCContainerLayer *node);
 
 private:
     void createProperty();
@@ -72,12 +73,16 @@ private:
     void createPropertyText();
     void createPropertyHorizontalTextAlignment();
     void createPropertyVerticalTextAlignment();
+    void createPropertyDimensionWith();
+    void createPropertyDimensionHeight();
+    void createPropertyContainerFilePath();
 
 //-- 2 level
     void createPropertyPoint();
     void createPropertySize();
     void createPropertyAnchor();
     void createPropertyScale();
+    void createPropertyDimensionSize();
 
 //-- 3 level
     void createPropertyCCNode();
@@ -85,6 +90,7 @@ private:
     void createPropertyCCLayerColor();
     void createPropertyCCSprite();
     void createPropertyCCLabelTTF();
+    void createPropertyCCContainerLayer();
 
 private:
 //-- 1 level
@@ -109,12 +115,16 @@ private:
     QtVariantProperty*  m_text;
     QtVariantProperty*  m_horizontalTextAlignment;
     QtVariantProperty*  m_verticalTextAlignment;
+    QtVariantProperty*  m_dimensionWith;
+    QtVariantProperty*  m_dimensionHeight;
+    QtVariantProperty*  m_containerLayerFilePath;
 
 //-- 2 level
     QtVariantProperty*  m_point;
     QtVariantProperty*  m_size;
     QtVariantProperty*  m_anchor;
     QtVariantProperty*  m_scale;
+    QtVariantProperty*  m_dimensionSize;
 
 //-- 3 level
     QtVariantProperty*  m_ccNode;
@@ -122,6 +132,7 @@ private:
     QtVariantProperty*  m_ccLayerColor;
     QtVariantProperty*  m_ccSprite;
     QtVariantProperty*  m_ccLabelTTF;
+    QtVariantProperty*  m_ccContainerLayer;
 
 private:
     QtVariantPropertyManager*   m_manager;
