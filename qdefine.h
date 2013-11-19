@@ -57,4 +57,19 @@
 #define CLASS_TYPE_CCLABELTTF   "CCLabelTTF"
 #define CLASS_TYPE_CCCONTAINERLAYER  "CCContainerLayer"
 
+
+typedef enum
+{
+    kCCVerticalTextAlignmentTop,
+    kCCVerticalTextAlignmentCenter,
+    kCCVerticalTextAlignmentBottom
+} CCVerticalTextAlignment;
+
+typedef enum
+{
+    kCCHorizontalTextAlignmentLeft,
+    kCCHorizontalTextAlignmentCenter,
+    kCCHorizontalTextAlignmentRight
+} CCHorizontalTextAlignment;
+
 #endif // QDEFINE_H

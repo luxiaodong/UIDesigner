@@ -7,7 +7,6 @@
 #include <QGraphicsSimpleTextItem>
 
 //remeber set default value.
-//treeView 改变的时候,目前无法获得以前的名字,导致在scene里无法找到原来的,这里需要重新考虑数据组织结构
 class QCCNode
 {
 public:
@@ -101,6 +100,10 @@ public:
 public:
     QFont m_font;
     QString m_text;
+    int m_horizontalTextAlignment;
+    int m_verticalTextAlignment;
+    int m_dimensionWith;
+    int m_dimensionHeight;
 };
 
 class QCCContainerLayer : public QCCLayer

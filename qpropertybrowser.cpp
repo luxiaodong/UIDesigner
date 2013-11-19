@@ -43,6 +43,7 @@ void QPropertyBrowser::createProperty()
     createPropertySize();
     createPropertyAnchor();
     createPropertyScale();
+    createPropertyTextAlignment();
     createPropertyDimensionSize();
 
     //-- 3 level
@@ -200,18 +201,18 @@ void QPropertyBrowser::createPropertyText()
 
 void QPropertyBrowser::createPropertyHorizontalTextAlignment()
 {
-    m_horizontalTextAlignment = m_manager->addProperty(QtVariantPropertyManager::enumTypeId(), "HorizontalTextAlignment");
+    m_horizontalTextAlignment = m_manager->addProperty(QtVariantPropertyManager::enumTypeId(), "Horizontal");
     QStringList list;
-    list<<"kCCTextAlignmentLeft"<<"kCCTextAlignmentCenter"<<"kCCTextAlignmentRight";
+    list<<"Left"<<"Center"<<"Right";
     m_horizontalTextAlignment->setAttribute("enumNames", list);
     m_horizontalTextAlignment->setValue(1);
 }
 
 void QPropertyBrowser::createPropertyVerticalTextAlignment()
 {
-    m_verticalTextAlignment = m_manager->addProperty(QtVariantPropertyManager::enumTypeId(), "VerticalTextAlignment");
+    m_verticalTextAlignment = m_manager->addProperty(QtVariantPropertyManager::enumTypeId(), "Vertical");
     QStringList list;
-    list<<"kCCVerticalTextAlignmentTop"<<"kCCVerticalTextAlignmentCenter"<<"kCCVerticalTextAlignmentBottom";
+    list<<"Top"<<"Center"<<"Bottom";
     m_verticalTextAlignment->setAttribute("enumNames", list);
     m_verticalTextAlignment->setValue(1);
 }
@@ -281,6 +282,14 @@ void QPropertyBrowser::createPropertyDimensionSize()
     m_dimensionSize->setValue(QString(""));
 }
 
+void QPropertyBrowser::createPropertyTextAlignment()
+{
+    m_textAlignment = m_manager->addProperty(QVariant::String, tr("textAlignment"));
+    m_textAlignment->addSubProperty(m_horizontalTextAlignment);
+    m_textAlignment->addSubProperty(m_verticalTextAlignment);
+    m_textAlignment->setValue(QString(""));
+}
+
 //-- 3 level
 void QPropertyBrowser::createPropertyCCNode()
 {
@@ -320,8 +329,8 @@ void QPropertyBrowser::createPropertyCCLabelTTF()
     m_ccLabelTTF = m_manager->addProperty(QVariant::String, tr("CCLabelTTF"));
     m_ccLabelTTF->addSubProperty(m_text);
     m_ccLabelTTF->addSubProperty(m_font);
-    m_ccLabelTTF->addSubProperty(m_horizontalTextAlignment);
-    m_ccLabelTTF->addSubProperty(m_verticalTextAlignment);
+    m_ccLabelTTF->addSubProperty(m_textAlignment);
+    m_ccLabelTTF->addSubProperty(m_dimensionSize);
 }
 
 void QPropertyBrowser::createPropertyCCContainerLayer()
@@ -407,6 +416,10 @@ void QPropertyBrowser::initPropertyCCLabelTTF(QCCLabelTTF* node)
     this->initPropertyCCLayerColor(node);
     m_text->setValue(node->m_text);
     m_font->setValue(node->m_font);
+    m_dimensionWith->setValue(node->m_dimensionWith);
+    m_dimensionHeight->setValue(node->m_dimensionHeight);
+    m_horizontalTextAlignment->setValue(node->m_horizontalTextAlignment);
+    m_verticalTextAlignment->setValue(node->m_verticalTextAlignment);
     this->addProperty(m_ccLabelTTF);
 }
 
@@ -501,8 +514,15 @@ void QPropertyBrowser::valueChanged(QtProperty* property, QVariant )
     }
     else if(property == m_horizontalTextAlignment || property == m_verticalTextAlignment)
     {
-        int xxxx = 3;
-        qDebug()<<xxxx;
+        int horizontal = m_horizontalTextAlignment->value().toInt();
+        int vertical = m_verticalTextAlignment->value().toInt();
+        emit changePropertyTextAlignment(horizontal, vertical);
+    }
+    else if(property == m_dimensionWith || property == m_dimensionHeight)
+    {
+        int width = m_dimensionWith->value().toInt();
+        int height = m_dimensionHeight->value().toInt();
+        emit changePropertyTextDimension(width, height);
     }
 }
 

@@ -33,6 +33,8 @@ signals:
     void changePropertyFilePath(QString& filePath);
     void changePropertyFont(QFont& font);
     void changePropertyText(QString& text);
+    void changePropertyTextAlignment(int horizontal, int vertical);
+    void changePropertyTextDimension(int width, int height);
 
 public slots:
     void valueChanged(QtProperty*,QVariant);
@@ -83,6 +85,7 @@ private:
     void createPropertyAnchor();
     void createPropertyScale();
     void createPropertyDimensionSize();
+    void createPropertyTextAlignment();
 
 //-- 3 level
     void createPropertyCCNode();
@@ -125,6 +128,7 @@ private:
     QtVariantProperty*  m_anchor;
     QtVariantProperty*  m_scale;
     QtVariantProperty*  m_dimensionSize;
+    QtVariantProperty*  m_textAlignment;
 
 //-- 3 level
     QtVariantProperty*  m_ccNode;

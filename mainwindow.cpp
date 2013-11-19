@@ -238,6 +238,9 @@ void MainWindow::connectSignalAndSlot()
     connect(m_browser, SIGNAL(changePropertyFont(QFont&)), this, SLOT(changedPropertyFont(QFont&)));
     connect(m_browser, SIGNAL(changePropertyText(QString&)), this, SLOT(changedPropertyText(QString&)));
 
+    connect(m_browser, SIGNAL(changePropertyTextAlignment(int, int)), this, SLOT(changedPropertyTextAlignment(int, int)));
+    connect(m_browser, SIGNAL(changePropertyTextDimension(int, int)), this, SLOT(changedPropertyTextDimension(int, int)));
+
     connect(this, SIGNAL(changePropertyPoint(int,int)), m_browser, SLOT(changedPropertyPoint(int,int)));
     connect(this, SIGNAL(changePropertySize(int,int)), m_browser, SLOT(changedPropertySize(int,int)));
 }
@@ -462,6 +465,28 @@ void MainWindow::changedPropertyText(QString& text)
         QCCLabelTTF* temp = dynamic_cast<QCCLabelTTF*>(node);
         temp->m_text = text;
         emit changeItemText(text);
+    }
+}
+
+void MainWindow::changedPropertyTextAlignment(int horizontal, int vertical)
+{
+    QCCNode* node = this->currentSelectNode();
+    if(node != 0)
+    {
+        QCCLabelTTF* temp = dynamic_cast<QCCLabelTTF*>(node);
+        temp->m_horizontalTextAlignment = horizontal;
+        temp->m_verticalTextAlignment = vertical;
+    }
+}
+
+void MainWindow::changedPropertyTextDimension(int width, int height)
+{
+    QCCNode* node = this->currentSelectNode();
+    if(node != 0)
+    {
+        QCCLabelTTF* temp = dynamic_cast<QCCLabelTTF*>(node);
+        temp->m_dimensionWith = width;
+        temp->m_dimensionHeight = height;
     }
 }
 

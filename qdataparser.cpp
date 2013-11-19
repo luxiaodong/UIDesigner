@@ -196,6 +196,22 @@ void QXmlDataParser::parseCCLabelTTF(QCCLabelTTF* node, QXmlStreamAttributes& at
     font.setPointSize(fontSize);
     node->m_font = font;
 
+    if(attr.hasAttribute("dimensionWith") || attr.hasAttribute("dimensionHeight"))
+    {
+        node->m_dimensionWith = attr.value("dimensionWith").toInt();
+        node->m_dimensionHeight = attr.value("dimensionHeight").toInt();
+    }
+
+    if(attr.hasAttribute("horizontalTextAlignment"))
+    {
+        node->m_horizontalTextAlignment = attr.value("horizontalTextAlignment").toInt();
+    }
+
+    if(attr.hasAttribute("verticalTextAlignment"))
+    {
+        node->m_verticalTextAlignment = attr.value("verticalTextAlignment").toInt();
+    }
+
     this->parseCCLayerColor(node, attr);
 }
 
@@ -326,9 +342,12 @@ void QXmlDataParser::parseCCLayerColor(QCCLayerColor* node, QXmlStreamWriter* st
     int g = node->m_color.green();
     int b = node->m_color.blue();
 
-    stream->writeAttribute("color_r", QString("%1").arg(r));
-    stream->writeAttribute("color_g", QString("%1").arg(g));
-    stream->writeAttribute("color_b", QString("%1").arg(b));
+    if( !(r == 255 && g == 255 && b == 255) )
+    {
+        stream->writeAttribute("color_r", QString("%1").arg(r));
+        stream->writeAttribute("color_g", QString("%1").arg(g));
+        stream->writeAttribute("color_b", QString("%1").arg(b));
+    }
 }
 
 void QXmlDataParser::parseCCSprite(QCCSprite* node, QXmlStreamWriter* stream)
@@ -345,6 +364,22 @@ void QXmlDataParser::parseCCLabelTTF(QCCLabelTTF* node, QXmlStreamWriter* stream
     stream->writeAttribute("text", QString("%1").arg(node->m_text));
     stream->writeAttribute("font_size", QString("%1").arg(node->m_font.pointSize()));
     stream->writeAttribute("font_name", QString("%1").arg(node->m_font.family()));
+
+    if( (node->m_dimensionWith != 0) && (node->m_dimensionHeight != 0))
+    {
+        stream->writeAttribute("dimensionWith", QString("%1").arg(node->m_dimensionWith));
+        stream->writeAttribute("dimensionHeight", QString("%1").arg(node->m_dimensionHeight));
+    }
+
+    if( node->m_horizontalTextAlignment != kCCHorizontalTextAlignmentCenter )
+    {
+        stream->writeAttribute("horizontalTextAlignment", QString("%1").arg(node->m_horizontalTextAlignment));
+    }
+
+    if( node->m_verticalTextAlignment != kCCVerticalTextAlignmentCenter )
+    {
+        stream->writeAttribute("verticalTextAlignment", QString("%1").arg(node->m_verticalTextAlignment));
+    }
 }
 
 void QXmlDataParser::parseCCContainerLayer(QCCContainerLayer* node, QXmlStreamWriter* stream)

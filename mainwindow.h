@@ -80,6 +80,8 @@ public slots:
     void changedPropertyFilePath(QString& filePath);
     void changedPropertyFont(QFont& font);
     void changedPropertyText(QString& text);
+    void changedPropertyTextAlignment(int horizontal, int vertical);
+    void changedPropertyTextDimension(int width, int height);
 
 private slots:
     void on_actionResource_triggered();

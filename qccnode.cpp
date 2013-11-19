@@ -280,6 +280,10 @@ QCCLabelTTF::QCCLabelTTF()
     m_font = QFont();
     m_font.setPointSize(20);
     m_classType = CLASS_TYPE_CCLABELTTF;
+    m_horizontalTextAlignment = kCCHorizontalTextAlignmentCenter;
+    m_verticalTextAlignment = kCCVerticalTextAlignmentCenter;
+    m_dimensionWith = 0;
+    m_dimensionHeight = 0;
 }
 
 void QCCLabelTTF::importData(QMap<QString, QString>& map)
