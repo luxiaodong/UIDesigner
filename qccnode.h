@@ -106,6 +106,12 @@ public:
     int m_dimensionHeight;
 };
 
+class QCCMenuItemImage : public QCCSprite
+{
+public:
+    QCCMenuItemImage();
+};
+
 class QCCContainerLayer : public QCCLayer
 {
 public:

@@ -720,3 +720,8 @@ void MainWindow::on_actionCCLabelTTF_triggered()
         this->viewClicked( m_model->index( m_model->rowCount(index) - 1 , 0, index) );
     }
 }
+
+void MainWindow::on_actionCCMenu_triggered()
+{
+
+}

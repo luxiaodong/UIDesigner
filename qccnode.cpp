@@ -32,6 +32,10 @@ QCCNode* QCCNode::createCCNodeByType(QString type)
     {
         node = new QCCContainerLayer();
     }
+    else if(type == CLASS_TYPE_CCMENUITEM_IMAGE)
+    {
+        node = new QCCMenuItemImage();
+    }
 
     Q_ASSERT(node != 0);
     static int count = 1;
@@ -322,6 +326,11 @@ QGraphicsItem* QCCLabelTTF::createGraphicsItem()
     item->setTransform(QTransform::fromTranslate(-m_width/2, -m_height/2), true);
     m_graphicsItem = item;
     return item;
+}
+
+QCCMenuItemImage::QCCMenuItemImage()
+{
+    m_classType = CLASS_TYPE_CCMENUITEM_IMAGE;
 }
 
 QCCContainerLayer::QCCContainerLayer()

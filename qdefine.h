@@ -55,8 +55,8 @@
 #define CLASS_TYPE_CCLAYERCOLOR "CCLayerColor"
 #define CLASS_TYPE_CCSPRITE     "CCSprite"
 #define CLASS_TYPE_CCLABELTTF   "CCLabelTTF"
+#define CLASS_TYPE_CCMENUITEM_IMAGE "CCMenuItemImage"
 #define CLASS_TYPE_CCCONTAINERLAYER  "CCContainerLayer"
-
 
 typedef enum
 {
