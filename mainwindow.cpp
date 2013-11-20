@@ -211,6 +211,12 @@ bool MainWindow::isCCSpriteCanBeCreate(QString filePath)
         return false;
     }
 
+    if(filePath.contains(m_storageData->resourceDir()) == false)
+    {
+        this->statusBar()->showMessage(QString("%1 out of Resource.").arg(filePath));
+        return false;
+    }
+
     return true;
 }
 

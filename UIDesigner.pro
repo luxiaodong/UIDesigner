@@ -21,7 +21,8 @@ SOURCES += main.cpp\
     qpropertybrowser.cpp \
     qstoragedata.cpp \
     qdataparser.cpp \
-    qselectsizedialog.cpp
+    qselectsizedialog.cpp \
+    qluadataparser.cpp
 
 HEADERS  += mainwindow.h \
     qabstracttreemodel.h \
@@ -32,7 +33,8 @@ HEADERS  += mainwindow.h \
     qpropertybrowser.h \
     qstoragedata.h \
     qdataparser.h \
-    qselectsizedialog.h
+    qselectsizedialog.h \
+    qluadataparser.h
 
 FORMS    += mainwindow.ui \
     qselectsizedialog.ui

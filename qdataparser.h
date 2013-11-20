@@ -3,23 +3,22 @@
 
 #include "qccnode.h"
 
-#define DATA_FORMAT_XML 1
-#define DATA_FORMAT_LUA 2
-
 class QDataParser
 {
 public:
-    QDataParser();
-    ~QDataParser();
-    virtual QCCNode* parse(QString&);
-    virtual QString parse(QCCNode*);
+    virtual QCCNode* readUIFile(QString filePath);
+    virtual bool writeUIFile(QString filePath, QCCNode* root);
 };
 
 class QXmlDataParser : public QDataParser
 {
 public:
-    virtual QCCNode* parse(QString&);
-    virtual QString parse(QCCNode*);
+    virtual QCCNode* readUIFile(QString filePath);
+    virtual bool writeUIFile(QString filePath, QCCNode* root);
+
+private:
+    QCCNode* parse(QString&);
+    QString parse(QCCNode*);
 
 private:
     void parseCCNode(QCCNode*, QXmlStreamAttributes&);
@@ -38,13 +37,6 @@ private:
     void parseCCLabelTTF(QCCLabelTTF*, QXmlStreamWriter*);
     void parseCCMenuItemImage(QCCMenuItemImage*, QXmlStreamWriter*);
     void parseCCContainerLayer(QCCContainerLayer*, QXmlStreamWriter*);
-};
-
-class QLuaDataParser : public QDataParser
-{
-public:
-    virtual QCCNode* parse(QString&);
-    virtual QString parse(QCCNode*);
 };
 
 

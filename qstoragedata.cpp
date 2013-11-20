@@ -1,4 +1,5 @@
 #include "qstoragedata.h"
+#include "qluadataparser.h"
 
 QStorageData::QStorageData()
 {
@@ -32,17 +33,14 @@ QCCNode* QStorageData::readUIFile(QString filePath)
     }
 
     QDataParser* parser = 0;
-    int dataFormat = 0;
     QString suffix = filePath.right(3);
     if(suffix == "xml")
     {
         parser = new QXmlDataParser();
-        dataFormat = DATA_FORMAT_XML;
     }
     else if(suffix == "lua")
     {
         parser = new QLuaDataParser();
-        dataFormat = DATA_FORMAT_LUA;
     }
     else
     {
@@ -50,19 +48,7 @@ QCCNode* QStorageData::readUIFile(QString filePath)
         return 0;
     }
 
-    QFile file(filePath);
-    if(file.open(QIODevice::ReadOnly) == false)
-    {
-        m_lastError = QString("open file failed");
-        return 0;
-    }
-
-    QTextStream stream(&file);
-    stream.setCodec("UTF-8");
-    QString str = stream.readAll();
-    file.close();
-
-    m_root = parser->parse(str);
+    m_root = parser->readUIFile(filePath);
     delete parser;
 
     if(m_root == 0)
@@ -82,17 +68,14 @@ bool QStorageData::writeUIFile(QString filePath)
     }
 
     QDataParser* parser = 0;
-    int dataFormat = 0;
     QString suffix = filePath.right(3);
     if(suffix == "xml")
     {
         parser = new QXmlDataParser();
-        dataFormat = DATA_FORMAT_XML;
     }
     else if(suffix == "lua")
     {
         parser = new QLuaDataParser();
-        dataFormat = DATA_FORMAT_LUA;
     }
     else
     {
@@ -100,28 +83,13 @@ bool QStorageData::writeUIFile(QString filePath)
         return false;
     }
 
-    QString str = parser->parse(m_root);
-    delete parser;
-
-    if(str == "")
+    if( parser->writeUIFile(filePath, m_root) == false )
     {
         m_lastError = QString("parse file failed.");
+        delete parser;
         return false;
     }
 
-    QFile file(filePath);
-    if(file.open(QIODevice::WriteOnly) == false)
-    {
-        m_lastError = QString("open file failed");
-        return 0;
-    }
-
-    str.replace(">",">\n");
-
-    QTextStream stream(&file);
-    stream.setCodec("UTF-8");
-    stream<<str;
-    file.close();
-
+    delete parser;
     return true;
 }

@@ -1,20 +1,47 @@
 #include "qdataparser.h"
 
-QDataParser::QDataParser()
-{
-}
-
-QDataParser::~QDataParser()
-{}
-
-QCCNode* QDataParser::parse(QString& str)
+QCCNode* QDataParser::readUIFile(QString )
 {
     return 0;
 }
 
-QString QDataParser::parse(QCCNode*)
+bool QDataParser::writeUIFile(QString , QCCNode* )
 {
-    return "";
+    return false;
+}
+
+QCCNode* QXmlDataParser::readUIFile(QString filePath)
+{
+    QFile file(filePath);
+    if(file.open(QIODevice::ReadOnly) == false)
+    {
+        return 0;
+    }
+
+    QTextStream stream(&file);
+    stream.setCodec("UTF-8");
+    QString str = stream.readAll();
+    file.close();
+
+    return this->parse(str);
+}
+
+bool QXmlDataParser::writeUIFile(QString filePath, QCCNode* root)
+{
+    QFile file(filePath);
+    if(file.open(QIODevice::WriteOnly) == false)
+    {
+        return false;
+    }
+
+    QString str = this->parse(root);
+    str.replace(">",">\n");
+
+    QTextStream stream(&file);
+    stream.setCodec("UTF-8");
+    stream<<str;
+    file.close();
+    return true;
 }
 
 QCCNode* QXmlDataParser::parse(QString& str)
@@ -437,13 +464,3 @@ void QXmlDataParser::parseCCContainerLayer(QCCContainerLayer* node, QXmlStreamWr
     this->parseCCLayer(node, stream);
     stream->writeAttribute("containerConfigFilePath", QString("%1").arg(node->m_containerConfigFilePath));
 }
-
-QCCNode* QLuaDataParser::parse(QString& str)
-{
-    QStringList lines = str.split("\n");
-    return 0;
-}
-
-QString QLuaDataParser::parse(QCCNode* root)
-{}
-
