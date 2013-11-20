@@ -54,6 +54,11 @@ QCCNode* QXmlDataParser::parse(QString& str)
                 node = QCCNode::createCCNodeByType(CLASS_TYPE_CCLABELTTF);
                 this->parseCCLabelTTF((QCCLabelTTF*)node, attr);
             }
+            else if(reader.name() == CLASS_TYPE_CCMENUITEM_IMAGE)
+            {
+                node = QCCNode::createCCNodeByType(CLASS_TYPE_CCMENUITEM_IMAGE);
+                this->parseCCMenuItemImage((QCCMenuItemImage*)node, attr);
+            }
             else if(reader.name() == CLASS_TYPE_CCCONTAINERLAYER)
             {
                 node = QCCNode::createCCNodeByType(CLASS_TYPE_CCCONTAINERLAYER);
@@ -215,6 +220,16 @@ void QXmlDataParser::parseCCLabelTTF(QCCLabelTTF* node, QXmlStreamAttributes& at
     this->parseCCLayerColor(node, attr);
 }
 
+void QXmlDataParser::parseCCMenuItemImage(QCCMenuItemImage* node, QXmlStreamAttributes& attr)
+{
+    if(attr.hasAttribute("image_n") == true)
+    {
+        node->m_filePath = attr.value("image_n").toString();
+    }
+
+    this->parseCCLayer(node, attr);
+}
+
 void QXmlDataParser::parseCCContainerLayer(QCCContainerLayer* node, QXmlStreamAttributes& attr)
 {
     if(attr.hasAttribute("containerConfigFilePath") == true)
@@ -254,6 +269,10 @@ void QXmlDataParser::parseNode(QCCNode* node, QXmlStreamWriter* stream)
     else if(node->m_classType == CLASS_TYPE_CCLABELTTF)
     {
         this->parseCCLabelTTF( (QCCLabelTTF*)node, stream);
+    }
+    else if(node->m_classType == CLASS_TYPE_CCMENUITEM_IMAGE)
+    {
+        this->parseCCMenuItemImage( (QCCMenuItemImage*)node, stream);
     }
     else if(node->m_classType == CLASS_TYPE_CCCONTAINERLAYER)
     {
@@ -379,6 +398,37 @@ void QXmlDataParser::parseCCLabelTTF(QCCLabelTTF* node, QXmlStreamWriter* stream
     if( node->m_verticalTextAlignment != kCCVerticalTextAlignmentCenter )
     {
         stream->writeAttribute("verticalTextAlignment", QString("%1").arg(node->m_verticalTextAlignment));
+    }
+}
+
+void QXmlDataParser::parseCCMenuItemImage(QCCMenuItemImage* node, QXmlStreamWriter* stream)
+{
+    this->parseCCLayer(node, stream);
+
+    QString image_n = node->m_filePath;
+    stream->writeAttribute("image_n", QString("%1").arg(image_n));
+
+    QStringList imageFormat;
+    imageFormat<<"jpg"<<"png";
+    QStringList imageState;
+    imageState<<"h"<<"d";
+
+    foreach(QString singleFormat, imageFormat)
+    {
+        if(image_n.contains( QString("_n.%1").arg(singleFormat) ) == true)
+        {
+            foreach(QString singleState, imageState)
+            {
+                QString image_s = image_n;
+                image_s.replace( QString("_n.%1").arg(singleFormat), QString("_%1.%2").arg(singleState,singleFormat) );
+                QString image_s_fullPath = node->resourceFullPath(image_s);
+
+                if(QFile::exists(image_s_fullPath) == true)
+                {
+                    stream->writeAttribute( QString("image_%1").arg(singleState), QString("%1").arg(image_s));
+                }
+            }
+        }
     }
 }
 

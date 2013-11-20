@@ -28,6 +28,7 @@ private:
 
 private:
     void replaceRootNode(QCCNode* root);
+    void syncNodeAfterCreate(QModelIndex index, QCCNode* node);
     QModelIndex searchIndex(QModelIndex parentIndex,QGraphicsItem* item);
     QCCNode* currentSelectNode();
 

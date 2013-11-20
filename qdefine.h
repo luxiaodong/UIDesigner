@@ -43,6 +43,7 @@
 #include <QMessageBox>
 #include <QFileDialog>
 #include <QFile>
+#include <QDir>
 #include <QTextStream>
 #include <QXmlStreamReader>
 #include <QXmlStreamWriter>

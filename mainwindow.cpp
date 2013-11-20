@@ -109,6 +109,25 @@ void MainWindow::replaceRootNode(QCCNode* node)
 //    m_browser->initProperty(node);
 }
 
+void MainWindow::syncNodeAfterCreate(QModelIndex index, QCCNode* node)
+{
+    QCCNode* parentNode = m_model->itemAt(index)->m_node;
+    parentNode->m_children.append(node);
+    node->m_parent = parentNode;
+
+    disconnect(m_model, SIGNAL(dataChanged(QModelIndex,QModelIndex,const QVector<int>)), this, SLOT(dataChanged(const QModelIndex&,const QModelIndex&,const QVector<int>&)));
+
+    //add to treeItem
+    m_model->createTreeItemByCCNode(node, index);
+    m_scene->createGraphicsItemByCCNode(node, parentNode->m_graphicsItem);
+
+    connect(m_model, SIGNAL(dataChanged(QModelIndex,QModelIndex,const QVector<int>)), this, SLOT(dataChanged(const QModelIndex&,const QModelIndex&,const QVector<int>&)));
+
+    //更换当前选择
+    this->viewClicked( m_model->index( m_model->rowCount(index) - 1 , 0, index) );
+
+}
+
 QModelIndex MainWindow::searchIndex(QModelIndex parentIndex, QGraphicsItem* item)
 {
     QTreeItem* items = m_model->itemAt(parentIndex);
@@ -529,20 +548,9 @@ void MainWindow::on_actionNew_triggered()
             m_currentOpenFile = openFile;
             this->replaceRootNode(node);
         }
-        else if(dialog.m_rootClassType == CLASS_TYPE_CCLAYER)
+        else if(dialog.m_rootClassType == CLASS_TYPE_CCLAYER || dialog.m_rootClassType == CLASS_TYPE_CCLAYERCOLOR)
         {
-            QCCNode* node = QCCNode::createCCNodeByType(CLASS_TYPE_CCLAYER);
-            node->m_width = dialog.m_width;
-            node->m_height = dialog.m_height;
-            node->m_x = node->m_width/2;
-            node->m_y = node->m_height/2;
-            m_storageData->m_root = node;
-            m_currentOpenFile = openFile;
-            this->replaceRootNode(node);
-        }
-        else if(dialog.m_rootClassType == CLASS_TYPE_CCLAYERCOLOR)
-        {
-            QCCNode* node = QCCNode::createCCNodeByType(CLASS_TYPE_CCLAYERCOLOR);
+            QCCNode* node = QCCNode::createCCNodeByType( dialog.m_rootClassType );
             node->m_width = dialog.m_width;
             node->m_height = dialog.m_height;
             node->m_x = node->m_width/2;
@@ -585,7 +593,6 @@ void MainWindow::on_actionSave_As_triggered()
     m_currentOpenFile = tempFile;
 }
 
-//is need copy all children, en, copy all children can process at save doc.
 void MainWindow::on_actionCopy_triggered()
 {
     QModelIndex index = m_treeView->currentIndex();
@@ -614,20 +621,8 @@ void MainWindow::on_actionParse_triggered()
         QCCNode* node = QCCNode::createCCNodeByType(classType);
         node->importData(m_copyBuffer);
 
-        QCCNode* parentNode = m_model->itemAt(index)->m_node;
-        parentNode->m_children.append(node);
-        node->m_parent = parentNode;
-
-        disconnect(m_model, SIGNAL(dataChanged(QModelIndex,QModelIndex,const QVector<int>)), this, SLOT(dataChanged(const QModelIndex&,const QModelIndex&,const QVector<int>&)));
-
-        //add to treeItem
-        m_model->createTreeItemByCCNode(node, index);
-        m_scene->createGraphicsItemByCCNode(node, parentNode->m_graphicsItem);
-
-        connect(m_model, SIGNAL(dataChanged(QModelIndex,QModelIndex,const QVector<int>)), this, SLOT(dataChanged(const QModelIndex&,const QModelIndex&,const QVector<int>&)));
-
-        //is need 更换当前选择
-        //this->viewClicked( m_model->index( m_model->rowCount(index) - 1 , 0, index) );
+        //sync
+        this->syncNodeAfterCreate(index, node);
 
         this->statusBar()->showMessage("Parse ok");
     }
@@ -676,22 +671,7 @@ void MainWindow::on_actionCCSprite_triggered()
         QCCSprite* sprite = dynamic_cast<QCCSprite*>(node);
         sprite->m_filePath = filePath.remove(QString("%1/").arg(m_storageData->resourceDir()));
         //sync
-        QCCNode* parentNode = m_model->itemAt(index)->m_node;
-        parentNode->m_children.append(node);
-        node->m_parent = parentNode;
-
-        disconnect(m_model, SIGNAL(dataChanged(QModelIndex,QModelIndex,const QVector<int>)), this, SLOT(dataChanged(const QModelIndex&,const QModelIndex&,const QVector<int>&)));
-
-        //add to treeItem
-        m_model->createTreeItemByCCNode(node, index);
-        m_scene->createGraphicsItemByCCNode(node, parentNode->m_graphicsItem);
-
-        connect(m_model, SIGNAL(dataChanged(QModelIndex,QModelIndex,const QVector<int>)), this, SLOT(dataChanged(const QModelIndex&,const QModelIndex&,const QVector<int>&)));
-
-        //更换当前选择
-        this->viewClicked( m_model->index( m_model->rowCount(index) - 1 , 0, index) );
-
-        //qDebug()<<index.data();
+        this->syncNodeAfterCreate(index, node);
     }
 }
 
@@ -704,24 +684,26 @@ void MainWindow::on_actionCCLabelTTF_triggered()
         QCCNode* node = QCCNode::createCCNodeByType(CLASS_TYPE_CCLABELTTF);
 
         //sync
-        QCCNode* parentNode = m_model->itemAt(index)->m_node;
-        parentNode->m_children.append(node);
-        node->m_parent = parentNode;
-
-        disconnect(m_model, SIGNAL(dataChanged(QModelIndex,QModelIndex,const QVector<int>)), this, SLOT(dataChanged(const QModelIndex&,const QModelIndex&,const QVector<int>&)));
-
-        //add to treeItem
-        m_model->createTreeItemByCCNode(node, index);
-        m_scene->createGraphicsItemByCCNode(node, parentNode->m_graphicsItem);
-
-        connect(m_model, SIGNAL(dataChanged(QModelIndex,QModelIndex,const QVector<int>)), this, SLOT(dataChanged(const QModelIndex&,const QModelIndex&,const QVector<int>&)));
-
-        //更换当前选择
-        this->viewClicked( m_model->index( m_model->rowCount(index) - 1 , 0, index) );
+        this->syncNodeAfterCreate(index, node);
     }
 }
 
 void MainWindow::on_actionCCMenu_triggered()
 {
+    QModelIndex index = m_treeView->currentIndex();
+    if(index.isValid() == true)
+    {
+        QString filePath = QFileDialog::getOpenFileName(this, QString("Open File"), m_storageData->resourceDir());
+        if(this->isCCSpriteCanBeCreate(filePath) == false)
+        {
+            return;
+        }
 
+        //create
+        QCCNode* node = QCCNode::createCCNodeByType(CLASS_TYPE_CCMENUITEM_IMAGE);
+        QCCSprite* sprite = dynamic_cast<QCCSprite*>(node);
+        sprite->m_filePath = filePath.remove(QString("%1/").arg(m_storageData->resourceDir()));
+        //sync
+        this->syncNodeAfterCreate(index, node);
+    }
 }
