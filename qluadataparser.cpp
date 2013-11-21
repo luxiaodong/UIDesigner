@@ -36,13 +36,80 @@ bool QLuaDataParser::writeUIFile(QString filePath, QCCNode* root)
 
 QCCNode* QLuaDataParser::parse(QStringList& list)
 {
+    QCCNode* root = 0;
+    QCCNode* parent = 0;
+
     foreach(QString single, list)
     {
+        QCCNode* node = 0;
+
         //解析单个行
         qDebug()<<single;
     }
 
     return 0;
+
+
+
+
+
+
+
+
+//    while(reader.atEnd() == false)
+//    {
+//        QXmlStreamReader::TokenType token = reader.readNext();
+
+//        if(token == QXmlStreamReader::StartElement)
+//        {
+//            QXmlStreamAttributes attr = reader.attributes();
+
+//            //QCCNode* node = QCCNode::createCCNodeByType( reader.name() );
+
+//            QCCNode* node = 0;
+//            if(reader.name() == CLASS_TYPE_CCSPRITE)
+//            {
+//                node = QCCNode::createCCNodeByType(CLASS_TYPE_CCSPRITE);
+//                this->parseCCSprite((QCCSprite*)node, attr);
+//            }
+
+//            //qDebug()<<reader.name();
+//            Q_ASSERT(node != 0);
+
+//            if(root == 0)
+//            {
+//                root = node;
+//                parent = node;
+//            }
+//            else
+//            {
+//                parent->m_children.append(node);
+//                node->m_parent = parent;
+//                parent = node;
+//            }
+//        }
+//        else if(token == QXmlStreamReader::EndElement)
+//        {
+//            parent = parent->m_parent;
+//        }
+//    }
+
+//    if (reader.hasError() == true)
+//    {
+//        Q_ASSERT(0);
+//        return 0;
+//    }
+
+//    return root;
+
+
+
+
+}
+
+QMap<QString,QString> QLuaDataParser::parseLine(QString& line)
+{
+
 }
 
 QString QLuaDataParser::parse(QCCNode* root)

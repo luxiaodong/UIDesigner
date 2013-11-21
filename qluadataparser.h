@@ -13,6 +13,8 @@ private:
     QCCNode* parse(QStringList&);
     QString parse(QCCNode*);
 
+    QMap<QString,QString> parseLine(QString&);
+
 private:
     QString m_fileName;
     QString m_rootStr;
