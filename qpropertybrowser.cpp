@@ -184,7 +184,7 @@ void QPropertyBrowser::createPropertyFilePath()
 {
     m_filePath = m_manager->addProperty(VariantManager::filePathTypeId(), tr("image"));
     m_filePath->setValue("");
-    m_filePath->setAttribute("filter", "Images (*.png *.jpg)");
+    m_filePath->setAttribute("filter", FILTER_IMAGES);
 }
 
 void QPropertyBrowser::createPropertyFont()
@@ -237,7 +237,7 @@ void QPropertyBrowser::createPropertyContainerFilePath()
 {
     m_containerLayerFilePath = m_manager->addProperty(VariantManager::filePathTypeId(), tr("filePath"));
     m_containerLayerFilePath->setValue("");
-    m_containerLayerFilePath->setAttribute("filter", "(*.xml *.lua)");
+    m_containerLayerFilePath->setAttribute("filter", FILTER_CONFIG);
 }
 
 //-- 2 level
@@ -523,6 +523,10 @@ void QPropertyBrowser::valueChanged(QtProperty* property, QVariant )
         int width = m_dimensionWith->value().toInt();
         int height = m_dimensionHeight->value().toInt();
         emit changePropertyTextDimension(width, height);
+    }
+    else if(property == m_containerLayerFilePath)
+    {
+
     }
 }
 

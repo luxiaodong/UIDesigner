@@ -52,12 +52,26 @@ QString QCCNode::resourceFullPath(QString relationPath)
     return QDir::toNativeSeparators(fullPath);
 }
 
+QString QCCNode::luaVariableName()
+{
+    QString str = this->m_name;
+    QCCNode* parent = this->m_parent;
+    while(parent != 0)
+    {
+        str = QString("%1.children.%2").arg(parent->m_name, str);
+        parent = parent->m_parent;
+    }
+
+    return str;
+}
+
 QCCNode::QCCNode()
 {
     m_name = "undefined";
     m_classType = CLASS_TYPE_CCNODE;
     m_children.clear();
     m_parent = 0;
+    m_graphicsItem = 0;
 
     m_isFixed = false;
     m_x = 0;
@@ -94,10 +108,10 @@ void QCCNode::importData(QMap<QString, QString>& map)
     m_width = map.value("width", QString("0")).toInt();
     m_height = map.value("height", QString("0")).toInt();
     m_rotation = map.value("rotation", QString("0")).toInt();
-    m_anchorX = map.value("anchorX", QString("0.0")).toFloat();
-    m_anchorY = map.value("anchorY", QString("0.0")).toFloat();
-    m_scaleX = map.value("scaleX", QString("0.0")).toFloat();
-    m_scaleY = map.value("scaleY", QString("0.0")).toFloat();
+    m_anchorX = map.value("anchorX", QString("0.5")).toFloat();
+    m_anchorY = map.value("anchorY", QString("0.5")).toFloat();
+    m_scaleX = map.value("scaleX", QString("1.0")).toFloat();
+    m_scaleY = map.value("scaleY", QString("1.0")).toFloat();
     m_isVisible = map.value("isVisible", QString("1")).toInt();
 }
 
@@ -106,19 +120,45 @@ QMap<QString, QString> QCCNode::exportData()
     QMap<QString, QString> map;
     map.insert("name", m_name);
     map.insert("classType", m_classType);
-    map.insert("fixed", QString("%1").arg( (m_isFixed == true) ? 1 : 0 ));
     map.insert("x", QString("%1").arg(m_x));
     map.insert("y", QString("%1").arg(m_y));
     map.insert("z", QString("%1").arg(m_z));
-    map.insert("tag", QString("%1").arg(m_tag));
     map.insert("width", QString("%1").arg(m_width));
     map.insert("height", QString("%1").arg(m_height));
-    map.insert("rotation", QString("%1").arg(m_rotation));
-    map.insert("anchorX", QString("%1").arg(m_anchorX));
-    map.insert("anchorY", QString("%1").arg(m_anchorY));
-    map.insert("scaleX", QString("%1").arg(m_scaleX));
-    map.insert("scaleY", QString("%1").arg(m_scaleY));
-    map.insert("isVisible", QString("%1").arg( (m_isVisible == true) ? 1 : 0 ));
+
+    if(m_isFixed == true)
+    {
+        map.insert("fixed","1");
+    }
+
+    if(m_tag != -1)
+    {
+        map.insert("tag", QString("%1").arg(m_tag));
+    }
+
+    if(m_rotation != 0)
+    {
+        map.insert("rotation", QString("%1").arg(m_rotation));
+    }
+
+//    map.insert("anchorX", QString("%1").arg(m_anchorX));
+//    map.insert("anchorY", QString("%1").arg(m_anchorY));
+
+    if(m_scaleX < 0.99 || m_scaleY > 1.01)
+    {
+        map.insert("scaleX", QString("%1").arg(m_scaleX));
+    }
+
+    if(m_scaleY < 0.99 || m_scaleY > 1.01)
+    {
+        map.insert("scaleY", QString("%1").arg(m_scaleY));
+    }
+
+    if(m_isVisible == false)
+    {
+        map.insert("isVisible", "0");
+    }
+
     return map;
 }
 
@@ -144,7 +184,11 @@ void QCCLayer::importData(QMap<QString, QString>& map)
 QMap<QString, QString> QCCLayer::exportData()
 {
     QMap<QString, QString> map = QCCNode::exportData();
-    map.insert("isTouchEnable", QString("%1").arg( (m_isTouchEnable == true) ? 1 : 0 ));
+    if( m_isTouchEnable == true )
+    {
+        map.insert("isTouchEnable", "1");
+    }
+
     return map;
 }
 
@@ -171,9 +215,9 @@ QCCLayerColor::QCCLayerColor()
 void QCCLayerColor::importData(QMap<QString, QString>& map)
 {
     QCCLayer::importData(map);
-    int r = map.value("red", QString("255")).toInt();
-    int g = map.value("green", QString("255")).toInt();
-    int b = map.value("blue", QString("255")).toInt();
+    int r = map.value("color_r", QString("255")).toInt();
+    int g = map.value("color_g", QString("255")).toInt();
+    int b = map.value("color_b", QString("255")).toInt();
     int a = map.value("alpha", QString("255")).toInt();
     m_color = QColor(r,g,b,a);
     m_opacity = map.value("opacity", QString("255")).toInt();
@@ -182,11 +226,19 @@ void QCCLayerColor::importData(QMap<QString, QString>& map)
 QMap<QString, QString> QCCLayerColor::exportData()
 {
     QMap<QString, QString> map = QCCLayer::exportData();
-    map.insert("red", QString("%1").arg(m_color.red()));
-    map.insert("green", QString("%1").arg(m_color.green()));
-    map.insert("blue", QString("%1").arg(m_color.blue()));
-    map.insert("alpha", QString("%1").arg(m_color.alpha()));
-    map.insert("opacity", QString("%1").arg(m_opacity));
+
+    if( !(m_color.red() == 255 && m_color.green() == 255 && m_color.blue() == 255) )
+    {
+        map.insert("color_r", QString("%1").arg(m_color.red()));
+        map.insert("color_g", QString("%1").arg(m_color.green()));
+        map.insert("color_b", QString("%1").arg(m_color.blue()));
+    }
+
+    if(m_opacity != 255)
+    {
+        map.insert("opacity", QString("%1").arg(m_opacity));
+    }
+
     return map;
 }
 
@@ -262,7 +314,7 @@ QGraphicsItem* QCCSprite::createGraphicsItem()
 
 //        pixmap = QPixmap::fromImage(image);
 
-    //pixmap.fill(QColor(qrand()%255, qrand()%255, qrand()%255));
+//  pixmap.fill(QColor(qrand()%255, qrand()%255, qrand()%255));
     item->setPixmap(pixmap);
     QSize s = pixmap.size();
     m_width = s.width();

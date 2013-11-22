@@ -60,6 +60,9 @@
 #define CLASS_TYPE_CCMENUITEM_IMAGE "CCMenuItemImage"
 #define CLASS_TYPE_CCCONTAINERLAYER  "CCContainerLayer"
 
+#define FILTER_IMAGES "Images (*.png *.jpg)"
+#define FILTER_CONFIG "Config (*.lua *.xml)"
+
 typedef enum
 {
     kCCVerticalTextAlignmentTop,

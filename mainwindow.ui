@@ -47,6 +47,7 @@
     <addaction name="actionCCSprite"/>
     <addaction name="actionCCLabelTTF"/>
     <addaction name="actionCCMenu"/>
+    <addaction name="actionCContainer"/>
    </widget>
    <widget class="QMenu" name="menuSetting">
     <property name="title">
@@ -139,6 +140,11 @@
    </property>
    <property name="shortcut">
     <string>Ctrl+D</string>
+   </property>
+  </action>
+  <action name="actionCContainer">
+   <property name="text">
+    <string>CContainer</string>
    </property>
   </action>
  </widget>

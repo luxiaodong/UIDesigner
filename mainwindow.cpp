@@ -535,7 +535,7 @@ void MainWindow::on_actionNew_triggered()
     {
         if(dialog.m_rootClassType == CLASS_TYPE_CCSPRITE)
         {
-            QString filePath = QFileDialog::getOpenFileName(this, QString("Open File"), m_storageData->resourceDir());
+            QString filePath = QFileDialog::getOpenFileName(this, QString("Open File"), m_storageData->resourceDir(),FILTER_IMAGES);
             if(this->isCCSpriteCanBeCreate(filePath) == false)
             {
                 return;
@@ -571,7 +571,7 @@ void MainWindow::on_actionNew_triggered()
 void MainWindow::on_actionOpen_File_triggered()
 {
     QString oldDir = m_storageData->resourceDir();
-    QString filePath = QFileDialog::getOpenFileName(this, QString("Open Directory"), oldDir);
+    QString filePath = QFileDialog::getOpenFileName(this, QString("Open Directory"), oldDir, FILTER_CONFIG);
     QCCNode* node = m_storageData->readUIFile(filePath);
     if(node != 0)
     {
@@ -587,7 +587,7 @@ void MainWindow::on_actionSave_triggered()
 
 void MainWindow::on_actionSave_As_triggered()
 {
-    QString filePath = QFileDialog::getSaveFileName(this, QString("Save As"), m_currentOpenFile);
+    QString filePath = QFileDialog::getSaveFileName(this, QString("Save As"), m_currentOpenFile, FILTER_CONFIG);
     if(filePath.isEmpty())
     {
         return ;
@@ -666,7 +666,7 @@ void MainWindow::on_actionCCSprite_triggered()
     QModelIndex index = m_treeView->currentIndex();
     if(index.isValid() == true)
     {
-        QString filePath = QFileDialog::getOpenFileName(this, QString("Open File"), m_storageData->resourceDir());
+        QString filePath = QFileDialog::getOpenFileName(this, QString("Open File"), m_storageData->resourceDir(), FILTER_IMAGES);
         if(this->isCCSpriteCanBeCreate(filePath) == false)
         {
             return;
@@ -699,7 +699,7 @@ void MainWindow::on_actionCCMenu_triggered()
     QModelIndex index = m_treeView->currentIndex();
     if(index.isValid() == true)
     {
-        QString filePath = QFileDialog::getOpenFileName(this, QString("Open File"), m_storageData->resourceDir());
+        QString filePath = QFileDialog::getOpenFileName(this, QString("Open File"), m_storageData->resourceDir(), FILTER_IMAGES);
         if(this->isCCSpriteCanBeCreate(filePath) == false)
         {
             return;
@@ -709,6 +709,22 @@ void MainWindow::on_actionCCMenu_triggered()
         QCCNode* node = QCCNode::createCCNodeByType(CLASS_TYPE_CCMENUITEM_IMAGE);
         QCCSprite* sprite = dynamic_cast<QCCSprite*>(node);
         sprite->m_filePath = filePath.remove(QString("%1/").arg(m_storageData->resourceDir()));
+        //sync
+        this->syncNodeAfterCreate(index, node);
+    }
+}
+
+void MainWindow::on_actionCContainer_triggered()
+{
+    QModelIndex index = m_treeView->currentIndex();
+    if(index.isValid() == true)
+    {
+        QString filePath = QFileDialog::getOpenFileName(this, QString("Open File"), m_storageData->resourceDir(), FILTER_CONFIG);
+
+        //create
+        QCCNode* node = QCCNode::createCCNodeByType(CLASS_TYPE_CCCONTAINERLAYER);
+        QCCContainerLayer* layer = dynamic_cast<QCCContainerLayer*>(node);
+        layer->m_containerConfigFilePath = filePath.remove(QString("%1/").arg(m_storageData->resourceDir()));
         //sync
         this->syncNodeAfterCreate(index, node);
     }

@@ -22,6 +22,7 @@ public:
 
 public:
     QString resourceFullPath(QString relationPath);
+    QString luaVariableName();
 
 public:
     QString m_name;

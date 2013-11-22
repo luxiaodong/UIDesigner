@@ -96,6 +96,7 @@ private slots:
     void on_actionCCSprite_triggered();
     void on_actionCCLabelTTF_triggered();
     void on_actionCCMenu_triggered();
+    void on_actionCContainer_triggered();
 
 private:
     QTreeView*          m_treeView;

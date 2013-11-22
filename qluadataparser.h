@@ -11,16 +11,16 @@ public:
 
 private:
     QCCNode* parse(QStringList&);
-    QString parse(QCCNode*);
+    void parse(QCCNode*);
 
     QMap<QString,QString> parseLine(QString&);
+    QString parseSingleNode(QMap<QString,QString>&);
 
 private:
     QCCNode* findParentNode(QString nameList, QCCNode* root);
 
 private:
-    QString m_fileName;
-    QString m_rootStr;
+    QStringList m_lines;
 };
 
 #endif // QLUADATAPARSER_H
