@@ -16,6 +16,9 @@ private:
     QMap<QString,QString> parseLine(QString&);
 
 private:
+    QCCNode* findParentNode(QString nameList, QCCNode* root);
+
+private:
     QString m_fileName;
     QString m_rootStr;
 };

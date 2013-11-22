@@ -44,6 +44,7 @@
 #include <QFileDialog>
 #include <QFile>
 #include <QDir>
+#include <QRegExp>
 #include <QTextStream>
 #include <QXmlStreamReader>
 #include <QXmlStreamWriter>

@@ -37,80 +37,93 @@ bool QLuaDataParser::writeUIFile(QString filePath, QCCNode* root)
 QCCNode* QLuaDataParser::parse(QStringList& list)
 {
     QCCNode* root = 0;
-    QCCNode* parent = 0;
 
-    foreach(QString single, list)
+    for(int i = 0; i < list.size(); ++i)
     {
-        QCCNode* node = 0;
+        QString single = list.at(i);
+        QMap<QString,QString> map = this->parseLine(single);
 
-        //解析单个行
-        qDebug()<<single;
+        if(map.size() > 1) //only have name.
+        {
+            QString classType = map.value("classType");
+
+            QCCNode* node = 0;
+            if(classType == CLASS_TYPE_CCLAYER)
+            {
+                node = QCCNode::createCCNodeByType(CLASS_TYPE_CCLAYER);
+                //this->parseCCLayer((QCCLayer*)node, attr);
+            }
+            else if(classType == CLASS_TYPE_CCLAYERCOLOR)
+            {
+                node = QCCNode::createCCNodeByType(CLASS_TYPE_CCLAYERCOLOR);
+                //this->parseCCLayerColor((QCCLayerColor*)node, attr);
+            }
+            else if(classType == CLASS_TYPE_CCSPRITE)
+            {
+                node = QCCNode::createCCNodeByType(CLASS_TYPE_CCSPRITE);
+                //this->parseCCSprite((QCCSprite*)node, attr);
+            }
+            else if(classType == CLASS_TYPE_CCLABELTTF)
+            {
+                node = QCCNode::createCCNodeByType(CLASS_TYPE_CCLABELTTF);
+                //this->parseCCLabelTTF((QCCLabelTTF*)node, attr);
+            }
+            else if(classType == CLASS_TYPE_CCMENUITEM_IMAGE)
+            {
+                node = QCCNode::createCCNodeByType(CLASS_TYPE_CCMENUITEM_IMAGE);
+                //this->parseCCMenuItemImage((QCCMenuItemImage*)node, attr);
+            }
+            else if(classType == CLASS_TYPE_CCCONTAINERLAYER)
+            {
+                node = QCCNode::createCCNodeByType(CLASS_TYPE_CCCONTAINERLAYER);
+                //this->parseCCContainerLayer((QCCContainerLayer*)node, attr);
+            }
+
+            Q_ASSERT(node != 0);
+            if(root == 0)
+            {
+                root = node;
+                parent = node;
+            }
+            else
+            {
+                //find parent.
+                QCCNode* parent = root;
+
+
+                parent->m_children.append(node);
+                node->m_parent = parent;
+                parent = node;
+            }
+        }
     }
 
-    return 0;
-
-
-
-
-
-
-
-
-//    while(reader.atEnd() == false)
-//    {
-//        QXmlStreamReader::TokenType token = reader.readNext();
-
-//        if(token == QXmlStreamReader::StartElement)
-//        {
-//            QXmlStreamAttributes attr = reader.attributes();
-
-//            //QCCNode* node = QCCNode::createCCNodeByType( reader.name() );
-
-//            QCCNode* node = 0;
-//            if(reader.name() == CLASS_TYPE_CCSPRITE)
-//            {
-//                node = QCCNode::createCCNodeByType(CLASS_TYPE_CCSPRITE);
-//                this->parseCCSprite((QCCSprite*)node, attr);
-//            }
-
-//            //qDebug()<<reader.name();
-//            Q_ASSERT(node != 0);
-
-//            if(root == 0)
-//            {
-//                root = node;
-//                parent = node;
-//            }
-//            else
-//            {
-//                parent->m_children.append(node);
-//                node->m_parent = parent;
-//                parent = node;
-//            }
-//        }
-//        else if(token == QXmlStreamReader::EndElement)
-//        {
-//            parent = parent->m_parent;
-//        }
-//    }
-
-//    if (reader.hasError() == true)
-//    {
-//        Q_ASSERT(0);
-//        return 0;
-//    }
-
-//    return root;
-
-
-
-
+    return root;
 }
 
 QMap<QString,QString> QLuaDataParser::parseLine(QString& line)
 {
+    QMap<QString,QString> map;
 
+    QRegExp r(QString("[{\" \"=,\"}]"));
+    QStringList list = line.split(r,QString::SkipEmptyParts);
+    Q_ASSERT(list.size()%2 == 1);
+    map.insert(QString("name"), list.at(0));
+    for(int i=1; i < list.size(); i+=2)
+    {
+        QString key = list.at(i);
+        QString value = list.at(i+1);
+        map.insert(key, value);
+    }
+
+    return map;
 }
+
+QCCNode* QLuaDataParser::findParentNode(QString name, QCCNode* root)
+{
+    QStringList list = name.split(".");
+}
+
 
 QString QLuaDataParser::parse(QCCNode* root)
 {}
@@ -119,8 +132,8 @@ QString QLuaDataParser::parse(QCCNode* root)
 
 //if uidata.login == nil then
 
-// uidata.login = {};
-// uidata.login.bg = {classType="CCSprite",x="149",y="101",z="1",width="298",height="204",filePath="set_dt_list_on.png"}
+// uidata.login ={};
+// uidata.login.bg ={classType="CCSprite",x="149",y="101",z="1",width="298",height="204",filePath="set_dt_list_on.png"}
 // uidata.login.bg.children = {};
 // uidata.login.bg.children.node_2 = {classType="CCSprite",x="119",y="127",width="92",height="37",filePath="atten_tit.png"}
 
