@@ -125,15 +125,11 @@ QMap<QString, QString> QCCNode::exportData()
     map.insert("z", QString("%1").arg(m_z));
     map.insert("width", QString("%1").arg(m_width));
     map.insert("height", QString("%1").arg(m_height));
+    map.insert("tag", QString("%1").arg(m_tag));
 
     if(m_isFixed == true)
     {
         map.insert("fixed","1");
-    }
-
-    if(m_tag != -1)
-    {
-        map.insert("tag", QString("%1").arg(m_tag));
     }
 
     if(m_rotation != 0)
@@ -346,16 +342,17 @@ void QCCLabelTTF::importData(QMap<QString, QString>& map)
 {
     QCCLayerColor::importData(map);
     m_text = map.value("text", QString(""));
-    QString family = map.value("family", QString("")); //default font
+    //QString family = map.value("fontName", QString("")); //default font
     int pointSize = map.value("pointSize", QString("18")).toInt();
-    m_font = QFont(family,pointSize);
+    m_font = QFont();
+    m_font.setPixelSize(pointSize);
 }
 
 QMap<QString, QString> QCCLabelTTF::exportData()
 {
     QMap<QString, QString> map = QCCLayerColor::exportData();
     map.insert("text", m_text);
-    map.insert("family", m_font.family());
+    //map.insert("fontName", m_font.family());
     map.insert("pointSize", QString("%1").arg(m_font.pointSize()));
     return map;
 }
