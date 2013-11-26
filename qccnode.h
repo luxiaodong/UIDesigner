@@ -4,7 +4,7 @@
 #include "qdefine.h"
 #include <QGraphicsItem>
 #include <QGraphicsPixmapItem>
-#include <QGraphicsSimpleTextItem>
+#include <QGraphicsTextItem>
 
 //remeber set default value.
 class QCCNode
@@ -111,6 +111,9 @@ class QCCMenuItemImage : public QCCSprite
 {
 public:
     QCCMenuItemImage();
+
+    virtual void importData(QMap<QString, QString>&);
+    virtual QMap<QString, QString> exportData();
 };
 
 class QCCContainerLayer : public QCCLayer

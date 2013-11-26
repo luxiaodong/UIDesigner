@@ -266,6 +266,9 @@ void MainWindow::connectSignalAndSlot()
     connect(m_browser, SIGNAL(changePropertyTextAlignment(int, int)), this, SLOT(changedPropertyTextAlignment(int, int)));
     connect(m_browser, SIGNAL(changePropertyTextDimension(int, int)), this, SLOT(changedPropertyTextDimension(int, int)));
 
+    connect(m_browser, SIGNAL(changePropertyCCContainerLayerFilePath(QString&)), this, SLOT(changedPropertyCCContainerLayerFilePath(QString&)));
+
+
     connect(this, SIGNAL(changePropertyPoint(int,int)), m_browser, SLOT(changedPropertyPoint(int,int)));
     connect(this, SIGNAL(changePropertySize(int,int)), m_browser, SLOT(changedPropertySize(int,int)));
 }
@@ -326,11 +329,8 @@ void MainWindow::changedItemSelect(QGraphicsItem* item)
         m_treeView->setCurrentIndex(index);
         QTreeItem* treeItem = m_model->itemAt(index);
         m_browser->initProperty(treeItem->m_node);
+        emit changeItemSelect(treeItem->m_node);
     }
-
-    //属性更新
-    //iter for search item.
-    //ma fan le.
 }
 
 void MainWindow::changedItemPoint(int x, int y)
@@ -514,6 +514,9 @@ void MainWindow::changedPropertyTextDimension(int width, int height)
         temp->m_dimensionHeight = height;
     }
 }
+
+void MainWindow::changedPropertyCCContainerLayerFilePath(QString& filePath)
+{}
 
 void MainWindow::on_actionResource_triggered()
 {

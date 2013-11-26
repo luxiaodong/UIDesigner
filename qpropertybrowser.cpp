@@ -526,7 +526,8 @@ void QPropertyBrowser::valueChanged(QtProperty* property, QVariant )
     }
     else if(property == m_containerLayerFilePath)
     {
-
+        QString filePath = m_containerLayerFilePath->value().toString();
+        emit changePropertyCCContainerLayerFilePath(filePath);
     }
 }
 

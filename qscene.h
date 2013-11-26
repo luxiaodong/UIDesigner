@@ -17,6 +17,7 @@ public:
 public:
     void test();
     void createGraphicsItemByCCNode(QCCNode* node, QGraphicsItem* parentItem);
+    void changeSimpleTextItemBounding();
 
 protected:
     void mousePressEvent(QGraphicsSceneMouseEvent *event);
@@ -30,6 +31,7 @@ signals:
 public slots:
     void changedItemSelect(QCCNode* node);
 
+//应该机制改掉, 改成传CCNode. 然后qccnode那边分解创建和初始化,然后这边直接调用初始化更新
     void changedItemFixed(bool);
     void changedItemPoint(int x, int y);
     void changedItemZ(int z);
@@ -46,7 +48,7 @@ public slots:
 
 private:
     QGraphicsItem* m_selectItem;
-    //QGraphicsRectItem* m_boundingRect;
+    QGraphicsRectItem* m_boundingRect;
 };
 
 #endif // QSCENE_H

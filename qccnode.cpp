@@ -345,7 +345,7 @@ void QCCLabelTTF::importData(QMap<QString, QString>& map)
     //QString family = map.value("fontName", QString("")); //default font
     int pointSize = map.value("pointSize", QString("18")).toInt();
     m_font = QFont();
-    m_font.setPixelSize(pointSize);
+    m_font.setPointSize(pointSize);
 }
 
 QMap<QString, QString> QCCLabelTTF::exportData()
@@ -359,10 +359,10 @@ QMap<QString, QString> QCCLabelTTF::exportData()
 
 QGraphicsItem* QCCLabelTTF::createGraphicsItem()
 {
-    QGraphicsSimpleTextItem* item = new QGraphicsSimpleTextItem();
+    QGraphicsTextItem* item = new QGraphicsTextItem();
     item->setFont(m_font);
-    item->setText(m_text);
-    item->setBrush(QColor(m_color));
+    item->setHtml(m_text);
+    item->setDefaultTextColor(QColor(m_color));
 
     QSizeF s = item->boundingRect().size();
     m_width = s.width();
@@ -380,6 +380,19 @@ QGraphicsItem* QCCLabelTTF::createGraphicsItem()
 QCCMenuItemImage::QCCMenuItemImage()
 {
     m_classType = CLASS_TYPE_CCMENUITEM_IMAGE;
+}
+
+void QCCMenuItemImage::importData(QMap<QString, QString>& map)
+{
+    QCCSprite::importData(map);
+    m_filePath = map.value("image_n", QString(""));
+}
+
+QMap<QString, QString> QCCMenuItemImage::exportData()
+{
+    QMap<QString, QString> map = QCCLayerColor::exportData();
+    map.insert("image_n", m_filePath);
+    return map;
 }
 
 QCCContainerLayer::QCCContainerLayer()
@@ -402,6 +415,7 @@ QMap<QString, QString> QCCContainerLayer::exportData()
 
 QGraphicsItem* QCCContainerLayer::createGraphicsItem()
 {
+    qDebug()<<m_containerConfigFilePath;
     QString fullPath = resourceFullPath(m_containerConfigFilePath);
     QStorageData storageData;
     QCCNode* root = storageData.readUIFile(fullPath);
@@ -419,10 +433,17 @@ QGraphicsItem* QCCContainerLayer::createGraphicsItem()
     m_width = root->m_width;
     m_height = root->m_height;
 
-    item->resetTransform();
-    item->setTransform(QTransform().rotate(m_rotation), true);
-    item->setTransform(QTransform::fromScale(m_scaleX,m_scaleY), true);
-    item->setTransform(QTransform::fromTranslate(-m_width/2, -m_height/2), true);
+    if(root->m_classType == CLASS_TYPE_CCSPRITE)
+    {
+        item->resetTransform();
+        item->setTransform(QTransform().rotate(m_rotation), true);
+        item->setTransform(QTransform::fromScale(m_scaleX,m_scaleY), true);
+        item->setTransform(QTransform::fromTranslate(-m_width/2, -m_height/2), true);
+    }
+    else if(root->m_classType == CLASS_TYPE_CCLAYER || root->m_classType == CLASS_TYPE_CCLAYERCOLOR)
+    {
+        item->setTransform(QTransform::fromTranslate(0, -m_height));
+    }
 
     item->setFlag(QGraphicsItem::ItemIsMovable, true);
     m_graphicsItem = item;

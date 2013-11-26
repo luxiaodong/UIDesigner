@@ -83,6 +83,7 @@ public slots:
     void changedPropertyText(QString& text);
     void changedPropertyTextAlignment(int horizontal, int vertical);
     void changedPropertyTextDimension(int width, int height);
+    void changedPropertyCCContainerLayerFilePath(QString& filePath);
 
 private slots:
     void on_actionResource_triggered();

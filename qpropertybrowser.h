@@ -35,6 +35,7 @@ signals:
     void changePropertyText(QString& text);
     void changePropertyTextAlignment(int horizontal, int vertical);
     void changePropertyTextDimension(int width, int height);
+    void changePropertyCCContainerLayerFilePath(QString& filePath);
 
 public slots:
     void valueChanged(QtProperty*,QVariant);

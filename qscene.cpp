@@ -4,8 +4,8 @@
 QScene::QScene()
 {
     m_selectItem = 0;
-    //m_boundingRect = new QGraphicsRectItem();
-    //m_boundingRect->setPen(QPen(QColor(Qt::red)));
+    m_boundingRect = new QGraphicsRectItem();
+    m_boundingRect->setPen(QPen(QColor(Qt::red)));
 }
 
 void QScene::mousePressEvent(QGraphicsSceneMouseEvent *event)
@@ -16,7 +16,12 @@ void QScene::mousePressEvent(QGraphicsSceneMouseEvent *event)
      if(items.size() > 0)
      {
          QGraphicsItem* item = items.at(0);
-         m_selectItem = item;
+
+         if(m_boundingRect == item)
+         {
+             item = items.at(1);
+         }
+
          emit changeItemSelect(item);
      }
      QGraphicsScene::mousePressEvent(event);
@@ -24,12 +29,9 @@ void QScene::mousePressEvent(QGraphicsSceneMouseEvent *event)
 
 void QScene::mouseMoveEvent(QGraphicsSceneMouseEvent *event)
 {
-    emit showMessage( QString("%1,%2").arg( event->scenePos().x() ).arg( this->height() - event->scenePos().y()) );
     QGraphicsItem* item = this->mouseGrabberItem();
     if (item != 0 && item == m_selectItem)
     {
-        //qDebug()<<"scene move "<<item->data(1).toString();
-        //qDebug()<<"scene move "<<item->x()<<item->y();
         int x = item->x();
         int y = item->y();
 
@@ -123,6 +125,10 @@ void QScene::changedItemSelect(QCCNode* node)
     //add 红色边框
     QGraphicsItem* item = node->m_graphicsItem;
     m_selectItem = item;
+
+    m_boundingRect->setRect( m_selectItem->boundingRect() );
+    m_boundingRect->setParentItem(m_selectItem);
+    m_boundingRect->setVisible(true);
 }
 
 void QScene::changedItemFixed(bool fixed)
@@ -206,8 +212,8 @@ void QScene::changedItemColor(QColor& color, QString& classType)
         }
         else if(classType == CLASS_TYPE_CCLABELTTF)
         {
-            QGraphicsSimpleTextItem* item = dynamic_cast<QGraphicsSimpleTextItem*>(m_selectItem);
-            item->setBrush(QBrush(QColor(color)));
+            QGraphicsTextItem* item = dynamic_cast<QGraphicsTextItem*>(m_selectItem);
+            item->setDefaultTextColor(QColor(color));
         }
     }
 }
@@ -239,8 +245,10 @@ void QScene::changedItemFont(QFont& font)
 {
     if(m_selectItem != 0)
     {
-        QGraphicsSimpleTextItem* item = dynamic_cast<QGraphicsSimpleTextItem*>(m_selectItem);
+        QGraphicsTextItem* item = dynamic_cast<QGraphicsTextItem*>(m_selectItem);
         item->setFont(font);
+        m_boundingRect->setRect( m_selectItem->boundingRect() );
+        this->changeSimpleTextItemBounding();
     }
 }
 
@@ -248,8 +256,22 @@ void QScene::changedItemText(QString& text)
 {
     if(m_selectItem != 0)
     {
-        QGraphicsSimpleTextItem* item = dynamic_cast<QGraphicsSimpleTextItem*>(m_selectItem);
-        item->setText(text);
+        QGraphicsTextItem* item = dynamic_cast<QGraphicsTextItem*>(m_selectItem);
+        item->setHtml(text);
+        m_boundingRect->setRect( m_selectItem->boundingRect() );
+        this->changeSimpleTextItemBounding();
     }
+}
+
+void QScene::changeSimpleTextItemBounding()
+{
+    QGraphicsTextItem* item = dynamic_cast<QGraphicsTextItem*>(m_selectItem);
+    QSizeF s = item->boundingRect().size();
+    int width = s.width();
+    int height = s.height();
+
+    item->setTransformOriginPoint(-width/2, -height/2);
+    item->resetTransform();
+    item->setTransform(QTransform::fromTranslate(-width/2, -height/2), true);
 }
 
