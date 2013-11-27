@@ -8,6 +8,15 @@ MainWindow::MainWindow(QWidget *parent) :
     ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
+    QActionGroup* group = new QActionGroup(this);
+    group->addAction(ui->actionRatio25);
+    group->addAction(ui->actionRatio50);
+    group->addAction(ui->actionRatio75);
+    group->addAction(ui->actionRatio100);
+    group->addAction(ui->actionRatio150);
+    group->addAction(ui->actionRatio200);
+    connect(group, SIGNAL(triggered(QAction*)), this, SLOT(on_actionRatio(QAction*)));
+    m_viewRatio = 100;
 
     QHBoxLayout* boxLayout = new QHBoxLayout();
     boxLayout->setSizeConstraint(QLayout::SetDefaultConstraint);
@@ -96,7 +105,7 @@ void MainWindow::replaceRootNode(QCCNode* node)
     m_model->createTreeItemByCCNode(node, QModelIndex());
 
     //must set scene size first.
-    m_scene->clear();
+    m_scene->reset();
     this->setSceneSize(node->m_width, node->m_height);
     m_scene->createGraphicsItemByCCNode(node, 0);
 
@@ -172,28 +181,9 @@ QCCNode* MainWindow::currentSelectNode()
 
 void MainWindow::setSceneSize(int width, int height)
 {
-    if(width > 1136)
-    {
-        m_graphicsView->setHorizontalScrollBarPolicy(Qt::ScrollBarAsNeeded);
-        width = 1136;
-    }
-    else
-    {
-        m_graphicsView->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
-    }
-
-    if(height > 1136)
-    {
-        m_graphicsView->setVerticalScrollBarPolicy(Qt::ScrollBarAsNeeded);
-        height = 1136;
-    }
-    else
-    {
-        m_graphicsView->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
-    }
-
     //need +2, is a bug ?
-    m_graphicsView->setFixedSize(width, height);
+    m_graphicsView->setFixedSize(width*m_viewRatio/100.0f, height*m_viewRatio/100.0f);
+    m_graphicsView->setTransform(QTransform::fromScale(m_viewRatio/100.0f, m_viewRatio/100.0f), false);
     m_scene->setSceneRect(0, 0, width, height);
 }
 
@@ -234,17 +224,8 @@ void MainWindow::connectSignalAndSlot()
     connect(m_scene, SIGNAL(changeItemSelect(QGraphicsItem*)), this, SLOT(changedItemSelect(QGraphicsItem*)));
     connect(m_scene, SIGNAL(changeItemPoint(int,int)),this,SLOT(changedItemPoint(int,int)));
 
+    connect(this, SIGNAL(changeItemPoint(int,int)), m_scene, SLOT(changedItemPoint(int,int)));
     connect(this, SIGNAL(changeItemSelect(QCCNode*)), m_scene,SLOT(changedItemSelect(QCCNode*)));
-    connect(this, SIGNAL(changeItemFixed(bool)), m_scene, SLOT(changedItemFixed(bool)));
-    connect(this, SIGNAL(changeItemPoint(int, int)), m_scene,SLOT(changedItemPoint(int, int)));
-    connect(this, SIGNAL(changeItemZ(int)), m_scene, SLOT(changedItemZ(int)));
-    connect(this, SIGNAL(changeItemScaleAndRotation(float,float,int)), m_scene, SLOT(changedItemScaleAndRotation(float,float,int)));
-    connect(this, SIGNAL(changeItemColor(QColor&, QString&)), m_scene, SLOT(changedItemColor(QColor&, QString&)));
-    connect(this, SIGNAL(changeItemOpacity(int)), m_scene, SLOT(changedItemOpacity(int)));
-    connect(this, SIGNAL(changeItemVisible(bool)), m_scene, SLOT(changedItemVisible(bool)));
-    connect(this, SIGNAL(changeItemFilePath(QString&)), m_scene,SLOT(changedItemFilePath(QString&)));
-    connect(this, SIGNAL(changeItemFont(QFont&)), m_scene,SLOT(changedItemFont(QFont&)));
-    connect(this, SIGNAL(changeItemText(QString&)), m_scene,SLOT(changedItemText(QString&)));
 
     //property emit and window slot
     connect(m_browser, SIGNAL(changePropertyFixed(bool)), this, SLOT(changedPropertyFixed(bool)));
@@ -351,7 +332,7 @@ void MainWindow::changedPropertyFixed(bool fixed)
     if(node != 0)
     {
         node->m_isFixed = fixed;
-        emit changeItemFixed(fixed);
+        node->updateGraphicsItem();
     }
 }
 
@@ -372,7 +353,7 @@ void MainWindow::changedPropertyZ(int z)
     if(node != 0)
     {
         node->m_z = z;
-        emit changeItemZ(z);
+        node->updateGraphicsItem();
     }
 }
 
@@ -398,7 +379,7 @@ void MainWindow::changedPropertyScale(float scaleX, float scaleY)
     {
         node->m_scaleX = scaleX;
         node->m_scaleY = scaleY;
-        emit changeItemScaleAndRotation(scaleX, scaleY, node->m_rotation);
+        node->updateGraphicsItem();
     }
 }
 
@@ -408,7 +389,7 @@ void MainWindow::changedPropertyRotation(int rotation)
     if(node != 0)
     {
         node->m_rotation = rotation;
-        emit changeItemScaleAndRotation(node->m_scaleX, node->m_scaleY, rotation);
+        node->updateGraphicsItem();
     }
 }
 
@@ -418,7 +399,7 @@ void MainWindow::changedPropertyVisible(bool visible)
     if(node != 0)
     {
         node->m_isVisible = visible;
-        emit changeItemVisible(visible);
+        node->updateGraphicsItem();
     }
 }
 
@@ -432,7 +413,7 @@ void MainWindow::changedPropertyColor(QColor& color)
     {
         QCCLayerColor* temp = dynamic_cast<QCCLayerColor*>(node);
         temp->m_color = color;
-        emit changeItemColor(color, node->m_classType);
+        temp->updateGraphicsItem();
     }
 }
 
@@ -443,7 +424,7 @@ void MainWindow::changedPropertyOpacity(int opacity)
     {
         QCCLayerColor* temp = dynamic_cast<QCCLayerColor*>(node);
         temp->m_opacity = opacity;
-        emit changeItemOpacity(opacity);
+        temp->updateGraphicsItem();
     }
 }
 
@@ -453,8 +434,13 @@ void MainWindow::changedPropertyFilePath(QString& filePath)
     QPixmap pixmap(filePath);
     if(pixmap.isNull() == true)
     {
-        QMessageBox::warning(this,QString("warning"), QString("picture is null. %1").arg(filePath));
+        //QMessageBox::warning(this,QString("warning"), QString("picture is null. %1").arg(filePath));
+        this->statusBar()->showMessage( QString("picture is null. %1").arg(filePath) );
         return ;
+    }
+    else
+    {
+        this->statusBar()->showMessage(QString());
     }
 
     QCCNode* node = this->currentSelectNode();
@@ -464,10 +450,7 @@ void MainWindow::changedPropertyFilePath(QString& filePath)
         QString relationFilePath = filePath;
         relationFilePath.remove( QString("%1/").arg(m_storageData->resourceDir()) );
         sprite->m_filePath = relationFilePath;
-        QSize s = pixmap.size();
-        sprite->m_width = s.width();
-        sprite->m_height = s.height(); //send message to property width & height.
-        emit changeItemFilePath(filePath);
+        sprite->updateGraphicsItem();
     }
 }
 
@@ -478,7 +461,8 @@ void MainWindow::changedPropertyFont(QFont& font)
     {
         QCCLabelTTF* temp = dynamic_cast<QCCLabelTTF*>(node);
         temp->m_font = font;
-        emit changeItemFont(font);
+        temp->updateGraphicsItem();
+        m_scene->changeSimpleTextItemBounding();
     }
 }
 
@@ -489,7 +473,8 @@ void MainWindow::changedPropertyText(QString& text)
     {
         QCCLabelTTF* temp = dynamic_cast<QCCLabelTTF*>(node);
         temp->m_text = text;
-        emit changeItemText(text);
+        temp->updateGraphicsItem();
+        m_scene->changeSimpleTextItemBounding();
     }
 }
 
@@ -562,8 +547,8 @@ void MainWindow::on_actionNew_triggered()
             QCCNode* node = QCCNode::createCCNodeByType( dialog.m_rootClassType );
             node->m_width = dialog.m_width;
             node->m_height = dialog.m_height;
-            node->m_x = node->m_width/2;
-            node->m_y = node->m_height/2;
+            node->m_x = 0;
+            node->m_y = node->m_height;
             m_storageData->m_root = node;
             m_currentOpenFile = openFile;
             this->replaceRootNode(node);
@@ -730,5 +715,18 @@ void MainWindow::on_actionCContainer_triggered()
         layer->m_containerConfigFilePath = filePath.remove(QString("%1/").arg(m_storageData->resourceDir()));
         //sync
         this->syncNodeAfterCreate(index, node);
+    }
+}
+
+void MainWindow::on_actionRatio(QAction* action)
+{
+    QString str = action->text();
+    m_viewRatio = str.remove("%").toInt();
+
+    if(m_currentOpenFile.isEmpty() == false)
+    {
+        int width = m_scene->width();
+        int height = m_scene->height();
+        this->setSceneSize(width, height);
     }
 }

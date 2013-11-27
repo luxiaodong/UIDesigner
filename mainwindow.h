@@ -39,16 +39,7 @@ signals:
     //view;
     //scene;
     void changeItemSelect(QCCNode* node);
-    void changeItemFixed(bool);
     void changeItemPoint(int x, int y);
-    void changeItemZ(int z);
-    void changeItemScaleAndRotation(float scaleX, float scaleY,int rotation);
-    void changeItemColor(QColor&, QString&);
-    void changeItemOpacity(int);
-    void changeItemVisible(bool);
-    void changeItemFilePath(QString&);
-    void changeItemFont(QFont&);
-    void changeItemText(QString&);
 
     //property;
     void changePropertyPoint(int x, int y);
@@ -86,6 +77,7 @@ public slots:
     void changedPropertyCCContainerLayerFilePath(QString& filePath);
 
 private slots:
+    void on_actionRatio(QAction*);
     void on_actionResource_triggered();
     void on_actionNew_triggered();
     void on_actionOpen_File_triggered();
@@ -110,6 +102,7 @@ private:
 private:
     QString             m_currentOpenFile;
     QMap<QString, QString> m_copyBuffer;
+    int                 m_viewRatio;
 
 private:
     Ui::MainWindow *ui;

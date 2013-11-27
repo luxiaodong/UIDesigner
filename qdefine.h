@@ -31,6 +31,9 @@
 #include <QXmlStreamReader>
 #include <QXmlStreamWriter>
 #include <QXmlStreamAttributes>
+#include <QTextBlockFormat>
+#include <QTextCursor>
+#include <QActionGroup>
 
 #define CLASS_TYPE_ROOT     "class"
 

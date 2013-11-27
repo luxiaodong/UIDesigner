@@ -160,9 +160,15 @@ QMap<QString, QString> QCCNode::exportData()
 
 QGraphicsItem* QCCNode::createGraphicsItem()
 {
-    qDebug()<<"ccnode can't be draw to GraphicsItem";
+    qDebug()<<"ccnode can't be create to GraphicsItem";
     Q_ASSERT(0);
     return 0;
+}
+
+void QCCNode::updateGraphicsItem()
+{
+    qDebug()<<"ccnode can't be update to GraphicsItem";
+    Q_ASSERT(0);
 }
 
 QCCLayer::QCCLayer()
@@ -190,15 +196,23 @@ QMap<QString, QString> QCCLayer::exportData()
 
 QGraphicsItem* QCCLayer::createGraphicsItem()
 {
-    QGraphicsRectItem* item = new QGraphicsRectItem();
+    m_graphicsItem = new QGraphicsRectItem();
+    this->updateGraphicsItem();
+    return m_graphicsItem;
+}
+
+void QCCLayer::updateGraphicsItem()
+{
+    QGraphicsRectItem* item = dynamic_cast<QGraphicsRectItem*>(m_graphicsItem);
     item->setRect(0,0,m_width,m_height);
     item->setTransformOriginPoint(-m_width/2, -m_height/2);
     item->resetTransform();
     item->setTransform(QTransform().rotate(m_rotation), true);
     item->setTransform(QTransform::fromScale(m_scaleX,m_scaleY), true);
-    item->setTransform(QTransform::fromTranslate(-m_width/2, -m_height/2), true);
-    m_graphicsItem = item;
-    return item;
+    item->setTransform(QTransform::fromTranslate(0, -m_height), true);
+    item->setZValue(m_z);
+    item->setVisible(m_isVisible);
+    item->setFlag(QGraphicsItem::ItemIsMovable, !m_isFixed);
 }
 
 QCCLayerColor::QCCLayerColor()
@@ -240,17 +254,17 @@ QMap<QString, QString> QCCLayerColor::exportData()
 
 QGraphicsItem* QCCLayerColor::createGraphicsItem()
 {
-    QGraphicsRectItem* item = new QGraphicsRectItem();
-    item->setBrush( QBrush(QColor(m_color)) );
-    item->setRect(0,0,m_width,m_height);
-    item->setTransformOriginPoint(-m_width/2, -m_height/2);
-    item->resetTransform();
-    item->setTransform(QTransform().rotate(m_rotation), true);
-    item->setTransform(QTransform::fromScale(m_scaleX,m_scaleY), true);
-    item->setTransform(QTransform::fromTranslate(-m_width/2, -m_height/2), true);
+    m_graphicsItem = new QGraphicsRectItem();
+    this->updateGraphicsItem();
+    return m_graphicsItem;
+}
+
+void QCCLayerColor::updateGraphicsItem()
+{
+    QGraphicsRectItem* item = dynamic_cast<QGraphicsRectItem*>(m_graphicsItem);
     item->setOpacity( m_opacity/255.0f );
-    m_graphicsItem = item;
-    return item;
+    item->setBrush( QBrush(QColor(m_color)) );
+    QCCLayer::updateGraphicsItem();
 }
 
 QCCSprite::QCCSprite()
@@ -274,56 +288,63 @@ QMap<QString, QString> QCCSprite::exportData()
 
 QGraphicsItem* QCCSprite::createGraphicsItem()
 {
-    //qDebug()<<" sprite name -> "<<m_name;
-    QGraphicsPixmapItem* item = new QGraphicsPixmapItem();
+    m_graphicsItem = new QGraphicsPixmapItem();
+    this->updateGraphicsItem();
+    return m_graphicsItem;
+}
+
+void QCCSprite::updateGraphicsItem()
+{
+    QGraphicsPixmapItem* item = dynamic_cast<QGraphicsPixmapItem*>(m_graphicsItem);
     QPixmap pixmap;
     pixmap = QPixmap(resourceFullPath(m_filePath));
-//        QSize s = pixmap.size();
-//        QImage image = QImage(s.width(), s.height(), QImage::Format_RGB32);
+/*
+        QSize s = pixmap.size();
+        QImage image = QImage(s.width(), s.height(), QImage::Format_RGB32);
 
-//        for(int j = 0; j < s.height(); ++j)
-//        {
-//            for(int i = 0;i < s.width(); ++i)
-//            {
-//                if(i == 0 || i == s.width() -1 || j == 0 || j == s.height() - 1)
-//                {
-//                    image.setPixel(i,j,0xFFFFFF);
-//                }
-//                else if(i == 1 || i == s.width() -2 || j == 1 || j == s.height() - 2)
-//                {
-//                    image.setPixel(i,j,0xFFFFFF);
-//                }
-//                else if(i == 2 || i == s.width() -3 || j == 2 || j == s.height() - 3)
-//                {
-//                    image.setPixel(i,j,0xFF0000);
-//                }
-//                else if(i == 3 || i == s.width() -4 || j == 3 || j == s.height() - 4)
-//                {
-//                    image.setPixel(i,j,0xFF0000);
-//                }
-//                else
-//                {
-//                    image.setPixel(i,j,0x0);
-//                }
-//            }
-//        }
+        for(int j = 0; j < s.height(); ++j)
+        {
+            for(int i = 0;i < s.width(); ++i)
+            {
+                if(i == 0 || i == s.width() -1 || j == 0 || j == s.height() - 1)
+                {
+                    image.setPixel(i,j,0xFFFFFF);
+                }
+                else if(i == 1 || i == s.width() -2 || j == 1 || j == s.height() - 2)
+                {
+                    image.setPixel(i,j,0xFFFFFF);
+                }
+                else if(i == 2 || i == s.width() -3 || j == 2 || j == s.height() - 3)
+                {
+                    image.setPixel(i,j,0xFF0000);
+                }
+                else if(i == 3 || i == s.width() -4 || j == 3 || j == s.height() - 4)
+                {
+                    image.setPixel(i,j,0xFF0000);
+                }
+                else
+                {
+                    image.setPixel(i,j,0x0);
+                }
+            }
+        }
 
-//        pixmap = QPixmap::fromImage(image);
+        pixmap = QPixmap::fromImage(image);
 
-//  pixmap.fill(QColor(qrand()%255, qrand()%255, qrand()%255));
+    pixmap.fill(QColor(qrand()%255, qrand()%255, qrand()%255));
+*/
     item->setPixmap(pixmap);
     QSize s = pixmap.size();
     m_width = s.width();
     m_height = s.height();
-
     item->setTransformOriginPoint(-m_width/2, -m_height/2);
     item->resetTransform();
     item->setTransform(QTransform().rotate(m_rotation), true);
     item->setTransform(QTransform::fromScale(m_scaleX,m_scaleY), true);
     item->setTransform(QTransform::fromTranslate(-m_width/2, -m_height/2), true);
-
-    m_graphicsItem = item;
-    return item;
+    item->setZValue(m_z);
+    item->setVisible(m_isVisible);
+    item->setFlag(QGraphicsItem::ItemIsMovable, !m_isFixed);
 }
 
 QCCLabelTTF::QCCLabelTTF()
@@ -359,7 +380,14 @@ QMap<QString, QString> QCCLabelTTF::exportData()
 
 QGraphicsItem* QCCLabelTTF::createGraphicsItem()
 {
-    QGraphicsTextItem* item = new QGraphicsTextItem();
+    m_graphicsItem = new QGraphicsTextItem();
+    this->updateGraphicsItem();
+    return m_graphicsItem;
+}
+
+void QCCLabelTTF::updateGraphicsItem()
+{
+    QGraphicsTextItem* item = dynamic_cast<QGraphicsTextItem*>(m_graphicsItem);
     item->setFont(m_font);
     item->setHtml(m_text);
     item->setDefaultTextColor(QColor(m_color));
@@ -373,8 +401,18 @@ QGraphicsItem* QCCLabelTTF::createGraphicsItem()
     item->setTransform(QTransform().rotate(m_rotation), true);
     item->setTransform(QTransform::fromScale(m_scaleX,m_scaleY), true);
     item->setTransform(QTransform::fromTranslate(-m_width/2, -m_height/2), true);
-    m_graphicsItem = item;
-    return item;
+    item->setZValue(m_z);
+    item->setVisible(m_isVisible);
+    item->setFlag(QGraphicsItem::ItemIsMovable, !m_isFixed);
+
+    item->setTextWidth(item->boundingRect().width());
+    QTextBlockFormat format;
+    format.setAlignment(Qt::AlignRight);
+    QTextCursor cursor = item->textCursor();
+    cursor.select(QTextCursor::Document);
+    cursor.mergeBlockFormat(format);
+    cursor.clearSelection();
+    item->setTextCursor(cursor);
 }
 
 QCCMenuItemImage::QCCMenuItemImage()
@@ -393,6 +431,16 @@ QMap<QString, QString> QCCMenuItemImage::exportData()
     QMap<QString, QString> map = QCCLayerColor::exportData();
     map.insert("image_n", m_filePath);
     return map;
+}
+
+QGraphicsItem* QCCMenuItemImage::createGraphicsItem()
+{
+    return QCCSprite::createGraphicsItem();
+}
+
+void QCCMenuItemImage::updateGraphicsItem()
+{
+    return QCCSprite::updateGraphicsItem();
 }
 
 QCCContainerLayer::QCCContainerLayer()
@@ -415,7 +463,13 @@ QMap<QString, QString> QCCContainerLayer::exportData()
 
 QGraphicsItem* QCCContainerLayer::createGraphicsItem()
 {
-    qDebug()<<m_containerConfigFilePath;
+    m_graphicsItem = new QGraphicsPixmapItem();
+    this->updateGraphicsItem();
+    return m_graphicsItem;
+}
+
+void QCCContainerLayer::updateGraphicsItem()
+{
     QString fullPath = resourceFullPath(m_containerConfigFilePath);
     QStorageData storageData;
     QCCNode* root = storageData.readUIFile(fullPath);
@@ -427,7 +481,8 @@ QGraphicsItem* QCCContainerLayer::createGraphicsItem()
     QPainter painter(&image);
     scene.render(&painter);
     //image.save(QString("%1.png").arg(fullPath), "png");
-    QGraphicsPixmapItem* item = new QGraphicsPixmapItem();
+
+    QGraphicsPixmapItem* item = dynamic_cast<QGraphicsPixmapItem*>(m_graphicsItem);
     item->setPixmap( QPixmap::fromImage(image) );
 
     m_width = root->m_width;
@@ -445,8 +500,7 @@ QGraphicsItem* QCCContainerLayer::createGraphicsItem()
         item->setTransform(QTransform::fromTranslate(0, -m_height));
     }
 
-    item->setFlag(QGraphicsItem::ItemIsMovable, true);
-    m_graphicsItem = item;
-
-    return item;
+    item->setZValue(m_z);
+    item->setVisible(m_isVisible);
+    item->setFlag(QGraphicsItem::ItemIsMovable, !m_isFixed);
 }

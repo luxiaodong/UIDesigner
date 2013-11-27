@@ -19,6 +19,7 @@ public:
     virtual void importData(QMap<QString, QString>&);
     virtual QMap<QString, QString> exportData();
     virtual QGraphicsItem* createGraphicsItem();
+    virtual void updateGraphicsItem();
 
 public:
     QString resourceFullPath(QString relationPath);
@@ -57,6 +58,7 @@ public:
     virtual void importData(QMap<QString, QString>&);
     virtual QMap<QString, QString> exportData();
     virtual QGraphicsItem* createGraphicsItem();
+    virtual void updateGraphicsItem();
 
 public:
     bool m_isTouchEnable;
@@ -70,6 +72,7 @@ public:
     virtual void importData(QMap<QString, QString>&);
     virtual QMap<QString, QString> exportData();
     virtual QGraphicsItem* createGraphicsItem();
+    virtual void updateGraphicsItem();
 
 public:
     QColor m_color;
@@ -84,6 +87,7 @@ public:
     virtual void importData(QMap<QString, QString>&);
     virtual QMap<QString, QString> exportData();
     virtual QGraphicsItem* createGraphicsItem();
+    virtual void updateGraphicsItem();
 
 public:
     QString m_filePath;
@@ -97,6 +101,7 @@ public:
     virtual void importData(QMap<QString, QString>&);
     virtual QMap<QString, QString> exportData();
     virtual QGraphicsItem* createGraphicsItem();
+    virtual void updateGraphicsItem();
 
 public:
     QFont m_font;
@@ -114,6 +119,8 @@ public:
 
     virtual void importData(QMap<QString, QString>&);
     virtual QMap<QString, QString> exportData();
+    virtual QGraphicsItem* createGraphicsItem();
+    virtual void updateGraphicsItem();
 };
 
 class QCCContainerLayer : public QCCLayer
@@ -124,6 +131,7 @@ public:
     virtual void importData(QMap<QString, QString>&);
     virtual QMap<QString, QString> exportData();
     virtual QGraphicsItem* createGraphicsItem();
+    virtual void updateGraphicsItem();
 
 public:
     QString m_containerConfigFilePath;

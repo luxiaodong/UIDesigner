@@ -56,9 +56,27 @@
     <addaction name="actionResource"/>
     <addaction name="actionSave_path"/>
    </widget>
+   <widget class="QMenu" name="menuView">
+    <property name="title">
+     <string>view</string>
+    </property>
+    <widget class="QMenu" name="menuRatio">
+     <property name="title">
+      <string>ratio</string>
+     </property>
+     <addaction name="actionRatio25"/>
+     <addaction name="actionRatio50"/>
+     <addaction name="actionRatio75"/>
+     <addaction name="actionRatio100"/>
+     <addaction name="actionRatio150"/>
+     <addaction name="actionRatio200"/>
+    </widget>
+    <addaction name="menuRatio"/>
+   </widget>
    <addaction name="menuFile"/>
    <addaction name="menuEdit"/>
    <addaction name="menuCCNode"/>
+   <addaction name="menuView"/>
    <addaction name="menuSetting"/>
   </widget>
   <widget class="QToolBar" name="mainToolBar">
@@ -145,6 +163,72 @@
   <action name="actionCContainer">
    <property name="text">
     <string>CContainer</string>
+   </property>
+  </action>
+  <action name="actionRatio25">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="checked">
+    <bool>false</bool>
+   </property>
+   <property name="text">
+    <string>25%</string>
+   </property>
+  </action>
+  <action name="actionRatio50">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="checked">
+    <bool>false</bool>
+   </property>
+   <property name="text">
+    <string>50%</string>
+   </property>
+  </action>
+  <action name="actionRatio75">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="checked">
+    <bool>false</bool>
+   </property>
+   <property name="text">
+    <string>75%</string>
+   </property>
+  </action>
+  <action name="actionRatio100">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="checked">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>100%</string>
+   </property>
+  </action>
+  <action name="actionRatio150">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="checked">
+    <bool>false</bool>
+   </property>
+   <property name="text">
+    <string>150%</string>
+   </property>
+  </action>
+  <action name="actionRatio200">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="checked">
+    <bool>false</bool>
+   </property>
+   <property name="text">
+    <string>200%</string>
    </property>
   </action>
  </widget>

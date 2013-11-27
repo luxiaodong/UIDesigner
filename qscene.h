@@ -16,6 +16,7 @@ public:
 
 public:
     void test();
+    void reset();
     void createGraphicsItemByCCNode(QCCNode* node, QGraphicsItem* parentItem);
     void changeSimpleTextItemBounding();
 
@@ -30,21 +31,7 @@ signals:
 
 public slots:
     void changedItemSelect(QCCNode* node);
-
-//应该机制改掉, 改成传CCNode. 然后qccnode那边分解创建和初始化,然后这边直接调用初始化更新
-    void changedItemFixed(bool);
     void changedItemPoint(int x, int y);
-    void changedItemZ(int z);
-    void changedItemSize(int width, int height);
-    void changedItemAnchor(float anchorX, float anchorY);
-    void changedItemScaleAndRotation(float scaleX, float scaleY, int rotation);
-    void changedItemVisible(bool visible);
-    void changedItemTouchEnable(bool touchEnable);
-    void changedItemColor(QColor&, QString&);
-    void changedItemOpacity(int opacity);
-    void changedItemFilePath(QString& filePath);
-    void changedItemFont(QFont& font);
-    void changedItemText(QString& text);
 
 private:
     QGraphicsItem* m_selectItem;

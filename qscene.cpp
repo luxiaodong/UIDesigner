@@ -2,11 +2,7 @@
 #include <QGraphicsSceneMouseEvent>
 
 QScene::QScene()
-{
-    m_selectItem = 0;
-    m_boundingRect = new QGraphicsRectItem();
-    m_boundingRect->setPen(QPen(QColor(Qt::red)));
-}
+{}
 
 void QScene::mousePressEvent(QGraphicsSceneMouseEvent *event)
 {
@@ -19,7 +15,10 @@ void QScene::mousePressEvent(QGraphicsSceneMouseEvent *event)
 
          if(m_boundingRect == item)
          {
-             item = items.at(1);
+             if(items.size() > 1)
+             {
+                 item = items.at(1);
+             }
          }
 
          emit changeItemSelect(item);
@@ -95,6 +94,14 @@ void QScene::test()
     qDebug()<<"r4 "<<r4->transform();
 }
 
+void QScene::reset()
+{
+    this->clear();
+    m_selectItem = 0;
+    m_boundingRect = new QGraphicsRectItem();
+    m_boundingRect->setPen(QPen(QColor(Qt::red)));
+}
+
 void QScene::createGraphicsItemByCCNode(QCCNode* node, QGraphicsItem* parentItem)
 {
     QGraphicsItem* item = node->createGraphicsItem();
@@ -110,9 +117,6 @@ void QScene::createGraphicsItemByCCNode(QCCNode* node, QGraphicsItem* parentItem
     }
 
     item->setPos(node->m_x, height - node->m_y);
-    item->setZValue(node->m_z);
-    item->setVisible(node->m_isVisible);
-    item->setFlag(QGraphicsItem::ItemIsMovable, !node->m_isFixed);
 
     foreach(QCCNode* son, node->m_children)
     {
@@ -126,17 +130,10 @@ void QScene::changedItemSelect(QCCNode* node)
     QGraphicsItem* item = node->m_graphicsItem;
     m_selectItem = item;
 
-    m_boundingRect->setRect( m_selectItem->boundingRect() );
+    QRectF r = m_selectItem->boundingRect();
+    m_boundingRect->setRect(r);
     m_boundingRect->setParentItem(m_selectItem);
     m_boundingRect->setVisible(true);
-}
-
-void QScene::changedItemFixed(bool fixed)
-{
-    if(m_selectItem != 0)
-    {
-        m_selectItem->setFlag(QGraphicsItem::ItemIsMovable, !fixed);
-    }
 }
 
 void QScene::changedItemPoint(int x, int y)
@@ -149,122 +146,13 @@ void QScene::changedItemPoint(int x, int y)
             height = m_selectItem->parentItem()->boundingRect().height();
         }
 
-//        qDebug()<<height;
-//        qDebug()<<height - y;
         m_selectItem->setPos(x, height - 1 - y);
-    }
-}
-
-void QScene::changedItemZ(int z)
-{
-    if(m_selectItem != 0)
-    {
-        m_selectItem->setZValue(z);
-    }
-}
-
-void QScene::changedItemSize(int width, int height)
-{}
-
-void QScene::changedItemAnchor(float anchorX, float anchorY)
-{}
-
-void QScene::changedItemScaleAndRotation(float scaleX, float scaleY, int rotation)
-{
-    if(m_selectItem != 0)
-    {
-        //必须是sprite才可以设置
-        //
-        QRectF r = m_selectItem->boundingRect();
-        m_selectItem->setTransformOriginPoint(-r.width()/2, -r.height()/2);
-
-        m_selectItem->resetTransform();
-        m_selectItem->setTransform(QTransform().rotate(rotation), true);
-        m_selectItem->setTransform(QTransform::fromScale(scaleX,scaleY), true);
-        m_selectItem->setTransform(QTransform::fromTranslate(-r.width()/2, -r.height()/2), true);
-    }
-}
-
-void QScene::changedItemVisible(bool visible)
-{
-    if(m_selectItem != 0)
-    {
-        m_selectItem->setVisible(visible);
-    }
-}
-
-void QScene::changedItemTouchEnable(bool touchEnable)
-{
-    if(m_selectItem != 0)
-    {
-        m_selectItem->setVisible(touchEnable);
-    }
-}
-
-void QScene::changedItemColor(QColor& color, QString& classType)
-{
-    if(m_selectItem != 0)
-    {
-        if(classType == CLASS_TYPE_CCLAYERCOLOR)
-        {
-            QGraphicsRectItem* item = dynamic_cast<QGraphicsRectItem*>(m_selectItem);
-            item->setBrush(QBrush(QColor(color)));
-        }
-        else if(classType == CLASS_TYPE_CCLABELTTF)
-        {
-            QGraphicsTextItem* item = dynamic_cast<QGraphicsTextItem*>(m_selectItem);
-            item->setDefaultTextColor(QColor(color));
-        }
-    }
-}
-
-void QScene::changedItemOpacity(int opacity)
-{
-    if(m_selectItem != 0)
-    {
-        m_selectItem->setOpacity(opacity/255.0f);
-    }
-}
-
-void QScene::changedItemFilePath(QString& filePath)
-{
-    if(m_selectItem != 0)
-    {
-        QGraphicsPixmapItem* item = dynamic_cast<QGraphicsPixmapItem*>(m_selectItem);
-        QTransform t = item->transform();
-        QPixmap pixmap(filePath);
-        item->setPixmap(pixmap);
-        QSize r = pixmap.size();
-        m_selectItem->setTransformOriginPoint(-r.width()/2, -r.height()/2);
-        m_selectItem->resetTransform();
-        m_selectItem->setTransform(t, true);
-    }
-}
-
-void QScene::changedItemFont(QFont& font)
-{
-    if(m_selectItem != 0)
-    {
-        QGraphicsTextItem* item = dynamic_cast<QGraphicsTextItem*>(m_selectItem);
-        item->setFont(font);
-        m_boundingRect->setRect( m_selectItem->boundingRect() );
-        this->changeSimpleTextItemBounding();
-    }
-}
-
-void QScene::changedItemText(QString& text)
-{
-    if(m_selectItem != 0)
-    {
-        QGraphicsTextItem* item = dynamic_cast<QGraphicsTextItem*>(m_selectItem);
-        item->setHtml(text);
-        m_boundingRect->setRect( m_selectItem->boundingRect() );
-        this->changeSimpleTextItemBounding();
     }
 }
 
 void QScene::changeSimpleTextItemBounding()
 {
+    m_boundingRect->setRect( m_selectItem->boundingRect() );
     QGraphicsTextItem* item = dynamic_cast<QGraphicsTextItem*>(m_selectItem);
     QSizeF s = item->boundingRect().size();
     int width = s.width();
