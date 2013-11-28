@@ -72,7 +72,7 @@ public slots:
     void changedPropertyFilePath(QString& filePath);
     void changedPropertyFont(QFont& font);
     void changedPropertyText(QString& text);
-    void changedPropertyTextAlignment(int horizontal, int vertical);
+    void changedPropertyAlignment(int horizontal, int vertical);
     void changedPropertyTextDimension(int width, int height);
     void changedPropertyCCContainerLayerFilePath(QString& filePath);
 

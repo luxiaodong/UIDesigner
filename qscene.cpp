@@ -149,17 +149,3 @@ void QScene::changedItemPoint(int x, int y)
         m_selectItem->setPos(x, height - 1 - y);
     }
 }
-
-void QScene::changeSimpleTextItemBounding()
-{
-    m_boundingRect->setRect( m_selectItem->boundingRect() );
-    QGraphicsTextItem* item = dynamic_cast<QGraphicsTextItem*>(m_selectItem);
-    QSizeF s = item->boundingRect().size();
-    int width = s.width();
-    int height = s.height();
-
-    item->setTransformOriginPoint(-width/2, -height/2);
-    item->resetTransform();
-    item->setTransform(QTransform::fromTranslate(-width/2, -height/2), true);
-}
-

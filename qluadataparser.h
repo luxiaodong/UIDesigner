@@ -6,6 +6,7 @@
 class QLuaDataParser : public QDataParser
 {
 public:
+    virtual ~QLuaDataParser(){}
     virtual QCCNode* readUIFile(QString filePath);
     virtual bool writeUIFile(QString filePath, QCCNode* root);
 

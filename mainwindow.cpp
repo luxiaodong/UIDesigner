@@ -181,6 +181,9 @@ QCCNode* MainWindow::currentSelectNode()
 
 void MainWindow::setSceneSize(int width, int height)
 {
+    m_graphicsView->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+    m_graphicsView->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+
     //need +2, is a bug ?
     m_graphicsView->setFixedSize(width*m_viewRatio/100.0f, height*m_viewRatio/100.0f);
     m_graphicsView->setTransform(QTransform::fromScale(m_viewRatio/100.0f, m_viewRatio/100.0f), false);
@@ -244,7 +247,7 @@ void MainWindow::connectSignalAndSlot()
     connect(m_browser, SIGNAL(changePropertyFont(QFont&)), this, SLOT(changedPropertyFont(QFont&)));
     connect(m_browser, SIGNAL(changePropertyText(QString&)), this, SLOT(changedPropertyText(QString&)));
 
-    connect(m_browser, SIGNAL(changePropertyTextAlignment(int, int)), this, SLOT(changedPropertyTextAlignment(int, int)));
+    connect(m_browser, SIGNAL(changePropertyAlignment(int, int)), this, SLOT(changedPropertyAlignment(int, int)));
     connect(m_browser, SIGNAL(changePropertyTextDimension(int, int)), this, SLOT(changedPropertyTextDimension(int, int)));
 
     connect(m_browser, SIGNAL(changePropertyCCContainerLayerFilePath(QString&)), this, SLOT(changedPropertyCCContainerLayerFilePath(QString&)));
@@ -451,6 +454,7 @@ void MainWindow::changedPropertyFilePath(QString& filePath)
         relationFilePath.remove( QString("%1/").arg(m_storageData->resourceDir()) );
         sprite->m_filePath = relationFilePath;
         sprite->updateGraphicsItem();
+        emit changeItemSelect(node);
     }
 }
 
@@ -462,7 +466,7 @@ void MainWindow::changedPropertyFont(QFont& font)
         QCCLabelTTF* temp = dynamic_cast<QCCLabelTTF*>(node);
         temp->m_font = font;
         temp->updateGraphicsItem();
-        m_scene->changeSimpleTextItemBounding();
+        emit changeItemSelect(node);
     }
 }
 
@@ -474,18 +478,20 @@ void MainWindow::changedPropertyText(QString& text)
         QCCLabelTTF* temp = dynamic_cast<QCCLabelTTF*>(node);
         temp->m_text = text;
         temp->updateGraphicsItem();
-        m_scene->changeSimpleTextItemBounding();
+        emit changeItemSelect(node);
     }
 }
 
-void MainWindow::changedPropertyTextAlignment(int horizontal, int vertical)
+void MainWindow::changedPropertyAlignment(int horizontal, int vertical)
 {
     QCCNode* node = this->currentSelectNode();
     if(node != 0)
     {
         QCCLabelTTF* temp = dynamic_cast<QCCLabelTTF*>(node);
-        temp->m_horizontalTextAlignment = horizontal;
-        temp->m_verticalTextAlignment = vertical;
+        temp->m_horizontalAlignment = horizontal;
+        temp->m_verticalAlignment = vertical;
+        temp->updateGraphicsItem();
+        emit changeItemSelect(node);
     }
 }
 
@@ -497,11 +503,32 @@ void MainWindow::changedPropertyTextDimension(int width, int height)
         QCCLabelTTF* temp = dynamic_cast<QCCLabelTTF*>(node);
         temp->m_dimensionWith = width;
         temp->m_dimensionHeight = height;
+        temp->updateGraphicsItem();
+        emit changeItemSelect(node);
     }
 }
 
 void MainWindow::changedPropertyCCContainerLayerFilePath(QString& filePath)
-{}
+{
+    QCCNode* node = this->currentSelectNode();
+    if(node != 0)
+    {
+        QCCContainerLayer* temp = dynamic_cast<QCCContainerLayer*>(node);
+
+        //check if a container.
+        QStorageData data;
+        QCCNode* root = data.readUIFile(filePath);
+        if(root != 0)
+        {
+            delete root;
+            QString relationFilePath = filePath;
+            relationFilePath.remove( QString("%1/").arg(m_storageData->resourceDir()) );
+            temp->m_containerConfigFilePath = relationFilePath;
+            temp->updateGraphicsItem();
+            emit changeItemSelect(node);
+        }
+    }
+}
 
 void MainWindow::on_actionResource_triggered()
 {
@@ -613,7 +640,9 @@ void MainWindow::on_actionParse_triggered()
 
         //create and sync
         QCCNode* node = QCCNode::createCCNodeByType(classType);
+        QString name = node->m_name;
         node->importData(m_copyBuffer);
+        node->m_name = name;
 
         //sync
         this->syncNodeAfterCreate(index, node);

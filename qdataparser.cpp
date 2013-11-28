@@ -234,14 +234,14 @@ void QXmlDataParser::parseCCLabelTTF(QCCLabelTTF* node, QXmlStreamAttributes& at
         node->m_dimensionHeight = attr.value("dimensionHeight").toInt();
     }
 
-    if(attr.hasAttribute("horizontalTextAlignment"))
+    if(attr.hasAttribute("horizontalAlignment"))
     {
-        node->m_horizontalTextAlignment = attr.value("horizontalTextAlignment").toInt();
+        node->m_horizontalAlignment = attr.value("horizontalAlignment").toInt();
     }
 
-    if(attr.hasAttribute("verticalTextAlignment"))
+    if(attr.hasAttribute("verticalAlignment"))
     {
-        node->m_verticalTextAlignment = attr.value("verticalTextAlignment").toInt();
+        node->m_verticalAlignment = attr.value("verticalAlignment").toInt();
     }
 
     this->parseCCLayerColor(node, attr);
@@ -417,14 +417,14 @@ void QXmlDataParser::parseCCLabelTTF(QCCLabelTTF* node, QXmlStreamWriter* stream
         stream->writeAttribute("dimensionHeight", QString("%1").arg(node->m_dimensionHeight));
     }
 
-    if( node->m_horizontalTextAlignment != kCCHorizontalTextAlignmentCenter )
+    if( node->m_horizontalAlignment != kCCHorizontalTextAlignmentCenter )
     {
-        stream->writeAttribute("horizontalTextAlignment", QString("%1").arg(node->m_horizontalTextAlignment));
+        stream->writeAttribute("horizontalAlignment", QString("%1").arg(node->m_horizontalAlignment));
     }
 
-    if( node->m_verticalTextAlignment != kCCVerticalTextAlignmentCenter )
+    if( node->m_verticalAlignment != kCCVerticalTextAlignmentCenter )
     {
-        stream->writeAttribute("verticalTextAlignment", QString("%1").arg(node->m_verticalTextAlignment));
+        stream->writeAttribute("verticalAlignment", QString("%1").arg(node->m_verticalAlignment));
     }
 }
 

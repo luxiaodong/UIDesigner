@@ -106,8 +106,8 @@ public:
 public:
     QFont m_font;
     QString m_text;
-    int m_horizontalTextAlignment;
-    int m_verticalTextAlignment;
+    int m_horizontalAlignment;
+    int m_verticalAlignment;
     int m_dimensionWith;
     int m_dimensionHeight;
 };

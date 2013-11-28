@@ -33,7 +33,7 @@ signals:
     void changePropertyFilePath(QString& filePath);
     void changePropertyFont(QFont& font);
     void changePropertyText(QString& text);
-    void changePropertyTextAlignment(int horizontal, int vertical);
+    void changePropertyAlignment(int horizontal, int vertical);
     void changePropertyTextDimension(int width, int height);
     void changePropertyCCContainerLayerFilePath(QString& filePath);
 
@@ -74,8 +74,8 @@ private:
     void createPropertyFilePath();
     void createPropertyFont();
     void createPropertyText();
-    void createPropertyHorizontalTextAlignment();
-    void createPropertyVerticalTextAlignment();
+    void createPropertyHorizontalAlignment();
+    void createPropertyVerticalAlignment();
     void createPropertyDimensionWith();
     void createPropertyDimensionHeight();
     void createPropertyContainerFilePath();
@@ -117,8 +117,8 @@ private:
     QtVariantProperty*  m_filePath;
     QtVariantProperty*  m_font;
     QtVariantProperty*  m_text;
-    QtVariantProperty*  m_horizontalTextAlignment;
-    QtVariantProperty*  m_verticalTextAlignment;
+    QtVariantProperty*  m_horizontalAlignment;
+    QtVariantProperty*  m_verticalAlignment;
     QtVariantProperty*  m_dimensionWith;
     QtVariantProperty*  m_dimensionHeight;
     QtVariantProperty*  m_containerLayerFilePath;

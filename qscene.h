@@ -18,7 +18,6 @@ public:
     void test();
     void reset();
     void createGraphicsItemByCCNode(QCCNode* node, QGraphicsItem* parentItem);
-    void changeSimpleTextItemBounding();
 
 protected:
     void mousePressEvent(QGraphicsSceneMouseEvent *event);
