@@ -300,6 +300,8 @@ void MainWindow::dataChanged(const QModelIndex & topLeft, const QModelIndex & bo
             QTreeItem* treeItem = m_model->itemAt(topLeft);
             treeItem->m_node->m_name = topLeft.data().toString();
             //先该底层的数据,再改上层的东西
+
+            this->setWindowTitle(QString("%1*").arg(m_currentOpenFile));
         }
     }
 }
@@ -325,6 +327,7 @@ void MainWindow::changedItemPoint(int x, int y)
         node->m_x = x;
         node->m_y = y;
         emit changePropertyPoint(x, y);
+        this->setWindowTitle(QString("%1*").arg(m_currentOpenFile));
     }
 }
 
@@ -336,6 +339,7 @@ void MainWindow::changedPropertyFixed(bool fixed)
     {
         node->m_isFixed = fixed;
         node->updateGraphicsItem();
+        this->setWindowTitle(QString("%1*").arg(m_currentOpenFile));
     }
 }
 
@@ -347,6 +351,7 @@ void MainWindow::changedPropertyPoint(int x, int y)
         node->m_x = x;
         node->m_y = y;
         emit changeItemPoint(x, y);
+        this->setWindowTitle(QString("%1*").arg(m_currentOpenFile));
     }
 }
 
@@ -357,6 +362,7 @@ void MainWindow::changedPropertyZ(int z)
     {
         node->m_z = z;
         node->updateGraphicsItem();
+        this->setWindowTitle(QString("%1*").arg(m_currentOpenFile));
     }
 }
 
@@ -366,6 +372,7 @@ void MainWindow::changedPropertyTag(int tag)
     if(node != 0)
     {
         node->m_tag = tag;
+        this->setWindowTitle(QString("%1*").arg(m_currentOpenFile));
     }
 }
 
@@ -383,6 +390,7 @@ void MainWindow::changedPropertyScale(float scaleX, float scaleY)
         node->m_scaleX = scaleX;
         node->m_scaleY = scaleY;
         node->updateGraphicsItem();
+        this->setWindowTitle(QString("%1*").arg(m_currentOpenFile));
     }
 }
 
@@ -393,6 +401,7 @@ void MainWindow::changedPropertyRotation(int rotation)
     {
         node->m_rotation = rotation;
         node->updateGraphicsItem();
+        this->setWindowTitle(QString("%1*").arg(m_currentOpenFile));
     }
 }
 
@@ -403,6 +412,7 @@ void MainWindow::changedPropertyVisible(bool visible)
     {
         node->m_isVisible = visible;
         node->updateGraphicsItem();
+        this->setWindowTitle(QString("%1*").arg(m_currentOpenFile));
     }
 }
 
@@ -417,6 +427,7 @@ void MainWindow::changedPropertyColor(QColor& color)
         QCCLayerColor* temp = dynamic_cast<QCCLayerColor*>(node);
         temp->m_color = color;
         temp->updateGraphicsItem();
+        this->setWindowTitle(QString("%1*").arg(m_currentOpenFile));
     }
 }
 
@@ -428,6 +439,7 @@ void MainWindow::changedPropertyOpacity(int opacity)
         QCCLayerColor* temp = dynamic_cast<QCCLayerColor*>(node);
         temp->m_opacity = opacity;
         temp->updateGraphicsItem();
+        this->setWindowTitle(QString("%1*").arg(m_currentOpenFile));
     }
 }
 
@@ -455,6 +467,7 @@ void MainWindow::changedPropertyFilePath(QString& filePath)
         sprite->m_filePath = relationFilePath;
         sprite->updateGraphicsItem();
         emit changeItemSelect(node);
+        this->setWindowTitle(QString("%1*").arg(m_currentOpenFile));
     }
 }
 
@@ -467,6 +480,7 @@ void MainWindow::changedPropertyFont(QFont& font)
         temp->m_font = font;
         temp->updateGraphicsItem();
         emit changeItemSelect(node);
+        this->setWindowTitle(QString("%1*").arg(m_currentOpenFile));
     }
 }
 
@@ -479,6 +493,7 @@ void MainWindow::changedPropertyText(QString& text)
         temp->m_text = text;
         temp->updateGraphicsItem();
         emit changeItemSelect(node);
+        this->setWindowTitle(QString("%1*").arg(m_currentOpenFile));
     }
 }
 
@@ -492,6 +507,7 @@ void MainWindow::changedPropertyAlignment(int horizontal, int vertical)
         temp->m_verticalAlignment = vertical;
         temp->updateGraphicsItem();
         emit changeItemSelect(node);
+        this->setWindowTitle(QString("%1*").arg(m_currentOpenFile));
     }
 }
 
@@ -505,6 +521,7 @@ void MainWindow::changedPropertyTextDimension(int width, int height)
         temp->m_dimensionHeight = height;
         temp->updateGraphicsItem();
         emit changeItemSelect(node);
+        this->setWindowTitle(QString("%1*").arg(m_currentOpenFile));
     }
 }
 
@@ -526,6 +543,7 @@ void MainWindow::changedPropertyCCContainerLayerFilePath(QString& filePath)
             temp->m_containerConfigFilePath = relationFilePath;
             temp->updateGraphicsItem();
             emit changeItemSelect(node);
+            this->setWindowTitle(QString("%1*").arg(m_currentOpenFile));
         }
     }
 }
@@ -568,6 +586,7 @@ void MainWindow::on_actionNew_triggered()
             m_storageData->m_root = node;
             m_currentOpenFile = openFile;
             this->replaceRootNode(node);
+            this->setWindowTitle(m_currentOpenFile);
         }
         else if(dialog.m_rootClassType == CLASS_TYPE_CCLAYER || dialog.m_rootClassType == CLASS_TYPE_CCLAYERCOLOR)
         {
@@ -575,10 +594,11 @@ void MainWindow::on_actionNew_triggered()
             node->m_width = dialog.m_width;
             node->m_height = dialog.m_height;
             node->m_x = 0;
-            node->m_y = node->m_height;
+            node->m_y = 0;
             m_storageData->m_root = node;
             m_currentOpenFile = openFile;
             this->replaceRootNode(node);
+            this->setWindowTitle(m_currentOpenFile);
         }
     }
 }
@@ -592,26 +612,34 @@ void MainWindow::on_actionOpen_File_triggered()
     {
         m_currentOpenFile = filePath;
         this->replaceRootNode(node);
+        this->setWindowTitle(m_currentOpenFile);
+    }
+    else
+    {
+        this->statusBar()->showMessage(QString("open file failed.  %1").arg(filePath));
     }
 }
 
 void MainWindow::on_actionSave_triggered()
 {
     m_storageData->writeUIFile(m_currentOpenFile);
+    this->setWindowTitle(m_currentOpenFile);
 }
 
 void MainWindow::on_actionSave_As_triggered()
 {
+    this->on_actionSave_triggered();
+    this->setWindowTitle(m_currentOpenFile);
+
     QString filePath = QFileDialog::getSaveFileName(this, QString("Save As"), m_currentOpenFile, FILTER_CONFIG);
     if(filePath.isEmpty())
     {
         return ;
     }
 
-    QString tempFile = m_currentOpenFile;
     m_currentOpenFile = filePath;
     this->on_actionSave_triggered();
-    m_currentOpenFile = tempFile;
+    this->setWindowTitle(m_currentOpenFile);
 }
 
 void MainWindow::on_actionCopy_triggered()
@@ -640,14 +668,35 @@ void MainWindow::on_actionParse_triggered()
 
         //create and sync
         QCCNode* node = QCCNode::createCCNodeByType(classType);
-        QString name = node->m_name;
+        QString oldName = node->m_name;
         node->importData(m_copyBuffer);
-        node->m_name = name;
+        QString newName = node->m_name;
+        if(newName.contains("node") == false)
+        {
+            if(newName.contains("_") == true)
+            {
+                int index = newName.indexOf("_");
+                QString last = newName.right(newName.size() - (index + 1));
+                bool ok;
+                int value = last.toInt(&ok);
+                if(ok == true)
+                {
+                    newName = QString("%1_%2").arg(newName.left(index), value+1);
+                }
+            }
+
+            node->m_name = newName;
+        }
+        else
+        {
+            node->m_name = oldName;
+        }
 
         //sync
         this->syncNodeAfterCreate(index, node);
 
         this->statusBar()->showMessage("Parse ok");
+        this->setWindowTitle(QString("%1*").arg(m_currentOpenFile));
     }
 }
 
@@ -674,6 +723,7 @@ void MainWindow::on_actionDel_triggered()
             }
 
             delete node;
+            this->setWindowTitle(QString("%1*").arg(m_currentOpenFile));
         }
     }
 }
@@ -693,8 +743,11 @@ void MainWindow::on_actionCCSprite_triggered()
         QCCNode* node = QCCNode::createCCNodeByType(CLASS_TYPE_CCSPRITE);
         QCCSprite* sprite = dynamic_cast<QCCSprite*>(node);
         sprite->m_filePath = filePath.remove(QString("%1/").arg(m_storageData->resourceDir()));
+        node->m_x = node->m_parent->m_width/2;
+        node->m_y = node->m_parent->m_height/2;
         //sync
         this->syncNodeAfterCreate(index, node);
+        this->setWindowTitle(QString("%1*").arg(m_currentOpenFile));
     }
 }
 
@@ -705,9 +758,12 @@ void MainWindow::on_actionCCLabelTTF_triggered()
     {
         //create
         QCCNode* node = QCCNode::createCCNodeByType(CLASS_TYPE_CCLABELTTF);
+        node->m_x = node->m_parent->m_width/2;
+        node->m_y = node->m_parent->m_height/2;
 
         //sync
         this->syncNodeAfterCreate(index, node);
+        this->setWindowTitle(QString("%1*").arg(m_currentOpenFile));
     }
 }
 
@@ -726,8 +782,11 @@ void MainWindow::on_actionCCMenu_triggered()
         QCCNode* node = QCCNode::createCCNodeByType(CLASS_TYPE_CCMENUITEM_IMAGE);
         QCCSprite* sprite = dynamic_cast<QCCSprite*>(node);
         sprite->m_filePath = filePath.remove(QString("%1/").arg(m_storageData->resourceDir()));
+        node->m_x = node->m_parent->m_width/2;
+        node->m_y = node->m_parent->m_height/2;
         //sync
         this->syncNodeAfterCreate(index, node);
+        this->setWindowTitle(QString("%1*").arg(m_currentOpenFile));
     }
 }
 
@@ -744,6 +803,7 @@ void MainWindow::on_actionCContainer_triggered()
         layer->m_containerConfigFilePath = filePath.remove(QString("%1/").arg(m_storageData->resourceDir()));
         //sync
         this->syncNodeAfterCreate(index, node);
+        this->setWindowTitle(QString("%1*").arg(m_currentOpenFile));
     }
 }
 
@@ -758,4 +818,29 @@ void MainWindow::on_actionRatio(QAction* action)
         int height = m_scene->height();
         this->setSceneSize(width, height);
     }
+}
+
+void MainWindow::closeEvent(QCloseEvent* event)
+{
+    QString title = this->windowTitle();
+    if(title.right(1) == "*")
+    {
+        QMessageBox msgBox;
+        msgBox.setText("The document has been modified.");
+        msgBox.setInformativeText("Do you want to save your changes?");
+        msgBox.setStandardButtons(QMessageBox::Save | QMessageBox::Discard | QMessageBox::Cancel);
+        msgBox.setDefaultButton(QMessageBox::Save);
+        int ret = msgBox.exec();
+        if(ret == QMessageBox::Save)
+        {
+            this->on_actionSave_triggered();
+        }
+        else if(ret == QMessageBox::Cancel)
+        {
+            event->ignore();
+            return ;
+        }
+    }
+
+    QMainWindow::closeEvent(event);
 }

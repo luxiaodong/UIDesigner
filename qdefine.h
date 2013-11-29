@@ -34,6 +34,7 @@
 #include <QTextBlockFormat>
 #include <QTextCursor>
 #include <QActionGroup>
+#include <QCloseEvent>
 
 #define CLASS_TYPE_ROOT     "class"
 

@@ -39,7 +39,8 @@ QCCNode* QCCNode::createCCNodeByType(QString type)
 
     Q_ASSERT(node != 0);
     static int count = 1;
-    node->m_name = QString("node_%1").arg(count++);
+    node->m_name = QString("node_%1").arg(count);
+    node->m_z = count++;
     node->m_classType = type;
     return node;
 }
