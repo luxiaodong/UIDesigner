@@ -743,8 +743,6 @@ void MainWindow::on_actionCCSprite_triggered()
         QCCNode* node = QCCNode::createCCNodeByType(CLASS_TYPE_CCSPRITE);
         QCCSprite* sprite = dynamic_cast<QCCSprite*>(node);
         sprite->m_filePath = filePath.remove(QString("%1/").arg(m_storageData->resourceDir()));
-        node->m_x = node->m_parent->m_width/2;
-        node->m_y = node->m_parent->m_height/2;
         //sync
         this->syncNodeAfterCreate(index, node);
         this->setWindowTitle(QString("%1*").arg(m_currentOpenFile));
@@ -758,9 +756,6 @@ void MainWindow::on_actionCCLabelTTF_triggered()
     {
         //create
         QCCNode* node = QCCNode::createCCNodeByType(CLASS_TYPE_CCLABELTTF);
-        node->m_x = node->m_parent->m_width/2;
-        node->m_y = node->m_parent->m_height/2;
-
         //sync
         this->syncNodeAfterCreate(index, node);
         this->setWindowTitle(QString("%1*").arg(m_currentOpenFile));
@@ -782,8 +777,6 @@ void MainWindow::on_actionCCMenu_triggered()
         QCCNode* node = QCCNode::createCCNodeByType(CLASS_TYPE_CCMENUITEM_IMAGE);
         QCCSprite* sprite = dynamic_cast<QCCSprite*>(node);
         sprite->m_filePath = filePath.remove(QString("%1/").arg(m_storageData->resourceDir()));
-        node->m_x = node->m_parent->m_width/2;
-        node->m_y = node->m_parent->m_height/2;
         //sync
         this->syncNodeAfterCreate(index, node);
         this->setWindowTitle(QString("%1*").arg(m_currentOpenFile));
