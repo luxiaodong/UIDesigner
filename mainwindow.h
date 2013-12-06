@@ -75,6 +75,8 @@ public slots:
     void changedPropertyAlignment(int horizontal, int vertical);
     void changedPropertyTextDimension(int width, int height);
     void changedPropertyCCContainerLayerFilePath(QString& filePath);
+    void changedPropertyInsetsRect(QRect);
+    void changedPropertyPreferedSize(QSize);
 
 private slots:
     void on_actionRatio(QAction*);
@@ -90,6 +92,7 @@ private slots:
     void on_actionCCLabelTTF_triggered();
     void on_actionCCMenu_triggered();
     void on_actionCContainer_triggered();
+    void on_actionCCScale9Sprite_triggered();
 
 protected:
     virtual void closeEvent(QCloseEvent *event);

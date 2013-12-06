@@ -93,6 +93,21 @@ public:
     QString m_filePath;
 };
 
+class QCCScale9Sprite : public QCCSprite
+{
+public:
+    QCCScale9Sprite();
+
+    virtual void importData(QMap<QString, QString>&);
+    virtual QMap<QString, QString> exportData();
+    virtual QGraphicsItem* createGraphicsItem();
+    virtual void updateGraphicsItem();
+
+public:
+    QRect m_insetsRect;
+    QSize m_preferredSize;
+};
+
 class QCCLabelTTF : public QCCLayerColor
 {
 public:

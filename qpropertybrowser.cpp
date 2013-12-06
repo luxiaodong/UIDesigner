@@ -242,6 +242,54 @@ void QPropertyBrowser::createPropertyContainerFilePath()
     m_containerLayerFilePath->setAttribute("filter", FILTER_CONFIG);
 }
 
+void QPropertyBrowser::createPropertyInsetsX()
+{
+    m_insetsX = m_manager->addProperty(QVariant::Int, tr("x"));
+    m_insetsX->setAttribute("minimum",1);
+    m_insetsX->setAttribute("maximum",9999);
+    m_insetsX->setValue(1);
+}
+
+void QPropertyBrowser::createPropertyInsetsY()
+{
+    m_insetsY = m_manager->addProperty(QVariant::Int, tr("y"));
+    m_insetsY->setAttribute("minimum",1);
+    m_insetsY->setAttribute("maximum",9999);
+    m_insetsY->setValue(1);
+}
+
+void QPropertyBrowser::createPropertyInsetsWidth()
+{
+    m_insetsWidth = m_manager->addProperty(QVariant::Int, tr("width"));
+    m_insetsWidth->setAttribute("minimum",1);
+    m_insetsWidth->setAttribute("maximum",9999);
+    m_insetsWidth->setValue(1);
+}
+
+void QPropertyBrowser::createPropertyInsetsHeight()
+{
+    m_insetsHeight = m_manager->addProperty(QVariant::Int, tr("height"));
+    m_insetsHeight->setAttribute("minimum",1);
+    m_insetsHeight->setAttribute("maximum",9999);
+    m_insetsHeight->setValue(1);
+}
+
+void QPropertyBrowser::createPropertyPreferedWidth()
+{
+    m_preferredWidth = m_manager->addProperty(QVariant::Int, tr("width"));
+    m_preferredWidth->setAttribute("minimum",1);
+    m_preferredWidth->setAttribute("maximum",9999);
+    m_preferredWidth->setValue(1);
+}
+
+void QPropertyBrowser::createPropertyPreferedHeight()
+{
+    m_preferredHeight = m_manager->addProperty(QVariant::Int, tr("height"));
+    m_preferredHeight->setAttribute("minimum",1);
+    m_preferredHeight->setAttribute("maximum",9999);
+    m_preferredHeight->setValue(1);
+}
+
 //-- 2 level
 void QPropertyBrowser::createPropertyPoint()
 {
@@ -290,6 +338,24 @@ void QPropertyBrowser::createPropertyTextAlignment()
     m_textAlignment->addSubProperty(m_horizontalAlignment);
     m_textAlignment->addSubProperty(m_verticalAlignment);
     m_textAlignment->setValue(QString(""));
+}
+
+void QPropertyBrowser::createPropertyInsetsRect()
+{
+    m_insetsRect = m_manager->addProperty(QVariant::String, tr("insetsRect"));
+    m_insetsRect->addSubProperty(m_insetsX);
+    m_insetsRect->addSubProperty(m_insetsY);
+    m_insetsRect->addSubProperty(m_insetsWidth);
+    m_insetsRect->addSubProperty(m_insetsHeight);
+    m_insetsRect->setValue(QString(""));
+}
+
+void QPropertyBrowser::createPropertyPreferredSize()
+{
+    m_preferredSize = m_manager->addProperty(QVariant::String, tr("preferredSize"));
+    m_preferredSize->addSubProperty(m_preferredWidth);
+    m_preferredSize->addSubProperty(m_preferredHeight);
+    m_preferredSize->setValue(QString(""));
 }
 
 //-- 3 level
@@ -341,6 +407,13 @@ void QPropertyBrowser::createPropertyCCContainerLayer()
     m_ccContainerLayer->addSubProperty(m_containerLayerFilePath);
 }
 
+void QPropertyBrowser::createPropertyCCScale9Sprite()
+{
+    m_ccScale9Sprite = m_manager->addProperty(QVariant::String, tr("CCScale9Sprite"));
+    m_ccScale9Sprite->addSubProperty(m_insetsRect);
+    m_ccScale9Sprite->addSubProperty(m_preferredSize);
+}
+
 void QPropertyBrowser::initProperty(QCCNode* node)
 {
     this->clear();
@@ -352,23 +425,27 @@ void QPropertyBrowser::initProperty(QCCNode* node)
     }
     else if(classType == CLASS_TYPE_CCLAYER)
     {
-        this->initPropertyCCLayer((QCCLayer*)(node));
+        this->initPropertyCCLayer(dynamic_cast<QCCLayer*>(node));
     }
     else if(classType == CLASS_TYPE_CCLAYERCOLOR)
     {
-        this->initPropertyCCLayerColor((QCCLayerColor*)(node));
+        this->initPropertyCCLayerColor(dynamic_cast<QCCLayerColor*>(node));
     }
     else if(classType == CLASS_TYPE_CCSPRITE || classType == CLASS_TYPE_CCMENUITEM_IMAGE)
     {
-        this->initPropertyCCSprite((QCCSprite*)(node));
+        this->initPropertyCCSprite( dynamic_cast<QCCSprite*>(node));
+    }
+    else if(classType == CLASS_TYPE_CCSCALE9SPRITE )
+    {
+        this->initPropertyCCScale9Sprite( dynamic_cast<QCCScale9Sprite*>(node));
     }
     else if(classType == CLASS_TYPE_CCLABELTTF)
     {
-        this->initPropertyCCLabelTTF((QCCLabelTTF*)(node));
+        this->initPropertyCCLabelTTF( dynamic_cast<QCCLabelTTF*>(node));
     }
     else if(classType == CLASS_TYPE_CCCONTAINERLAYER)
     {
-        this->initPropertyCCContainerLayer((QCCContainerLayer*)(node));
+        this->initPropertyCCContainerLayer( dynamic_cast<QCCContainerLayer*>(node));
     }
     this->blockSignals(false);
 }
@@ -430,6 +507,18 @@ void QPropertyBrowser::initPropertyCCContainerLayer(QCCContainerLayer* node)
     this->initPropertyCCNode(node);
     m_containerLayerFilePath->setValue(node->resourceFullPath(node->m_containerConfigFilePath));
     this->addProperty(m_ccContainerLayer);
+}
+
+void QPropertyBrowser::initPropertyCCScale9Sprite(QCCScale9Sprite *node)
+{
+    this->initPropertyCCSprite(node);
+    m_insetsX->setValue(node->m_insetsRect.x());
+    m_insetsY->setValue(node->m_insetsRect.y());
+    m_insetsWidth->setValue(node->m_insetsRect.width());
+    m_insetsHeight->setValue(node->m_insetsRect.height());
+    m_preferredWidth->setValue(node->m_preferredSize.width());
+    m_preferredHeight->setValue(node->m_preferredSize.height());
+    this->addProperty(m_ccScale9Sprite);
 }
 
 //slot
@@ -530,6 +619,20 @@ void QPropertyBrowser::valueChanged(QtProperty* property, QVariant )
     {
         QString filePath = m_containerLayerFilePath->value().toString();
         emit changePropertyCCContainerLayerFilePath(filePath);
+    }
+    else if(property == m_insetsX || property == m_insetsY || property == m_insetsWidth || property == m_insetsHeight)
+    {
+        int x = m_insetsX->value().toInt();
+        int y = m_insetsY->value().toInt();
+        int w = m_insetsWidth->value().toInt();
+        int h = m_insetsHeight->value().toInt();
+        emit changePropertyInsetsRect(QRect(x,y,w,h));
+    }
+    else if(property == m_preferredWidth || property == m_preferredHeight)
+    {
+        int h = m_preferredWidth->value().toInt();
+        int w = m_preferredHeight->value().toInt();
+        emit changePropertyPreferedSize(QSize(w,h));
     }
 }
 

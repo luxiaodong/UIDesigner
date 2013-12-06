@@ -94,7 +94,7 @@ void MainWindow::replaceRootNode(QCCNode* node)
 
     QVector<QVariant> data;
     data.append(QString("name"));
-    data.append(QString(CLASS_TYPE_ROOT));
+    data.append(QString("class"));
     QTreeItem* item = new QTreeItem(data);
     //item->m_node = node; //first is cclayer, not displayed. can be 0.
 
@@ -247,12 +247,11 @@ void MainWindow::connectSignalAndSlot()
     connect(m_browser, SIGNAL(changePropertyFilePath(QString&)), this, SLOT(changedPropertyFilePath(QString&)));
     connect(m_browser, SIGNAL(changePropertyFont(QFont&)), this, SLOT(changedPropertyFont(QFont&)));
     connect(m_browser, SIGNAL(changePropertyText(QString&)), this, SLOT(changedPropertyText(QString&)));
-
     connect(m_browser, SIGNAL(changePropertyAlignment(int, int)), this, SLOT(changedPropertyAlignment(int, int)));
     connect(m_browser, SIGNAL(changePropertyTextDimension(int, int)), this, SLOT(changedPropertyTextDimension(int, int)));
-
     connect(m_browser, SIGNAL(changePropertyCCContainerLayerFilePath(QString&)), this, SLOT(changedPropertyCCContainerLayerFilePath(QString&)));
-
+    connect(m_browser, SIGNAL(changePropertyInsetsRect(QRect)), this, SLOT(changedPropertyInsetsRect(QRect)));
+    connect(m_browser, SIGNAL(changePropertyPreferedSize(QSize)), this, SLOT(changedPropertyPreferedSize(QSize)));
 
     connect(this, SIGNAL(changePropertyPoint(int,int)), m_browser, SLOT(changedPropertyPoint(int,int)));
     connect(this, SIGNAL(changePropertySize(int,int)), m_browser, SLOT(changedPropertySize(int,int)));
@@ -549,6 +548,32 @@ void MainWindow::changedPropertyCCContainerLayerFilePath(QString& filePath)
     }
 }
 
+void MainWindow::changedPropertyInsetsRect(QRect r)
+{
+    QCCNode* node = this->currentSelectNode();
+    if(node != 0)
+    {
+        QCCScale9Sprite* temp = dynamic_cast<QCCScale9Sprite*>(node);
+        temp->m_insetsRect = r;
+        temp->updateGraphicsItem();
+        emit changeItemSelect(node);
+        this->setWindowTitle(QString("%1*").arg(m_currentOpenFile));
+    }
+}
+
+void MainWindow::changedPropertyPreferedSize(QSize s)
+{
+    QCCNode* node = this->currentSelectNode();
+    if(node != 0)
+    {
+        QCCScale9Sprite* temp = dynamic_cast<QCCScale9Sprite*>(node);
+        temp->m_preferredSize = s;
+        temp->updateGraphicsItem();
+        emit changeItemSelect(node);
+        this->setWindowTitle(QString("%1*").arg(m_currentOpenFile));
+    }
+}
+
 void MainWindow::on_actionResource_triggered()
 {
     QString oldDir = m_storageData->resourceDir();
@@ -816,6 +841,38 @@ void MainWindow::on_actionCContainer_triggered()
     }
 }
 
+void MainWindow::on_actionCCScale9Sprite_triggered()
+{
+    QModelIndex index = m_treeView->currentIndex();
+    if(index.isValid() == true)
+    {
+        if(m_lastBrowserFile.isEmpty() == true)
+        {
+            m_lastBrowserFile = m_storageData->resourceDir();
+        }
+
+        QString filePath = QFileDialog::getOpenFileName(this, QString("Open File"), m_lastBrowserFile, FILTER_IMAGES);
+        if(this->isCCSpriteCanBeCreate(filePath) == false)
+        {
+            return;
+        }
+
+        //create
+        QCCNode* node = QCCNode::createCCNodeByType(CLASS_TYPE_CCSCALE9SPRITE);
+        QCCScale9Sprite* sprite = dynamic_cast<QCCScale9Sprite*>(node);
+
+        QPixmap pixmap(filePath);
+        QSize size = pixmap.size();
+        sprite->m_insetsRect = QRect(1,1,size.width()-2, size.height()-2);
+        sprite->m_preferredSize = QSize(size.width(), size.height());
+        sprite->m_filePath = filePath.remove(QString("%1/").arg(m_storageData->resourceDir()));
+
+        //sync
+        this->syncNodeAfterCreate(index, node);
+        this->setWindowTitle(QString("%1*").arg(m_currentOpenFile));
+    }
+}
+
 void MainWindow::on_actionRatio(QAction* action)
 {
     QString str = action->text();
@@ -853,3 +910,5 @@ void MainWindow::closeEvent(QCloseEvent* event)
 
     QMainWindow::closeEvent(event);
 }
+
+

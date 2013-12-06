@@ -11,7 +11,7 @@ QCCNode* QCCNode::createCCNodeByType(QString type)
     {
         node = new QCCNode();
     }
-    else if(type == CLASS_TYPE_CCLAYER || type == CLASS_TYPE_ROOT)
+    else if(type == CLASS_TYPE_CCLAYER)
     {
         node = new QCCLayer();
     }
@@ -21,8 +21,11 @@ QCCNode* QCCNode::createCCNodeByType(QString type)
     }
     else if(type == CLASS_TYPE_CCSPRITE)
     {
-        QCCSprite* temp = new QCCSprite();
-        node = temp;
+        node = new QCCSprite();
+    }
+    else if(type == CLASS_TYPE_CCSCALE9SPRITE)
+    {
+
     }
     else if(type == CLASS_TYPE_CCLABELTTF)
     {
@@ -344,6 +347,101 @@ void QCCSprite::updateGraphicsItem()
     item->setTransform(QTransform().rotate(m_rotation), true);
     item->setTransform(QTransform::fromScale(m_scaleX,m_scaleY), true);
     item->setTransform(QTransform::fromTranslate(-m_width/2, -m_height/2), true);
+    item->setZValue(m_z);
+    item->setVisible(m_isVisible);
+    item->setFlag(QGraphicsItem::ItemIsMovable, !m_isFixed);
+}
+
+
+QCCScale9Sprite::QCCScale9Sprite()
+{
+    m_insetsRect = QRect(0,0,0,0);
+    m_preferredSize = QSize(0,0);
+}
+
+void QCCScale9Sprite::importData(QMap<QString, QString>& map)
+{
+    QCCSprite::importData(map);
+    int insets_x = map.value("insets_x","0").toInt();
+    int insets_y = map.value("insets_y","0").toInt();
+    int insets_w = map.value("insets_w","0").toInt();
+    int insets_h = map.value("insets_h","0").toInt();
+    m_insetsRect = QRect(insets_x, insets_y, insets_w, insets_h);
+
+    int perferred_w = map.value("perferred_w","0").toInt();
+    int perferred_h = map.value("perferred_h","0").toInt();
+    m_preferredSize = QSize(perferred_w, perferred_h);
+}
+
+QMap<QString, QString> QCCScale9Sprite::exportData()
+{
+    QMap<QString, QString> map = QCCSprite::exportData();
+    map.insert("insets_x", QString("%1").arg(m_insetsRect.x()));
+    map.insert("insets_y", QString("%1").arg(m_insetsRect.y()));
+    map.insert("insets_w", QString("%1").arg(m_insetsRect.width()));
+    map.insert("insets_h", QString("%1").arg(m_insetsRect.height()));
+    map.insert("perferred_w", QString("%1").arg(m_preferredSize.width()));
+    map.insert("perferred_h", QString("%1").arg(m_preferredSize.height()));
+    return map;
+}
+
+QGraphicsItem* QCCScale9Sprite::createGraphicsItem()
+{
+    m_graphicsItem = new QGraphicsPixmapItem();
+    this->updateGraphicsItem();
+    return m_graphicsItem;
+}
+
+void QCCScale9Sprite::updateGraphicsItem()
+{
+    QGraphicsPixmapItem* item = dynamic_cast<QGraphicsPixmapItem*>(m_graphicsItem);
+    QImage image = QImage(resourceFullPath(m_filePath));
+
+    int x = m_insetsRect.x();
+    int y = m_insetsRect.y();
+    int w = m_insetsRect.width();
+    int h = m_insetsRect.height();
+
+    QImage image_1 = image.copy(0, 0, x, y);
+    QImage image_2 = image.copy(x, 0, w, y);
+    QImage image_3 = image.copy(x + w, 0, x, y);
+    QImage image_4 = image.copy(0, y, x, h);
+    QImage image_5 = image.copy(x, y, w, h);
+    QImage image_6 = image.copy(x + w, y, x, h);
+    QImage image_7 = image.copy(0, y + h, x, y);
+    QImage image_8 = image.copy(x, y + h, w, y);
+    QImage image_9 = image.copy(x + w + h, y, x, y);
+
+    QImage imageOut = QImage(m_preferredSize.width(), m_preferredSize.height(), QImage::Format_ARGB32);
+    QPainter painter(&imageOut);
+
+    w = m_preferredSize.width() - 2*x;
+    h = m_preferredSize.height() - 2*y;
+
+    painter.drawImage( QRect(0, 0, x, y), image_1 );
+    painter.drawImage( QRect(x, 0, w, y), image_2 );
+    painter.drawImage( QRect(x + w, 0, x, y), image_3 );
+    painter.drawImage( QRect(0, y, x, h), image_4 );
+    painter.drawImage( QRect(x, y, w, h), image_5 );
+    painter.drawImage( QRect(x + w, y, x, h), image_6 );
+    painter.drawImage( QRect(0, y + h, x, y), image_7 );
+    painter.drawImage( QRect(x, y + h, w, y), image_8 );
+    painter.drawImage( QRect(x + w + h, y, x, y), image_9 );
+
+    item->setPixmap(QPixmap::fromImage(imageOut));
+
+    QSize s = image.size();
+    m_width = s.width();
+    m_height = s.height();
+
+    w = m_preferredSize.width();
+    h = m_preferredSize.height();
+
+    item->setTransformOriginPoint(-w/2, -h/2);
+    item->resetTransform();
+    item->setTransform(QTransform().rotate(m_rotation), true);
+    item->setTransform(QTransform::fromScale(m_scaleX,m_scaleY), true);
+    item->setTransform(QTransform::fromTranslate(-w/2, -h/2), true);
     item->setZValue(m_z);
     item->setVisible(m_isVisible);
     item->setFlag(QGraphicsItem::ItemIsMovable, !m_isFixed);

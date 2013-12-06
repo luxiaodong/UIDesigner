@@ -20,7 +20,7 @@
      <x>0</x>
      <y>0</y>
      <width>788</width>
-     <height>22</height>
+     <height>20</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">
@@ -48,6 +48,7 @@
     <addaction name="actionCCLabelTTF"/>
     <addaction name="actionCCMenu"/>
     <addaction name="actionCContainer"/>
+    <addaction name="actionCCScale9Sprite"/>
    </widget>
    <widget class="QMenu" name="menuSetting">
     <property name="title">
@@ -229,6 +230,11 @@
    </property>
    <property name="text">
     <string>200%</string>
+   </property>
+  </action>
+  <action name="actionCCScale9Sprite">
+   <property name="text">
+    <string>CCScale9Sprite</string>
    </property>
   </action>
  </widget>

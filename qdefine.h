@@ -36,13 +36,16 @@
 #include <QActionGroup>
 #include <QCloseEvent>
 
-#define CLASS_TYPE_ROOT     "class"
+//1.add string manager
+//2.add lua fire browser.
+//3.add pic use refrance count.
+//4.support plist switch.
 
 #define CLASS_TYPE_CCNODE       "CCNode"
 #define CLASS_TYPE_CCLAYER      "CCLayer"
 #define CLASS_TYPE_CCLAYERCOLOR "CCLayerColor"
 #define CLASS_TYPE_CCSPRITE     "CCSprite"
-//#define CLASS_TYPE_CCSCALE9SPRITE "CCScale9Sprite"
+#define CLASS_TYPE_CCSCALE9SPRITE "CCScale9Sprite"
 #define CLASS_TYPE_CCLABELTTF   "CCLabelTTF"
 #define CLASS_TYPE_CCMENUITEM_IMAGE "CCMenuItemImage"
 #define CLASS_TYPE_CCCONTAINERLAYER  "CCContainerLayer"

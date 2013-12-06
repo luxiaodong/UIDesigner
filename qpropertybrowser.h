@@ -36,6 +36,8 @@ signals:
     void changePropertyAlignment(int horizontal, int vertical);
     void changePropertyTextDimension(int width, int height);
     void changePropertyCCContainerLayerFilePath(QString& filePath);
+    void changePropertyInsetsRect(QRect);
+    void changePropertyPreferedSize(QSize);
 
 public slots:
     void valueChanged(QtProperty*,QVariant);
@@ -49,6 +51,7 @@ private:
     void initPropertyCCSprite(QCCSprite* node);
     void initPropertyCCLabelTTF(QCCLabelTTF* node);
     void initPropertyCCContainerLayer(QCCContainerLayer *node);
+    void initPropertyCCScale9Sprite(QCCScale9Sprite *node);
 
 private:
     void createProperty();
@@ -79,6 +82,12 @@ private:
     void createPropertyDimensionWith();
     void createPropertyDimensionHeight();
     void createPropertyContainerFilePath();
+    void createPropertyInsetsX();
+    void createPropertyInsetsY();
+    void createPropertyInsetsWidth();
+    void createPropertyInsetsHeight();
+    void createPropertyPreferedWidth();
+    void createPropertyPreferedHeight();
 
 //-- 2 level
     void createPropertyPoint();
@@ -87,6 +96,8 @@ private:
     void createPropertyScale();
     void createPropertyDimensionSize();
     void createPropertyTextAlignment();
+    void createPropertyInsetsRect();
+    void createPropertyPreferredSize();
 
 //-- 3 level
     void createPropertyCCNode();
@@ -95,6 +106,7 @@ private:
     void createPropertyCCSprite();
     void createPropertyCCLabelTTF();
     void createPropertyCCContainerLayer();
+    void createPropertyCCScale9Sprite();
 
 private:
 //-- 1 level
@@ -122,6 +134,12 @@ private:
     QtVariantProperty*  m_dimensionWith;
     QtVariantProperty*  m_dimensionHeight;
     QtVariantProperty*  m_containerLayerFilePath;
+    QtVariantProperty*  m_insetsX;
+    QtVariantProperty*  m_insetsY;
+    QtVariantProperty*  m_insetsWidth;
+    QtVariantProperty*  m_insetsHeight;
+    QtVariantProperty*  m_preferredWidth;
+    QtVariantProperty*  m_preferredHeight;
 
 //-- 2 level
     QtVariantProperty*  m_point;
@@ -130,6 +148,8 @@ private:
     QtVariantProperty*  m_scale;
     QtVariantProperty*  m_dimensionSize;
     QtVariantProperty*  m_textAlignment;
+    QtVariantProperty*  m_insetsRect;
+    QtVariantProperty*  m_preferredSize;
 
 //-- 3 level
     QtVariantProperty*  m_ccNode;
@@ -138,6 +158,7 @@ private:
     QtVariantProperty*  m_ccSprite;
     QtVariantProperty*  m_ccLabelTTF;
     QtVariantProperty*  m_ccContainerLayer;
+    QtVariantProperty*  m_ccScale9Sprite;
 
 private:
     QtVariantPropertyManager*   m_manager;
