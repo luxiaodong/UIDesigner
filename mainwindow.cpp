@@ -40,6 +40,7 @@ MainWindow::MainWindow(QWidget *parent) :
 
     m_model = 0;
     m_currentOpenFile.clear();
+    m_lastBrowserFile.clear();
     m_copyBuffer.clear();
 
     //test
@@ -568,7 +569,12 @@ void MainWindow::on_actionNew_triggered()
     {
         if(dialog.m_rootClassType == CLASS_TYPE_CCSPRITE)
         {
-            QString filePath = QFileDialog::getOpenFileName(this, QString("Open File"), m_storageData->resourceDir(),FILTER_IMAGES);
+            if(m_lastBrowserFile.isEmpty() == true)
+            {
+                m_lastBrowserFile = m_storageData->resourceDir();
+            }
+
+            QString filePath = QFileDialog::getOpenFileName(this, QString("Open File"), m_lastBrowserFile, FILTER_IMAGES);
             if(this->isCCSpriteCanBeCreate(filePath) == false)
             {
                 return;
@@ -733,7 +739,12 @@ void MainWindow::on_actionCCSprite_triggered()
     QModelIndex index = m_treeView->currentIndex();
     if(index.isValid() == true)
     {
-        QString filePath = QFileDialog::getOpenFileName(this, QString("Open File"), m_storageData->resourceDir(), FILTER_IMAGES);
+        if(m_lastBrowserFile.isEmpty() == true)
+        {
+            m_lastBrowserFile = m_storageData->resourceDir();
+        }
+
+        QString filePath = QFileDialog::getOpenFileName(this, QString("Open File"), m_lastBrowserFile, FILTER_IMAGES);
         if(this->isCCSpriteCanBeCreate(filePath) == false)
         {
             return;
@@ -767,7 +778,12 @@ void MainWindow::on_actionCCMenu_triggered()
     QModelIndex index = m_treeView->currentIndex();
     if(index.isValid() == true)
     {
-        QString filePath = QFileDialog::getOpenFileName(this, QString("Open File"), m_storageData->resourceDir(), FILTER_IMAGES);
+        if(m_lastBrowserFile.isEmpty() == true)
+        {
+            m_lastBrowserFile = m_storageData->resourceDir();
+        }
+
+        QString filePath = QFileDialog::getOpenFileName(this, QString("Open File"), m_lastBrowserFile, FILTER_IMAGES);
         if(this->isCCSpriteCanBeCreate(filePath) == false)
         {
             return;

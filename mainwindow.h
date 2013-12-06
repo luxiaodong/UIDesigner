@@ -104,6 +104,7 @@ private:
 
 private:
     QString             m_currentOpenFile;
+    QString             m_lastBrowserFile;
     QMap<QString, QString> m_copyBuffer;
     int                 m_viewRatio;
 
