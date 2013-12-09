@@ -592,7 +592,7 @@ void MainWindow::on_actionNew_triggered()
     QSelectSizeDialog dialog;
     if(dialog.exec() == QDialog::Accepted)
     {
-        if(dialog.m_rootClassType == CLASS_TYPE_CCSPRITE)
+        if(dialog.m_rootClassType == CLASS_TYPE_CCSPRITE || dialog.m_rootClassType == CLASS_TYPE_CCSCALE9SPRITE)
         {
             if(m_lastBrowserFile.isEmpty() == true)
             {
@@ -605,7 +605,7 @@ void MainWindow::on_actionNew_triggered()
                 return;
             }
 
-            QCCNode* node = QCCNode::createCCNodeByType(CLASS_TYPE_CCSPRITE);
+            QCCNode* node = QCCNode::createCCNodeByType( dialog.m_rootClassType );
             QCCSprite* sprite = dynamic_cast<QCCSprite*>(node);
             QImage image(filePath);
             sprite->m_filePath = filePath.remove(QString("%1/").arg(m_storageData->resourceDir()));
@@ -614,6 +614,14 @@ void MainWindow::on_actionNew_triggered()
             node->m_height = s.height();
             node->m_x = s.width()/2;
             node->m_y = s.height()/2;
+
+            if( dialog.m_rootClassType == CLASS_TYPE_CCSCALE9SPRITE )
+            {
+                QCCScale9Sprite* temp = dynamic_cast<QCCScale9Sprite*>(node);
+                temp->m_insetsRect = QRect(1,1,s.width()-2, s.height()-2);
+                temp->m_preferredSize = QSize(s.width(), s.height());
+            }
+
             m_storageData->m_root = node;
             m_currentOpenFile = openFile;
             this->replaceRootNode(node);

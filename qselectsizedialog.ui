@@ -90,6 +90,11 @@
            <string>CCLayerColor</string>
           </property>
          </item>
+         <item>
+          <property name="text">
+           <string>QCCScale9Sprite</string>
+          </property>
+         </item>
         </widget>
        </item>
       </layout>

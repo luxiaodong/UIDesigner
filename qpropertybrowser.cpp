@@ -37,6 +37,12 @@ void QPropertyBrowser::createProperty()
     createPropertyDimensionWith();
     createPropertyDimensionHeight();
     createPropertyContainerFilePath();
+    createPropertyInsetsX();
+    createPropertyInsetsY();
+    createPropertyInsetsWidth();
+    createPropertyInsetsHeight();
+    createPropertyPreferedWidth();
+    createPropertyPreferedHeight();
 
     //-- 2 level
     createPropertyPoint();
@@ -45,6 +51,8 @@ void QPropertyBrowser::createProperty()
     createPropertyScale();
     createPropertyTextAlignment();
     createPropertyDimensionSize();
+    createPropertyInsetsRect();
+    createPropertyPreferredSize();
 
     //-- 3 level
     createPropertyCCNode();
@@ -53,6 +61,7 @@ void QPropertyBrowser::createProperty()
     createPropertyCCSprite();
     createPropertyCCLabelTTF();
     createPropertyCCContainerLayer();
+    createPropertyCCScale9Sprite();
 }
 
 void QPropertyBrowser::createPropertyFixed()
@@ -630,8 +639,8 @@ void QPropertyBrowser::valueChanged(QtProperty* property, QVariant )
     }
     else if(property == m_preferredWidth || property == m_preferredHeight)
     {
-        int h = m_preferredWidth->value().toInt();
-        int w = m_preferredHeight->value().toInt();
+        int w = m_preferredWidth->value().toInt();
+        int h = m_preferredHeight->value().toInt();
         emit changePropertyPreferedSize(QSize(w,h));
     }
 }

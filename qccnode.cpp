@@ -25,7 +25,7 @@ QCCNode* QCCNode::createCCNodeByType(QString type)
     }
     else if(type == CLASS_TYPE_CCSCALE9SPRITE)
     {
-
+        node = new QCCScale9Sprite();
     }
     else if(type == CLASS_TYPE_CCLABELTTF)
     {
@@ -396,52 +396,51 @@ void QCCScale9Sprite::updateGraphicsItem()
 {
     QGraphicsPixmapItem* item = dynamic_cast<QGraphicsPixmapItem*>(m_graphicsItem);
     QImage image = QImage(resourceFullPath(m_filePath));
+    QSize s = image.size();
 
-    int x = m_insetsRect.x();
-    int y = m_insetsRect.y();
-    int w = m_insetsRect.width();
-    int h = m_insetsRect.height();
+    int w1 = m_insetsRect.x();
+    int h1 = m_insetsRect.y();
+    int w2 = m_insetsRect.width();
+    int h2 = m_insetsRect.height();
+    int w3 = s.width() - w1 - w2;
+    int h3 = s.height() - h1 - h2;
 
-    QImage image_1 = image.copy(0, 0, x, y);
-    QImage image_2 = image.copy(x, 0, w, y);
-    QImage image_3 = image.copy(x + w, 0, x, y);
-    QImage image_4 = image.copy(0, y, x, h);
-    QImage image_5 = image.copy(x, y, w, h);
-    QImage image_6 = image.copy(x + w, y, x, h);
-    QImage image_7 = image.copy(0, y + h, x, y);
-    QImage image_8 = image.copy(x, y + h, w, y);
-    QImage image_9 = image.copy(x + w + h, y, x, y);
+    QImage image_1 = image.copy(0,          0,      w1,     h1);
+    QImage image_2 = image.copy(w1,         0,      w2,     h1);
+    QImage image_3 = image.copy(w1 + w2,    0,      w3,     h1);
+    QImage image_4 = image.copy(0,          h1,     w1,     h2);
+    QImage image_5 = image.copy(w1,         h1,     w2,     h2);
+    QImage image_6 = image.copy(w1 + w2,    h1,     w3,     h2);
+    QImage image_7 = image.copy(0,      h1 + h2,    w1,     h3);
+    QImage image_8 = image.copy(w1,     h1 + h2,    w2,     h3);
+    QImage image_9 = image.copy(w1 + w2,h1 + h2,    w3,     h3);
 
     QImage imageOut = QImage(m_preferredSize.width(), m_preferredSize.height(), QImage::Format_ARGB32);
     QPainter painter(&imageOut);
 
-    w = m_preferredSize.width() - 2*x;
-    h = m_preferredSize.height() - 2*y;
+    w2 = m_preferredSize.width() - w1 - w3;
+    h2 = m_preferredSize.height() - h1 - h3;
 
-    painter.drawImage( QRect(0, 0, x, y), image_1 );
-    painter.drawImage( QRect(x, 0, w, y), image_2 );
-    painter.drawImage( QRect(x + w, 0, x, y), image_3 );
-    painter.drawImage( QRect(0, y, x, h), image_4 );
-    painter.drawImage( QRect(x, y, w, h), image_5 );
-    painter.drawImage( QRect(x + w, y, x, h), image_6 );
-    painter.drawImage( QRect(0, y + h, x, y), image_7 );
-    painter.drawImage( QRect(x, y + h, w, y), image_8 );
-    painter.drawImage( QRect(x + w + h, y, x, y), image_9 );
+    painter.drawImage( QRect(0,          0,      w1,     h1), image_1 );
+    painter.drawImage( QRect(w1,         0,      w2,     h1), image_2 );
+    painter.drawImage( QRect(w1 + w2,    0,      w3,     h1), image_3 );
+    painter.drawImage( QRect(0,          h1,     w1,     h2), image_4 );
+    painter.drawImage( QRect(w1,         h1,     w2,     h2), image_5 );
+    painter.drawImage( QRect(w1 + w2,    h1,     w3,     h2), image_6 );
+    painter.drawImage( QRect(0,      h1 + h2,    w1,     h3), image_7 );
+    painter.drawImage( QRect(w1,     h1 + h2,    w2,     h3), image_8 );
+    painter.drawImage( QRect(w1 + w2,h1 + h2,    w3,     h3), image_9 );
 
     item->setPixmap(QPixmap::fromImage(imageOut));
 
-    QSize s = image.size();
-    m_width = s.width();
-    m_height = s.height();
+    m_width = m_preferredSize.width();
+    m_height = m_preferredSize.height();
 
-    w = m_preferredSize.width();
-    h = m_preferredSize.height();
-
-    item->setTransformOriginPoint(-w/2, -h/2);
+    item->setTransformOriginPoint(-m_width/2, -m_height/2);
     item->resetTransform();
     item->setTransform(QTransform().rotate(m_rotation), true);
     item->setTransform(QTransform::fromScale(m_scaleX,m_scaleY), true);
-    item->setTransform(QTransform::fromTranslate(-w/2, -h/2), true);
+    item->setTransform(QTransform::fromTranslate(-m_width/2, -m_height/2), true);
     item->setZValue(m_z);
     item->setVisible(m_isVisible);
     item->setFlag(QGraphicsItem::ItemIsMovable, !m_isFixed);
