@@ -92,7 +92,7 @@
          </item>
          <item>
           <property name="text">
-           <string>QCCScale9Sprite</string>
+           <string>CCScale9Sprite</string>
           </property>
          </item>
         </widget>

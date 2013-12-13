@@ -589,6 +589,11 @@ void MainWindow::on_actionNew_triggered()
         return ;
     }
 
+    if (openFile.right(3) != ".lua")
+    {
+        openFile += QString(".lua");
+    }
+
     QSelectSizeDialog dialog;
     if(dialog.exec() == QDialog::Accepted)
     {
@@ -605,6 +610,7 @@ void MainWindow::on_actionNew_triggered()
                 return;
             }
 
+            m_lastBrowserFile = filePath;
             QCCNode* node = QCCNode::createCCNodeByType( dialog.m_rootClassType );
             QCCSprite* sprite = dynamic_cast<QCCSprite*>(node);
             QImage image(filePath);
@@ -618,8 +624,12 @@ void MainWindow::on_actionNew_triggered()
             if( dialog.m_rootClassType == CLASS_TYPE_CCSCALE9SPRITE )
             {
                 QCCScale9Sprite* temp = dynamic_cast<QCCScale9Sprite*>(node);
+                temp->m_width = dialog.m_width;
+                temp->m_height = dialog.m_height;
+                temp->m_x = dialog.m_width/2;
+                temp->m_y = dialog.m_height/2;
                 temp->m_insetsRect = QRect(1,1,s.width()-2, s.height()-2);
-                temp->m_preferredSize = QSize(s.width(), s.height());
+                temp->m_preferredSize = QSize(temp->m_width, temp->m_height);
             }
 
             m_storageData->m_root = node;
@@ -783,6 +793,8 @@ void MainWindow::on_actionCCSprite_triggered()
             return;
         }
 
+        m_lastBrowserFile = filePath;
+
         //create
         QCCNode* node = QCCNode::createCCNodeByType(CLASS_TYPE_CCSPRITE);
         QCCSprite* sprite = dynamic_cast<QCCSprite*>(node);
@@ -822,6 +834,7 @@ void MainWindow::on_actionCCMenu_triggered()
             return;
         }
 
+        m_lastBrowserFile = filePath;
         //create
         QCCNode* node = QCCNode::createCCNodeByType(CLASS_TYPE_CCMENUITEM_IMAGE);
         QCCSprite* sprite = dynamic_cast<QCCSprite*>(node);
@@ -865,6 +878,7 @@ void MainWindow::on_actionCCScale9Sprite_triggered()
             return;
         }
 
+        m_lastBrowserFile = filePath;
         //create
         QCCNode* node = QCCNode::createCCNodeByType(CLASS_TYPE_CCSCALE9SPRITE);
         QCCScale9Sprite* sprite = dynamic_cast<QCCScale9Sprite*>(node);
@@ -918,5 +932,3 @@ void MainWindow::closeEvent(QCloseEvent* event)
 
     QMainWindow::closeEvent(event);
 }
-
-
