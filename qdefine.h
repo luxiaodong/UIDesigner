@@ -47,6 +47,7 @@
 #define CLASS_TYPE_CCSPRITE     "CCSprite"
 #define CLASS_TYPE_CCSCALE9SPRITE "CCScale9Sprite"
 #define CLASS_TYPE_CCLABELTTF   "CCLabelTTF"
+#define CLASS_TYPE_CCPROGRESSTIMER  "CCProgressTimer"
 #define CLASS_TYPE_CCMENUITEM_IMAGE "CCMenuItemImage"
 #define CLASS_TYPE_CCCONTAINERLAYER  "CCContainerLayer"
 
@@ -66,5 +67,11 @@ typedef enum
     kCCHorizontalTextAlignmentCenter,
     kCCHorizontalTextAlignmentRight
 } CCHorizontalTextAlignment;
+
+typedef enum {
+    /// Radial Counter-Clockwise
+    kCCProgressTimerTypeRadial,
+    kCCProgressTimerTypeBar
+} CCProgressTimerType;
 
 #endif // QDEFINE_H

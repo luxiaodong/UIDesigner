@@ -252,6 +252,9 @@ void MainWindow::connectSignalAndSlot()
     connect(m_browser, SIGNAL(changePropertyCCContainerLayerFilePath(QString&)), this, SLOT(changedPropertyCCContainerLayerFilePath(QString&)));
     connect(m_browser, SIGNAL(changePropertyInsetsRect(QRect)), this, SLOT(changedPropertyInsetsRect(QRect)));
     connect(m_browser, SIGNAL(changePropertyPreferedSize(QSize)), this, SLOT(changedPropertyPreferedSize(QSize)));
+    connect(m_browser, SIGNAL(changePropertyProgressTimerType(int)), this, SLOT(changedPropertyProgressTimerType(int)));
+    connect(m_browser, SIGNAL(changePropertyDirection(int)), this, SLOT(changedPropertyDirection(int)));
+    connect(m_browser, SIGNAL(changePropertyPercentage(float)), this, SLOT(changedPropertyPercentage(float)));
 
     connect(this, SIGNAL(changePropertyPoint(int,int)), m_browser, SLOT(changedPropertyPoint(int,int)));
     connect(this, SIGNAL(changePropertySize(int,int)), m_browser, SLOT(changedPropertySize(int,int)));
@@ -568,6 +571,45 @@ void MainWindow::changedPropertyPreferedSize(QSize s)
     {
         QCCScale9Sprite* temp = dynamic_cast<QCCScale9Sprite*>(node);
         temp->m_preferredSize = s;
+        temp->updateGraphicsItem();
+        emit changeItemSelect(node);
+        this->setWindowTitle(QString("%1*").arg(m_currentOpenFile));
+    }
+}
+
+void MainWindow::changedPropertyProgressTimerType(int type)
+{
+    QCCNode* node = this->currentSelectNode();
+    if(node != 0)
+    {
+        QCCProgressTimer* temp = dynamic_cast<QCCProgressTimer*>(node);
+        temp->m_progressTimerType = type;
+        temp->updateGraphicsItem();
+        emit changeItemSelect(node);
+        this->setWindowTitle(QString("%1*").arg(m_currentOpenFile));
+    }
+}
+
+void MainWindow::changedPropertyDirection(int direction)
+{
+    QCCNode* node = this->currentSelectNode();
+    if(node != 0)
+    {
+        QCCProgressTimer* temp = dynamic_cast<QCCProgressTimer*>(node);
+        temp->m_direction = direction;
+        temp->updateGraphicsItem();
+        emit changeItemSelect(node);
+        this->setWindowTitle(QString("%1*").arg(m_currentOpenFile));
+    }
+}
+
+void MainWindow::changedPropertyPercentage(float percentage)
+{
+    QCCNode* node = this->currentSelectNode();
+    if(node != 0)
+    {
+        QCCProgressTimer* temp = dynamic_cast<QCCProgressTimer*>(node);
+        temp->m_percentage = percentage;
         temp->updateGraphicsItem();
         emit changeItemSelect(node);
         this->setWindowTitle(QString("%1*").arg(m_currentOpenFile));
@@ -895,6 +937,34 @@ void MainWindow::on_actionCCScale9Sprite_triggered()
     }
 }
 
+void MainWindow::on_actionCCProgressTimer_triggered()
+{
+    QModelIndex index = m_treeView->currentIndex();
+    if(index.isValid() == true)
+    {
+        if(m_lastBrowserFile.isEmpty() == true)
+        {
+            m_lastBrowserFile = m_storageData->resourceDir();
+        }
+
+        QString filePath = QFileDialog::getOpenFileName(this, QString("Open File"), m_lastBrowserFile, FILTER_IMAGES);
+        if(this->isCCSpriteCanBeCreate(filePath) == false)
+        {
+            return;
+        }
+
+        m_lastBrowserFile = filePath;
+        //create
+        QCCNode* node = QCCNode::createCCNodeByType(CLASS_TYPE_CCPROGRESSTIMER);
+        QCCProgressTimer* temp = dynamic_cast<QCCProgressTimer*>(node);
+        temp->m_filePath = filePath.remove(QString("%1/").arg(m_storageData->resourceDir()));
+
+        //sync
+        this->syncNodeAfterCreate(index, node);
+        this->setWindowTitle(QString("%1*").arg(m_currentOpenFile));
+    }
+}
+
 void MainWindow::on_actionRatio(QAction* action)
 {
     QString str = action->text();
@@ -932,3 +1002,5 @@ void MainWindow::closeEvent(QCloseEvent* event)
 
     QMainWindow::closeEvent(event);
 }
+
+

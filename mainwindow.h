@@ -77,6 +77,9 @@ public slots:
     void changedPropertyCCContainerLayerFilePath(QString& filePath);
     void changedPropertyInsetsRect(QRect);
     void changedPropertyPreferedSize(QSize);
+    void changedPropertyProgressTimerType(int);
+    void changedPropertyDirection(int);
+    void changedPropertyPercentage(float);
 
 private slots:
     void on_actionRatio(QAction*);
@@ -93,6 +96,7 @@ private slots:
     void on_actionCCMenu_triggered();
     void on_actionCContainer_triggered();
     void on_actionCCScale9Sprite_triggered();
+    void on_actionCCProgressTimer_triggered();
 
 protected:
     virtual void closeEvent(QCloseEvent *event);

@@ -38,6 +38,9 @@ signals:
     void changePropertyCCContainerLayerFilePath(QString& filePath);
     void changePropertyInsetsRect(QRect);
     void changePropertyPreferedSize(QSize);
+    void changePropertyProgressTimerType(int);
+    void changePropertyDirection(int);
+    void changePropertyPercentage(float);
 
 public slots:
     void valueChanged(QtProperty*,QVariant);
@@ -52,6 +55,7 @@ private:
     void initPropertyCCLabelTTF(QCCLabelTTF* node);
     void initPropertyCCContainerLayer(QCCContainerLayer *node);
     void initPropertyCCScale9Sprite(QCCScale9Sprite *node);
+    void initPropertyCCProgressTimer(QCCProgressTimer *node);
 
 private:
     void createProperty();
@@ -88,6 +92,9 @@ private:
     void createPropertyInsetsHeight();
     void createPropertyPreferedWidth();
     void createPropertyPreferedHeight();
+    void createPropertyProgressTimerType();
+    void createPropertyDirection();
+    void createPropertyPercentage();
 
 //-- 2 level
     void createPropertyPoint();
@@ -107,6 +114,7 @@ private:
     void createPropertyCCLabelTTF();
     void createPropertyCCContainerLayer();
     void createPropertyCCScale9Sprite();
+    void createPropertyCCProgressTimer();
 
 private:
 //-- 1 level
@@ -140,6 +148,9 @@ private:
     QtVariantProperty*  m_insetsHeight;
     QtVariantProperty*  m_preferredWidth;
     QtVariantProperty*  m_preferredHeight;
+    QtVariantProperty*  m_progressTimerType;
+    QtVariantProperty*  m_direction;
+    QtVariantProperty*  m_percentage;
 
 //-- 2 level
     QtVariantProperty*  m_point;
@@ -159,6 +170,7 @@ private:
     QtVariantProperty*  m_ccLabelTTF;
     QtVariantProperty*  m_ccContainerLayer;
     QtVariantProperty*  m_ccScale9Sprite;
+    QtVariantProperty*  m_ccProgressTimer;
 
 private:
     QtVariantPropertyManager*   m_manager;

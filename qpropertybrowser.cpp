@@ -43,6 +43,9 @@ void QPropertyBrowser::createProperty()
     createPropertyInsetsHeight();
     createPropertyPreferedWidth();
     createPropertyPreferedHeight();
+    createPropertyProgressTimerType();
+    createPropertyDirection();
+    createPropertyPercentage();
 
     //-- 2 level
     createPropertyPoint();
@@ -62,6 +65,7 @@ void QPropertyBrowser::createProperty()
     createPropertyCCLabelTTF();
     createPropertyCCContainerLayer();
     createPropertyCCScale9Sprite();
+    createPropertyCCProgressTimer();
 }
 
 void QPropertyBrowser::createPropertyFixed()
@@ -299,6 +303,34 @@ void QPropertyBrowser::createPropertyPreferedHeight()
     m_preferredHeight->setValue(1);
 }
 
+void QPropertyBrowser::createPropertyProgressTimerType()
+{
+    m_progressTimerType = m_manager->addProperty(QtVariantPropertyManager::enumTypeId(), "progressType");
+    QStringList list;
+    list<<"Radial"<<"Bar";
+    m_progressTimerType->setAttribute("enumNames", list);
+    m_progressTimerType->setValue(1);
+    m_progressTimerType->setEnabled(false);
+}
+
+void QPropertyBrowser::createPropertyDirection()
+{
+    m_direction = m_manager->addProperty(QtVariantPropertyManager::enumTypeId(), "direction");
+    QStringList list;
+    list<<"LeftToRight"<<"RightToLeft"<<"BottomToTop"<<"TopToBottom";
+    m_direction->setAttribute("enumNames", list);
+    m_direction->setValue(0);
+}
+
+void QPropertyBrowser::createPropertyPercentage()
+{
+    m_percentage = m_manager->addProperty(QVariant::Double, tr("height"));
+    m_percentage->setAttribute("minimum", 0.0f);
+    m_percentage->setAttribute("maximum", 1.0f);
+    m_percentage->setAttribute("singleStep", 0.01f);
+    m_percentage->setValue(1.0f);
+}
+
 //-- 2 level
 void QPropertyBrowser::createPropertyPoint()
 {
@@ -423,6 +455,14 @@ void QPropertyBrowser::createPropertyCCScale9Sprite()
     m_ccScale9Sprite->addSubProperty(m_preferredSize);
 }
 
+void QPropertyBrowser::createPropertyCCProgressTimer()
+{
+    m_ccProgressTimer = m_manager->addProperty(QVariant::String, tr("CCProgressTimer"));
+    m_ccProgressTimer->addSubProperty(m_progressTimerType);
+    m_ccProgressTimer->addSubProperty(m_direction);
+    m_ccProgressTimer->addSubProperty(m_percentage);
+}
+
 void QPropertyBrowser::initProperty(QCCNode* node)
 {
     this->clear();
@@ -455,6 +495,10 @@ void QPropertyBrowser::initProperty(QCCNode* node)
     else if(classType == CLASS_TYPE_CCCONTAINERLAYER)
     {
         this->initPropertyCCContainerLayer( dynamic_cast<QCCContainerLayer*>(node));
+    }
+    else if(classType == CLASS_TYPE_CCPROGRESSTIMER)
+    {
+        this->initPropertyCCProgressTimer( dynamic_cast<QCCProgressTimer*>(node));
     }
     this->blockSignals(false);
 }
@@ -528,6 +572,15 @@ void QPropertyBrowser::initPropertyCCScale9Sprite(QCCScale9Sprite *node)
     m_preferredWidth->setValue(node->m_preferredSize.width());
     m_preferredHeight->setValue(node->m_preferredSize.height());
     this->addProperty(m_ccScale9Sprite);
+}
+
+void QPropertyBrowser::initPropertyCCProgressTimer(QCCProgressTimer *node)
+{
+    this->initPropertyCCSprite(node);
+    m_progressTimerType->setValue(node->m_percentage);
+    m_direction->setValue(node->m_direction);
+    m_percentage->setValue(node->m_percentage);
+    this->addProperty(m_ccProgressTimer);
 }
 
 //slot
@@ -642,6 +695,21 @@ void QPropertyBrowser::valueChanged(QtProperty* property, QVariant )
         int w = m_preferredWidth->value().toInt();
         int h = m_preferredHeight->value().toInt();
         emit changePropertyPreferedSize(QSize(w,h));
+    }
+    else if(property == m_progressTimerType)
+    {
+        float type = m_progressTimerType->value().toFloat();
+        emit changePropertyProgressTimerType( type );
+    }
+    else if(property == m_direction)
+    {
+        int direction = m_direction->value().toInt();
+        emit changePropertyDirection( direction );
+    }
+    else if(property == m_percentage)
+    {
+        float percentage = m_percentage->value().toFloat();
+        emit changePropertyPercentage( percentage );
     }
 }
 

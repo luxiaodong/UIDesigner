@@ -20,7 +20,7 @@
      <x>0</x>
      <y>0</y>
      <width>788</width>
-     <height>20</height>
+     <height>22</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">
@@ -49,6 +49,7 @@
     <addaction name="actionCCMenu"/>
     <addaction name="actionCContainer"/>
     <addaction name="actionCCScale9Sprite"/>
+    <addaction name="actionCCProgressTimer"/>
    </widget>
    <widget class="QMenu" name="menuSetting">
     <property name="title">
@@ -235,6 +236,11 @@
   <action name="actionCCScale9Sprite">
    <property name="text">
     <string>CCScale9Sprite</string>
+   </property>
+  </action>
+  <action name="actionCCProgressTimer">
+   <property name="text">
+    <string>CCProgressTimer</string>
    </property>
   </action>
  </widget>
