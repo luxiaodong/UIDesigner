@@ -41,18 +41,20 @@
 //3.add pic use refrance count.
 //4.support plist switch.
 
-#define CLASS_TYPE_CCNODE       "CCNode"
-#define CLASS_TYPE_CCLAYER      "CCLayer"
-#define CLASS_TYPE_CCLAYERCOLOR "CCLayerColor"
-#define CLASS_TYPE_CCSPRITE     "CCSprite"
-#define CLASS_TYPE_CCSCALE9SPRITE "CCScale9Sprite"
-#define CLASS_TYPE_CCLABELTTF   "CCLabelTTF"
-#define CLASS_TYPE_CCPROGRESSTIMER  "CCProgressTimer"
-#define CLASS_TYPE_CCMENUITEM_IMAGE "CCMenuItemImage"
-#define CLASS_TYPE_CCCONTAINERLAYER  "CCContainerLayer"
 
-#define FILTER_IMAGES "Images (*.png *.jpg)"
-#define FILTER_CONFIG "Config (*.lua)"
+const char CLASS_TYPE_CCNODE[] = "CCNode";
+const char CLASS_TYPE_CCLAYER[] = "CCLayer";
+const char CLASS_TYPE_CCLAYERCOLOR[] = "CCLayerColor";
+const char CLASS_TYPE_CCSPRITE[] = "CCSprite";
+const char CLASS_TYPE_CCSCALE9SPRITE[] = "CCScale9Sprite";
+const char CLASS_TYPE_CCLABELTTF[] = "CCLabelTTF";
+const char CLASS_TYPE_CCLABELATLAS[] = "CCLabelAtlas";
+const char CLASS_TYPE_CCPROGRESSTIMER[] = "CCProgressTimer";
+const char CLASS_TYPE_CCMENUITEM_IMAGE[] = "CCMenuItemImage";
+const char CLASS_TYPE_CCCONTAINERLAYER[] = "CCContainerLayer";
+
+const char FILTER_IMAGES[] = "Images (*.png *.jpg)";
+const char FILTER_CONFIG[] = "Config (*.lua)";
 
 typedef enum
 {

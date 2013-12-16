@@ -255,6 +255,9 @@ void MainWindow::connectSignalAndSlot()
     connect(m_browser, SIGNAL(changePropertyProgressTimerType(int)), this, SLOT(changedPropertyProgressTimerType(int)));
     connect(m_browser, SIGNAL(changePropertyDirection(int)), this, SLOT(changedPropertyDirection(int)));
     connect(m_browser, SIGNAL(changePropertyPercentage(float)), this, SLOT(changedPropertyPercentage(float)));
+    connect(m_browser, SIGNAL(changePropertyAtlasElementSize(int,int)), this, SLOT(changedPropertyAtlasElementSize(int,int)));
+    connect(m_browser, SIGNAL(changePropertyAtlasStartChar(int)), this, SLOT(changedPropertyAtlasStartChar(int)));
+    connect(m_browser, SIGNAL(changePropertyAtlasText(QString&)), this, SLOT(changedPropertyAtlasText(QString&)));
 
     connect(this, SIGNAL(changePropertyPoint(int,int)), m_browser, SLOT(changedPropertyPoint(int,int)));
     connect(this, SIGNAL(changePropertySize(int,int)), m_browser, SLOT(changedPropertySize(int,int)));
@@ -616,6 +619,46 @@ void MainWindow::changedPropertyPercentage(float percentage)
     }
 }
 
+void MainWindow::changedPropertyAtlasElementSize(int width, int height)
+{
+    QCCNode* node = this->currentSelectNode();
+    if(node != 0)
+    {
+        QCCLabelAtlas* temp = dynamic_cast<QCCLabelAtlas*>(node);
+        temp->m_elementWidth = width;
+        temp->m_elementHeight = height;
+        temp->updateGraphicsItem();
+        emit changeItemSelect(node);
+        this->setWindowTitle(QString("%1*").arg(m_currentOpenFile));
+    }
+}
+
+void MainWindow::changedPropertyAtlasStartChar(int startChar)
+{
+    QCCNode* node = this->currentSelectNode();
+    if(node != 0)
+    {
+        QCCLabelAtlas* temp = dynamic_cast<QCCLabelAtlas*>(node);
+        temp->m_startChar = startChar;
+        temp->updateGraphicsItem();
+        emit changeItemSelect(node);
+        this->setWindowTitle(QString("%1*").arg(m_currentOpenFile));
+    }
+}
+
+void MainWindow::changedPropertyAtlasText(QString& text)
+{
+    QCCNode* node = this->currentSelectNode();
+    if(node != 0)
+    {
+        QCCLabelAtlas* temp = dynamic_cast<QCCLabelAtlas*>(node);
+        temp->m_text = text;
+        temp->updateGraphicsItem();
+        emit changeItemSelect(node);
+        this->setWindowTitle(QString("%1*").arg(m_currentOpenFile));
+    }
+}
+
 void MainWindow::on_actionResource_triggered()
 {
     QString oldDir = m_storageData->resourceDir();
@@ -965,6 +1008,41 @@ void MainWindow::on_actionCCProgressTimer_triggered()
     }
 }
 
+void MainWindow::on_actionCCLabelAtlas_triggered()
+{
+    QModelIndex index = m_treeView->currentIndex();
+    if(index.isValid() == true)
+    {
+        if(m_lastBrowserFile.isEmpty() == true)
+        {
+            m_lastBrowserFile = m_storageData->resourceDir();
+        }
+
+        QString filePath = QFileDialog::getOpenFileName(this, QString("Open File"), m_lastBrowserFile, FILTER_IMAGES);
+        if(this->isCCSpriteCanBeCreate(filePath) == false)
+        {
+            return;
+        }
+
+        m_lastBrowserFile = filePath;
+
+        QImage image(filePath);
+        QSize s = image.size();
+
+        //create
+        QCCNode* node = QCCNode::createCCNodeByType(CLASS_TYPE_CCLABELATLAS);
+        QCCLabelAtlas* temp = dynamic_cast<QCCLabelAtlas*>(node);
+        temp->m_filePath = filePath.remove(QString("%1/").arg(m_storageData->resourceDir()));
+        temp->m_elementWidth = s.width()/10;
+        temp->m_elementHeight = s.height();
+        temp->m_startChar = 0x30;
+
+        //sync
+        this->syncNodeAfterCreate(index, node);
+        this->setWindowTitle(QString("%1*").arg(m_currentOpenFile));
+    }
+}
+
 void MainWindow::on_actionRatio(QAction* action)
 {
     QString str = action->text();
@@ -1002,5 +1080,3 @@ void MainWindow::closeEvent(QCloseEvent* event)
 
     QMainWindow::closeEvent(event);
 }
-
-

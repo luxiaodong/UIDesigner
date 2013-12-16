@@ -46,6 +46,10 @@ void QPropertyBrowser::createProperty()
     createPropertyProgressTimerType();
     createPropertyDirection();
     createPropertyPercentage();
+    createPropertyAtlasElementWidth();
+    createPropertyAtlasElementHeight();
+    createPropertyAtlasStartChar();
+    createPropertyAtlasText();
 
     //-- 2 level
     createPropertyPoint();
@@ -66,6 +70,7 @@ void QPropertyBrowser::createProperty()
     createPropertyCCContainerLayer();
     createPropertyCCScale9Sprite();
     createPropertyCCProgressTimer();
+    createPropertyCCLabelAtlas();
 }
 
 void QPropertyBrowser::createPropertyFixed()
@@ -331,6 +336,36 @@ void QPropertyBrowser::createPropertyPercentage()
     m_percentage->setValue(1.0f);
 }
 
+void QPropertyBrowser::createPropertyAtlasElementWidth()
+{
+    m_atlasElementWidth = m_manager->addProperty(QVariant::Int, "width");
+    m_atlasElementWidth->setAttribute("minimum",1);
+    m_atlasElementWidth->setAttribute("maximum",9999);
+    m_atlasElementWidth->setValue(10);
+}
+
+void QPropertyBrowser::createPropertyAtlasElementHeight()
+{
+    m_atlasElementHeight = m_manager->addProperty(QVariant::Int, "height");
+    m_atlasElementHeight->setAttribute("minimum",1);
+    m_atlasElementHeight->setAttribute("maximum",9999);
+    m_atlasElementHeight->setValue(10);
+}
+
+void QPropertyBrowser::createPropertyAtlasStartChar()
+{
+    m_atlasStartChar = m_manager->addProperty(QVariant::Int, "startChar");
+    m_atlasStartChar->setAttribute("minimum",1);
+    m_atlasStartChar->setAttribute("maximum",255);
+    m_atlasStartChar->setValue(0x30);
+}
+
+void QPropertyBrowser::createPropertyAtlasText()
+{
+    m_atlasText = m_manager->addProperty(QVariant::String, tr("text"));
+    m_atlasText->setValue(QString());
+}
+
 //-- 2 level
 void QPropertyBrowser::createPropertyPoint()
 {
@@ -463,6 +498,15 @@ void QPropertyBrowser::createPropertyCCProgressTimer()
     m_ccProgressTimer->addSubProperty(m_percentage);
 }
 
+void QPropertyBrowser::createPropertyCCLabelAtlas()
+{
+    m_ccLabelAtlas = m_manager->addProperty(QVariant::String, tr("CCLabelAtlas"));
+    m_ccLabelAtlas->addSubProperty(m_atlasText);
+    m_ccLabelAtlas->addSubProperty(m_atlasElementWidth);
+    m_ccLabelAtlas->addSubProperty(m_atlasElementHeight);
+    m_ccLabelAtlas->addSubProperty(m_atlasStartChar);
+}
+
 void QPropertyBrowser::initProperty(QCCNode* node)
 {
     this->clear();
@@ -499,6 +543,10 @@ void QPropertyBrowser::initProperty(QCCNode* node)
     else if(classType == CLASS_TYPE_CCPROGRESSTIMER)
     {
         this->initPropertyCCProgressTimer( dynamic_cast<QCCProgressTimer*>(node));
+    }
+    else if(classType == CLASS_TYPE_CCLABELATLAS)
+    {
+        this->initPropertyCCLabelAtlas( dynamic_cast<QCCLabelAtlas*>(node) );
     }
     this->blockSignals(false);
 }
@@ -581,6 +629,16 @@ void QPropertyBrowser::initPropertyCCProgressTimer(QCCProgressTimer *node)
     m_direction->setValue(node->m_direction);
     m_percentage->setValue(node->m_percentage);
     this->addProperty(m_ccProgressTimer);
+}
+
+void QPropertyBrowser::initPropertyCCLabelAtlas(QCCLabelAtlas* node)
+{
+    this->initPropertyCCSprite(node);
+    m_atlasElementWidth->setValue(node->m_elementWidth);
+    m_atlasElementHeight->setValue(node->m_elementHeight);
+    m_atlasStartChar->setValue(node->m_startChar);
+    m_atlasText->setValue(node->m_text);
+    this->addProperty(m_ccLabelAtlas);
 }
 
 //slot
@@ -710,6 +768,22 @@ void QPropertyBrowser::valueChanged(QtProperty* property, QVariant )
     {
         float percentage = m_percentage->value().toFloat();
         emit changePropertyPercentage( percentage );
+    }
+    else if(property == m_atlasElementWidth || property == m_atlasElementHeight)
+    {
+        int width = m_atlasElementWidth->value().toInt();
+        int height = m_atlasElementHeight->value().toInt();
+        emit changePropertyAtlasElementSize(width, height);
+    }
+    else if(property == m_atlasStartChar)
+    {
+        int startChar = m_atlasStartChar->value().toInt();
+        emit changePropertyAtlasStartChar(startChar);
+    }
+    else if(property == m_atlasText)
+    {
+        QString text = m_atlasText->value().toString();
+        emit changePropertyAtlasText(text);
     }
 }
 

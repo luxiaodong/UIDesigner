@@ -41,6 +41,9 @@ signals:
     void changePropertyProgressTimerType(int);
     void changePropertyDirection(int);
     void changePropertyPercentage(float);
+    void changePropertyAtlasElementSize(int width, int height);
+    void changePropertyAtlasStartChar(int);
+    void changePropertyAtlasText(QString& text);
 
 public slots:
     void valueChanged(QtProperty*,QVariant);
@@ -56,6 +59,7 @@ private:
     void initPropertyCCContainerLayer(QCCContainerLayer *node);
     void initPropertyCCScale9Sprite(QCCScale9Sprite *node);
     void initPropertyCCProgressTimer(QCCProgressTimer *node);
+    void initPropertyCCLabelAtlas(QCCLabelAtlas* node);
 
 private:
     void createProperty();
@@ -95,6 +99,10 @@ private:
     void createPropertyProgressTimerType();
     void createPropertyDirection();
     void createPropertyPercentage();
+    void createPropertyAtlasElementWidth();
+    void createPropertyAtlasElementHeight();
+    void createPropertyAtlasStartChar();
+    void createPropertyAtlasText();
 
 //-- 2 level
     void createPropertyPoint();
@@ -115,6 +123,7 @@ private:
     void createPropertyCCContainerLayer();
     void createPropertyCCScale9Sprite();
     void createPropertyCCProgressTimer();
+    void createPropertyCCLabelAtlas();
 
 private:
 //-- 1 level
@@ -151,6 +160,10 @@ private:
     QtVariantProperty*  m_progressTimerType;
     QtVariantProperty*  m_direction;
     QtVariantProperty*  m_percentage;
+    QtVariantProperty*  m_atlasElementWidth;
+    QtVariantProperty*  m_atlasElementHeight;
+    QtVariantProperty*  m_atlasStartChar;
+    QtVariantProperty*  m_atlasText;
 
 //-- 2 level
     QtVariantProperty*  m_point;
@@ -171,6 +184,7 @@ private:
     QtVariantProperty*  m_ccContainerLayer;
     QtVariantProperty*  m_ccScale9Sprite;
     QtVariantProperty*  m_ccProgressTimer;
+    QtVariantProperty*  m_ccLabelAtlas;
 
 private:
     QtVariantPropertyManager*   m_manager;

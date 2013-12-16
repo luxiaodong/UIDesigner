@@ -50,6 +50,7 @@
     <addaction name="actionCContainer"/>
     <addaction name="actionCCScale9Sprite"/>
     <addaction name="actionCCProgressTimer"/>
+    <addaction name="actionCCLabelAtlas"/>
    </widget>
    <widget class="QMenu" name="menuSetting">
     <property name="title">
@@ -241,6 +242,11 @@
   <action name="actionCCProgressTimer">
    <property name="text">
     <string>CCProgressTimer</string>
+   </property>
+  </action>
+  <action name="actionCCLabelAtlas">
+   <property name="text">
+    <string>CCLabelAtlas</string>
    </property>
   </action>
  </widget>

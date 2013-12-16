@@ -127,6 +127,22 @@ public:
     int m_dimensionHeight;
 };
 
+class QCCLabelAtlas : public QCCSprite
+{
+public:
+    QCCLabelAtlas();
+public:
+    virtual void importData(QMap<QString, QString>&);
+    virtual QMap<QString, QString> exportData();
+    virtual QGraphicsItem* createGraphicsItem();
+    virtual void updateGraphicsItem();
+public:
+    QString m_text;
+    int m_elementWidth;
+    int m_elementHeight;
+    int m_startChar;
+};
+
 class QCCMenuItemImage : public QCCSprite
 {
 public:

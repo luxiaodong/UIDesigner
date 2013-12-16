@@ -80,6 +80,9 @@ public slots:
     void changedPropertyProgressTimerType(int);
     void changedPropertyDirection(int);
     void changedPropertyPercentage(float);
+    void changedPropertyAtlasElementSize(int width, int height);
+    void changedPropertyAtlasStartChar(int);
+    void changedPropertyAtlasText(QString&);
 
 private slots:
     void on_actionRatio(QAction*);
@@ -97,6 +100,7 @@ private slots:
     void on_actionCContainer_triggered();
     void on_actionCCScale9Sprite_triggered();
     void on_actionCCProgressTimer_triggered();
+    void on_actionCCLabelAtlas_triggered();
 
 protected:
     virtual void closeEvent(QCloseEvent *event);
