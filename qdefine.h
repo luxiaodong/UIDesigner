@@ -35,6 +35,13 @@
 #include <QTextCursor>
 #include <QActionGroup>
 #include <QCloseEvent>
+#include <QSplitter>
+#include <QFileSystemModel>
+#include <QHeaderView>
+#include <QListView>
+#include <QTableView>
+#include <QUrl>
+#include <QMimeData>
 
 //1.add string manager
 //2.add lua fire browser.

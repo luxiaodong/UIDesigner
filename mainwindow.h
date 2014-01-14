@@ -34,6 +34,7 @@ private:
 
 private:
     bool isCCSpriteCanBeCreate(QString filePath);
+    void openConfigFile(QString& filePath);
 
 signals:
     //view;
@@ -104,6 +105,8 @@ private slots:
 
 protected:
     virtual void closeEvent(QCloseEvent *event);
+    virtual void dragEnterEvent(QDragEnterEvent *event);
+    virtual void dropEvent(QDropEvent *event);
 
 private:
     QTreeView*          m_treeView;

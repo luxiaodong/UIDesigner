@@ -42,6 +42,7 @@ MainWindow::MainWindow(QWidget *parent) :
     m_currentOpenFile.clear();
     m_lastBrowserFile.clear();
     m_copyBuffer.clear();
+    this->setAcceptDrops(true);
 
     //test
 //    this->setSceneSize(9, 9);
@@ -212,6 +213,21 @@ bool MainWindow::isCCSpriteCanBeCreate(QString filePath)
     }
 
     return true;
+}
+
+void MainWindow::openConfigFile(QString& filePath)
+{
+    QCCNode* node = m_storageData->readUIFile(filePath);
+    if(node != 0)
+    {
+        m_currentOpenFile = filePath;
+        this->replaceRootNode(node);
+        this->setWindowTitle(m_currentOpenFile);
+    }
+    else
+    {
+        this->statusBar()->showMessage(QString("open file failed.  %1").arg(filePath));
+    }
 }
 
 void MainWindow::connectSignalAndSlot()
@@ -741,17 +757,7 @@ void MainWindow::on_actionOpen_File_triggered()
 {
     QString oldDir = m_storageData->resourceDir();
     QString filePath = QFileDialog::getOpenFileName(this, QString("Open Directory"), oldDir, FILTER_CONFIG);
-    QCCNode* node = m_storageData->readUIFile(filePath);
-    if(node != 0)
-    {
-        m_currentOpenFile = filePath;
-        this->replaceRootNode(node);
-        this->setWindowTitle(m_currentOpenFile);
-    }
-    else
-    {
-        this->statusBar()->showMessage(QString("open file failed.  %1").arg(filePath));
-    }
+    this->openConfigFile(filePath);
 }
 
 void MainWindow::on_actionSave_triggered()
@@ -1054,6 +1060,37 @@ void MainWindow::on_actionRatio(QAction* action)
         int height = m_scene->height();
         this->setSceneSize(width, height);
     }
+}
+
+void MainWindow::dragEnterEvent(QDragEnterEvent *event)
+{
+    if (event->mimeData()->hasFormat("text/uri-list"))
+    {
+        event->acceptProposedAction();
+    }
+}
+
+void MainWindow::dropEvent(QDropEvent *event)
+{
+    QList<QUrl> urls = event->mimeData()->urls();
+
+    if (urls.isEmpty())
+    {
+        return;
+    }
+
+    QString fileName = urls.first().toLocalFile();
+    if (fileName.isEmpty())
+    {
+        return;
+    }
+
+    if(fileName.contains(".lua") == false)
+    {
+        return;
+    }
+
+    this->openConfigFile(fileName);
 }
 
 void MainWindow::closeEvent(QCloseEvent* event)
