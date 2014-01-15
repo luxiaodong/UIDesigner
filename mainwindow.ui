@@ -20,7 +20,7 @@
      <x>0</x>
      <y>0</y>
      <width>788</width>
-     <height>22</height>
+     <height>20</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">
@@ -51,6 +51,7 @@
     <addaction name="actionCCScale9Sprite"/>
     <addaction name="actionCCProgressTimer"/>
     <addaction name="actionCCLabelAtlas"/>
+    <addaction name="actionCCScrollView"/>
    </widget>
    <widget class="QMenu" name="menuSetting">
     <property name="title">
@@ -247,6 +248,11 @@
   <action name="actionCCLabelAtlas">
    <property name="text">
     <string>CCLabelAtlas</string>
+   </property>
+  </action>
+  <action name="actionCCScrollView">
+   <property name="text">
+    <string>CCScrollView</string>
    </property>
   </action>
  </widget>

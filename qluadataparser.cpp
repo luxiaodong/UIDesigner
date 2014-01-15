@@ -182,7 +182,11 @@ QString QLuaDataParser::parseSingleNode(QMap<QString,QString>& map)
     QMap<QString, QString>::const_iterator i = map.constBegin();
     while (i != map.constEnd())
     {
-        str += QString(",%1=\"%2\"").arg(i.key(), i.value());
+        if(i.value().isEmpty() == false)
+        {
+            str += QString(",%1=\"%2\"").arg(i.key(), i.value());
+        }
+
         ++i;
     }
 

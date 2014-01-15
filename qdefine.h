@@ -59,6 +59,7 @@ const char CLASS_TYPE_CCLABELATLAS[] = "CCLabelAtlas";
 const char CLASS_TYPE_CCPROGRESSTIMER[] = "CCProgressTimer";
 const char CLASS_TYPE_CCMENUITEM_IMAGE[] = "CCMenuItemImage";
 const char CLASS_TYPE_CCCONTAINERLAYER[] = "CCContainerLayer";
+const char CLASS_TYPE_CCSCROLLVIEW[] = "CCScrollView";
 
 const char FILTER_IMAGES[] = "Images (*.png *.jpg)";
 const char FILTER_CONFIG[] = "Config (*.lua)";
@@ -82,5 +83,12 @@ typedef enum {
     kCCProgressTimerTypeRadial,
     kCCProgressTimerTypeBar
 } CCProgressTimerType;
+
+typedef enum {
+    kCCScrollViewDirectionNone = -1,
+    kCCScrollViewDirectionHorizontal = 0,
+    kCCScrollViewDirectionVertical,
+    kCCScrollViewDirectionBoth
+} CCScrollViewDirection;
 
 #endif // QDEFINE_H

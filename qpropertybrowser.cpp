@@ -50,6 +50,15 @@ void QPropertyBrowser::createProperty()
     createPropertyAtlasElementHeight();
     createPropertyAtlasStartChar();
     createPropertyAtlasText();
+    createPropertyScrollViewDirection();
+    createPropertyScrollViewCount();
+    createPropertyScrollViewOffsetX();
+    createPropertyScrollViewOffsetY();
+    createPropertyScrollViewSpaceWidth();
+    createPropertyScrollViewSpaceHeight();
+    createPropertyScrollViewContentWidth();
+    createPropertyScrollViewContentHeight();
+    createPropertyScrollViewIsDynamicallyGenerated();
 
     //-- 2 level
     createPropertyPoint();
@@ -60,6 +69,9 @@ void QPropertyBrowser::createProperty()
     createPropertyDimensionSize();
     createPropertyInsetsRect();
     createPropertyPreferredSize();
+    createPropertyScrollViewOffset();
+    createPropertyScrollViewSpace();
+    createPropertyScrollViewContent();
 
     //-- 3 level
     createPropertyCCNode();
@@ -71,6 +83,7 @@ void QPropertyBrowser::createProperty()
     createPropertyCCScale9Sprite();
     createPropertyCCProgressTimer();
     createPropertyCCLabelAtlas();
+    createPropertyCCScrollView();
 }
 
 void QPropertyBrowser::createPropertyFixed()
@@ -366,6 +379,77 @@ void QPropertyBrowser::createPropertyAtlasText()
     m_atlasText->setValue(QString());
 }
 
+void QPropertyBrowser::createPropertyScrollViewDirection()
+{
+    m_scrollViewDirection = m_manager->addProperty(QtVariantPropertyManager::enumTypeId(), "direction");
+    QStringList list;
+    list<<"Horizontal"<<"Vertical";
+    m_scrollViewDirection->setAttribute("enumNames", list);
+    m_scrollViewDirection->setValue(0);
+}
+
+void QPropertyBrowser::createPropertyScrollViewCount()
+{
+    m_scrollViewCount = m_manager->addProperty(QVariant::Int, "count");
+    m_scrollViewCount->setAttribute("minimum",1);
+    m_scrollViewCount->setAttribute("maximum",99);
+    m_scrollViewCount->setValue(3);
+}
+
+void QPropertyBrowser::createPropertyScrollViewOffsetX()
+{
+    m_scrollViewOffsetX = m_manager->addProperty(QVariant::Int, "x");
+    m_scrollViewOffsetX->setAttribute("minimum",0);
+    m_scrollViewOffsetX->setAttribute("maximum",999);
+    m_scrollViewOffsetX->setValue(0);
+}
+
+void QPropertyBrowser::createPropertyScrollViewOffsetY()
+{
+    m_scrollViewOffsetY = m_manager->addProperty(QVariant::Int, "y");
+    m_scrollViewOffsetY->setAttribute("minimum",0);
+    m_scrollViewOffsetY->setAttribute("maximum",999);
+    m_scrollViewOffsetY->setValue(0);
+}
+
+void QPropertyBrowser::createPropertyScrollViewSpaceWidth()
+{
+    m_scrollViewSpaceWidth = m_manager->addProperty(QVariant::Int, "width");
+    m_scrollViewSpaceWidth->setAttribute("minimum",0);
+    m_scrollViewSpaceWidth->setAttribute("maximum",999);
+    m_scrollViewSpaceWidth->setValue(0);
+}
+
+void QPropertyBrowser::createPropertyScrollViewSpaceHeight()
+{
+    m_scrollViewSpaceHeight = m_manager->addProperty(QVariant::Int, "height");
+    m_scrollViewSpaceHeight->setAttribute("minimum",0);
+    m_scrollViewSpaceHeight->setAttribute("maximum",999);
+    m_scrollViewSpaceHeight->setValue(0);
+}
+
+void QPropertyBrowser::createPropertyScrollViewContentWidth()
+{
+    m_scrollViewContentWidth = m_manager->addProperty(QVariant::Int, "width");
+    m_scrollViewContentWidth->setAttribute("minimum",0);
+    m_scrollViewContentWidth->setAttribute("maximum",999);
+    m_scrollViewContentWidth->setValue(0);
+}
+
+void QPropertyBrowser::createPropertyScrollViewContentHeight()
+{
+    m_scrollViewContentHeight = m_manager->addProperty(QVariant::Int, "height");
+    m_scrollViewContentHeight->setAttribute("minimum",0);
+    m_scrollViewContentHeight->setAttribute("maximum",999);
+    m_scrollViewContentHeight->setValue(0);
+}
+
+void QPropertyBrowser::createPropertyScrollViewIsDynamicallyGenerated()
+{
+    m_scrollViewIsDynamicallyGenerated = m_manager->addProperty(QVariant::Bool, tr("dynamicallyGenerated"));
+    m_scrollViewIsDynamicallyGenerated->setValue(false);
+}
+
 //-- 2 level
 void QPropertyBrowser::createPropertyPoint()
 {
@@ -432,6 +516,30 @@ void QPropertyBrowser::createPropertyPreferredSize()
     m_preferredSize->addSubProperty(m_preferredWidth);
     m_preferredSize->addSubProperty(m_preferredHeight);
     m_preferredSize->setValue(QString(""));
+}
+
+void QPropertyBrowser::createPropertyScrollViewOffset()
+{
+    m_scrollViewOffset = m_manager->addProperty(QVariant::String, tr("Offset"));
+    m_scrollViewOffset->addSubProperty(m_scrollViewOffsetX);
+    m_scrollViewOffset->addSubProperty(m_scrollViewOffsetY);
+    m_scrollViewOffset->setValue(QString(""));
+}
+
+void QPropertyBrowser::createPropertyScrollViewSpace()
+{
+    m_scrollViewSpace = m_manager->addProperty(QVariant::String, tr("Space"));
+    m_scrollViewSpace->addSubProperty(m_scrollViewSpaceWidth);
+    m_scrollViewSpace->addSubProperty(m_scrollViewSpaceHeight);
+    m_scrollViewSpace->setValue(QString(""));
+}
+
+void QPropertyBrowser::createPropertyScrollViewContent()
+{
+    m_scrollViewContent = m_manager->addProperty(QVariant::String, tr("Content"));
+    m_scrollViewContent->addSubProperty(m_scrollViewContentWidth);
+    m_scrollViewContent->addSubProperty(m_scrollViewContentHeight);
+    m_scrollViewContent->setValue(QString(""));
 }
 
 //-- 3 level
@@ -507,6 +615,18 @@ void QPropertyBrowser::createPropertyCCLabelAtlas()
     m_ccLabelAtlas->addSubProperty(m_atlasStartChar);
 }
 
+void QPropertyBrowser::createPropertyCCScrollView()
+{
+    m_ccScrollView = m_manager->addProperty(QVariant::String, tr("CCScrollView"));
+    m_ccScrollView->addSubProperty(m_scrollViewIsDynamicallyGenerated);
+    m_ccScrollView->addSubProperty(m_containerLayerFilePath);
+    m_ccScrollView->addSubProperty(m_scrollViewDirection);
+    m_ccScrollView->addSubProperty(m_scrollViewCount);
+    m_ccScrollView->addSubProperty(m_scrollViewContent);
+    m_ccScrollView->addSubProperty(m_scrollViewOffset);
+    m_ccScrollView->addSubProperty(m_scrollViewSpace);
+}
+
 void QPropertyBrowser::initProperty(QCCNode* node)
 {
     this->clear();
@@ -547,6 +667,10 @@ void QPropertyBrowser::initProperty(QCCNode* node)
     else if(classType == CLASS_TYPE_CCLABELATLAS)
     {
         this->initPropertyCCLabelAtlas( dynamic_cast<QCCLabelAtlas*>(node) );
+    }
+    else if(classType == CLASS_TYPE_CCSCROLLVIEW)
+    {
+        this->initPropertyCCScrollView( dynamic_cast<QCCScrollView*>(node) );
     }
     this->blockSignals(false);
 }
@@ -639,6 +763,21 @@ void QPropertyBrowser::initPropertyCCLabelAtlas(QCCLabelAtlas* node)
     m_atlasStartChar->setValue(node->m_startChar);
     m_atlasText->setValue(node->m_text);
     this->addProperty(m_ccLabelAtlas);
+}
+
+void QPropertyBrowser::initPropertyCCScrollView(QCCScrollView* node)
+{
+    this->initPropertyCCNode(node);
+    m_scrollViewIsDynamicallyGenerated->setValue(node->m_isDynamicallyGenerated);
+    m_containerLayerFilePath->setValue(node->m_containerConfigFilePath);
+    m_scrollViewCount->setValue(node->m_count);
+    m_scrollViewContentWidth->setValue(node->m_contentWidth);
+    m_scrollViewContentHeight->setValue(node->m_contentHeight);
+    m_scrollViewOffsetX->setValue(node->m_offsetX);
+    m_scrollViewOffsetY->setValue(node->m_offsetY);
+    m_scrollViewSpaceWidth->setValue(node->m_spaceWidth);
+    m_scrollViewSpaceHeight->setValue(node->m_spaceHeight);
+    this->addProperty(m_ccScrollView);
 }
 
 //slot
@@ -784,6 +923,39 @@ void QPropertyBrowser::valueChanged(QtProperty* property, QVariant )
     {
         QString text = m_atlasText->value().toString();
         emit changePropertyAtlasText(text);
+    }
+    else if(property == m_scrollViewCount)
+    {
+        int count = m_scrollViewCount->value().toInt();
+        emit changePropertyScrollViewCount(count);
+    }
+    else if(property == m_scrollViewDirection)
+    {
+        int direction = m_scrollViewDirection->value().toInt();
+        emit changePropertyScrollViewDirection(direction);
+    }
+    else if(property == m_scrollViewOffsetX || property == m_scrollViewOffsetY)
+    {
+        int x = m_scrollViewOffsetX->value().toInt();
+        int y = m_scrollViewOffsetY->value().toInt();
+        emit changePropertyScrollViewOffset(x,y);
+    }
+    else if(property == m_scrollViewSpaceWidth || property == m_scrollViewSpaceHeight)
+    {
+        int width = m_scrollViewSpaceWidth->value().toInt();
+        int height = m_scrollViewSpaceHeight->value().toInt();
+        emit changePropertyScrollViewSpace(width, height);
+    }
+    else if(property == m_scrollViewContentWidth || property == m_scrollViewContentHeight)
+    {
+        int width = m_scrollViewContentWidth->value().toInt();
+        int height = m_scrollViewContentHeight->value().toInt();
+        emit changePropertyScrollViewContent(width, height);
+    }
+    else if(property == m_scrollViewIsDynamicallyGenerated)
+    {
+        int isDynamically = m_scrollViewIsDynamicallyGenerated->value().toBool();
+        emit changePropertyDynamicallyGenerated(isDynamically);
     }
 }
 

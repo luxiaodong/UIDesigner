@@ -84,6 +84,12 @@ public slots:
     void changedPropertyAtlasElementSize(int width, int height);
     void changedPropertyAtlasStartChar(int);
     void changedPropertyAtlasText(QString&);
+    void changedPropertyScrollViewDirection(int);
+    void changedPropertyScrollViewCount(int);
+    void changedPropertyScrollViewOffset(int,int);
+    void changedPropertyScrollViewSpace(int,int);
+    void changedPropertyScrollViewContent(int,int);
+    void changedPropertyDynamicallyGenerated(bool);
 
 private slots:
     void on_actionRatio(QAction*);
@@ -102,6 +108,7 @@ private slots:
     void on_actionCCScale9Sprite_triggered();
     void on_actionCCProgressTimer_triggered();
     void on_actionCCLabelAtlas_triggered();
+    void on_actionCCScrollView_triggered();
 
 protected:
     virtual void closeEvent(QCloseEvent *event);

@@ -44,6 +44,12 @@ signals:
     void changePropertyAtlasElementSize(int width, int height);
     void changePropertyAtlasStartChar(int);
     void changePropertyAtlasText(QString& text);
+    void changePropertyScrollViewDirection(int);
+    void changePropertyScrollViewCount(int);
+    void changePropertyScrollViewOffset(int,int);
+    void changePropertyScrollViewSpace(int,int);
+    void changePropertyScrollViewContent(int,int);
+    void changePropertyDynamicallyGenerated(bool);
 
 public slots:
     void valueChanged(QtProperty*,QVariant);
@@ -60,6 +66,7 @@ private:
     void initPropertyCCScale9Sprite(QCCScale9Sprite *node);
     void initPropertyCCProgressTimer(QCCProgressTimer *node);
     void initPropertyCCLabelAtlas(QCCLabelAtlas* node);
+    void initPropertyCCScrollView(QCCScrollView* node);
 
 private:
     void createProperty();
@@ -103,6 +110,15 @@ private:
     void createPropertyAtlasElementHeight();
     void createPropertyAtlasStartChar();
     void createPropertyAtlasText();
+    void createPropertyScrollViewDirection();
+    void createPropertyScrollViewCount();
+    void createPropertyScrollViewOffsetX();
+    void createPropertyScrollViewOffsetY();
+    void createPropertyScrollViewSpaceWidth();
+    void createPropertyScrollViewSpaceHeight();
+    void createPropertyScrollViewContentWidth();
+    void createPropertyScrollViewContentHeight();
+    void createPropertyScrollViewIsDynamicallyGenerated();
 
 //-- 2 level
     void createPropertyPoint();
@@ -113,6 +129,9 @@ private:
     void createPropertyTextAlignment();
     void createPropertyInsetsRect();
     void createPropertyPreferredSize();
+    void createPropertyScrollViewOffset();
+    void createPropertyScrollViewSpace();
+    void createPropertyScrollViewContent();
 
 //-- 3 level
     void createPropertyCCNode();
@@ -124,6 +143,7 @@ private:
     void createPropertyCCScale9Sprite();
     void createPropertyCCProgressTimer();
     void createPropertyCCLabelAtlas();
+    void createPropertyCCScrollView();
 
 private:
 //-- 1 level
@@ -164,6 +184,15 @@ private:
     QtVariantProperty*  m_atlasElementHeight;
     QtVariantProperty*  m_atlasStartChar;
     QtVariantProperty*  m_atlasText;
+    QtVariantProperty*  m_scrollViewDirection;
+    QtVariantProperty*  m_scrollViewCount;
+    QtVariantProperty*  m_scrollViewOffsetX;
+    QtVariantProperty*  m_scrollViewOffsetY;
+    QtVariantProperty*  m_scrollViewSpaceWidth;
+    QtVariantProperty*  m_scrollViewSpaceHeight;
+    QtVariantProperty*  m_scrollViewContentWidth;
+    QtVariantProperty*  m_scrollViewContentHeight;
+    QtVariantProperty*  m_scrollViewIsDynamicallyGenerated;
 
 //-- 2 level
     QtVariantProperty*  m_point;
@@ -174,6 +203,9 @@ private:
     QtVariantProperty*  m_textAlignment;
     QtVariantProperty*  m_insetsRect;
     QtVariantProperty*  m_preferredSize;
+    QtVariantProperty*  m_scrollViewOffset;
+    QtVariantProperty*  m_scrollViewSpace;
+    QtVariantProperty*  m_scrollViewContent;
 
 //-- 3 level
     QtVariantProperty*  m_ccNode;
@@ -185,6 +217,7 @@ private:
     QtVariantProperty*  m_ccScale9Sprite;
     QtVariantProperty*  m_ccProgressTimer;
     QtVariantProperty*  m_ccLabelAtlas;
+    QtVariantProperty*  m_ccScrollView;
 
 private:
     QtVariantPropertyManager*   m_manager;

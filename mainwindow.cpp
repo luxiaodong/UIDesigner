@@ -274,6 +274,12 @@ void MainWindow::connectSignalAndSlot()
     connect(m_browser, SIGNAL(changePropertyAtlasElementSize(int,int)), this, SLOT(changedPropertyAtlasElementSize(int,int)));
     connect(m_browser, SIGNAL(changePropertyAtlasStartChar(int)), this, SLOT(changedPropertyAtlasStartChar(int)));
     connect(m_browser, SIGNAL(changePropertyAtlasText(QString&)), this, SLOT(changedPropertyAtlasText(QString&)));
+    connect(m_browser, SIGNAL(changePropertyScrollViewDirection(int)), this, SLOT(changedPropertyScrollViewDirection(int)));
+    connect(m_browser, SIGNAL(changePropertyScrollViewCount(int)), this, SLOT(changedPropertyScrollViewCount(int)));
+    connect(m_browser, SIGNAL(changePropertyScrollViewOffset(int,int)), this, SLOT(changedPropertyScrollViewOffset(int,int)));
+    connect(m_browser, SIGNAL(changePropertyScrollViewSpace(int,int)), this, SLOT(changedPropertyScrollViewSpace(int,int)));
+    connect(m_browser, SIGNAL(changePropertyScrollViewContent(int,int)), this, SLOT(changedPropertyScrollViewContent(int,int)));
+    connect(m_browser, SIGNAL(changePropertyDynamicallyGenerated(bool)), this, SLOT(changedPropertyDynamicallyGenerated(bool)));
 
     connect(this, SIGNAL(changePropertyPoint(int,int)), m_browser, SLOT(changedPropertyPoint(int,int)));
     connect(this, SIGNAL(changePropertySize(int,int)), m_browser, SLOT(changedPropertySize(int,int)));
@@ -552,20 +558,41 @@ void MainWindow::changedPropertyCCContainerLayerFilePath(QString& filePath)
     QCCNode* node = this->currentSelectNode();
     if(node != 0)
     {
-        QCCContainerLayer* temp = dynamic_cast<QCCContainerLayer*>(node);
-
-        //check if a container.
-        QStorageData data;
-        QCCNode* root = data.readUIFile(filePath);
-        if(root != 0)
+        if (node->m_classType == CLASS_TYPE_CCCONTAINERLAYER)
         {
-            delete root;
-            QString relationFilePath = filePath;
-            relationFilePath.remove( QString("%1/").arg(m_storageData->resourceDir()) );
-            temp->m_containerConfigFilePath = relationFilePath;
-            temp->updateGraphicsItem();
-            emit changeItemSelect(node);
-            this->setWindowTitle(QString("%1*").arg(m_currentOpenFile));
+            QCCContainerLayer* temp = dynamic_cast<QCCContainerLayer*>(node);
+
+            //check if a container.
+            QStorageData data;
+            QCCNode* root = data.readUIFile(filePath);
+            if(root != 0)
+            {
+                delete root;
+                QString relationFilePath = filePath;
+                relationFilePath.remove( QString("%1/").arg(m_storageData->resourceDir()) );
+                temp->m_containerConfigFilePath = relationFilePath;
+                temp->updateGraphicsItem();
+                emit changeItemSelect(node);
+                this->setWindowTitle(QString("%1*").arg(m_currentOpenFile));
+            }
+        }
+        else
+        {
+            QCCScrollView* temp = dynamic_cast<QCCScrollView*>(node);
+
+            //check if a container.
+            QStorageData data;
+            QCCNode* root = data.readUIFile(filePath);
+            if(root != 0)
+            {
+                delete root;
+                QString relationFilePath = filePath;
+                relationFilePath.remove( QString("%1/").arg(m_storageData->resourceDir()) );
+                temp->m_containerConfigFilePath = relationFilePath;
+                temp->updateGraphicsItem();
+                emit changeItemSelect(node);
+                this->setWindowTitle(QString("%1*").arg(m_currentOpenFile));
+            }
         }
     }
 }
@@ -675,6 +702,87 @@ void MainWindow::changedPropertyAtlasText(QString& text)
     }
 }
 
+void MainWindow::changedPropertyScrollViewDirection(int direction)
+{
+    QCCNode* node = this->currentSelectNode();
+    if(node != 0)
+    {
+        QCCScrollView* temp = dynamic_cast<QCCScrollView*>(node);
+        temp->m_direction = direction;
+        temp->updateGraphicsItem();
+        emit changeItemSelect(node);
+        this->setWindowTitle(QString("%1*").arg(m_currentOpenFile));
+    }
+}
+
+void MainWindow::changedPropertyScrollViewCount(int count)
+{
+    QCCNode* node = this->currentSelectNode();
+    if(node != 0)
+    {
+        QCCScrollView* temp = dynamic_cast<QCCScrollView*>(node);
+        temp->m_count = count;
+        temp->updateGraphicsItem();
+        emit changeItemSelect(node);
+        this->setWindowTitle(QString("%1*").arg(m_currentOpenFile));
+    }
+}
+
+void MainWindow::changedPropertyScrollViewOffset(int x, int y)
+{
+    QCCNode* node = this->currentSelectNode();
+    if(node != 0)
+    {
+        QCCScrollView* temp = dynamic_cast<QCCScrollView*>(node);
+        temp->m_offsetX = x;
+        temp->m_offsetY = y;
+        temp->updateGraphicsItem();
+        emit changeItemSelect(node);
+        this->setWindowTitle(QString("%1*").arg(m_currentOpenFile));
+    }
+}
+
+void MainWindow::changedPropertyScrollViewSpace(int width, int height)
+{
+    QCCNode* node = this->currentSelectNode();
+    if(node != 0)
+    {
+        QCCScrollView* temp = dynamic_cast<QCCScrollView*>(node);
+        temp->m_spaceWidth = width;
+        temp->m_spaceHeight = height;
+        temp->updateGraphicsItem();
+        emit changeItemSelect(node);
+        this->setWindowTitle(QString("%1*").arg(m_currentOpenFile));
+    }
+}
+
+void MainWindow::changedPropertyScrollViewContent(int width, int height)
+{
+    QCCNode* node = this->currentSelectNode();
+    if(node != 0)
+    {
+        QCCScrollView* temp = dynamic_cast<QCCScrollView*>(node);
+        temp->m_contentWidth = width;
+        temp->m_contentHeight = height;
+        temp->updateGraphicsItem();
+        emit changeItemSelect(node);
+        this->setWindowTitle(QString("%1*").arg(m_currentOpenFile));
+    }
+}
+
+void MainWindow::changedPropertyDynamicallyGenerated(bool isDynamically)
+{
+    QCCNode* node = this->currentSelectNode();
+    if(node != 0)
+    {
+        QCCScrollView* temp = dynamic_cast<QCCScrollView*>(node);
+        temp->m_isDynamicallyGenerated = isDynamically;
+        temp->updateGraphicsItem();
+        emit changeItemSelect(node);
+        this->setWindowTitle(QString("%1*").arg(m_currentOpenFile));
+    }
+}
+
 void MainWindow::on_actionResource_triggered()
 {
     QString oldDir = m_storageData->resourceDir();
@@ -690,7 +798,7 @@ void MainWindow::on_actionNew_triggered()
         return ;
     }
 
-    if (openFile.right(3) != ".lua")
+    if (openFile.right(4) != ".lua")
     {
         openFile += QString(".lua");
     }
@@ -1043,6 +1151,21 @@ void MainWindow::on_actionCCLabelAtlas_triggered()
         temp->m_elementHeight = s.height();
         temp->m_startChar = 0x30;
 
+        //sync
+        this->syncNodeAfterCreate(index, node);
+        this->setWindowTitle(QString("%1*").arg(m_currentOpenFile));
+    }
+}
+
+void MainWindow::on_actionCCScrollView_triggered()
+{
+    QModelIndex index = m_treeView->currentIndex();
+    if(index.isValid() == true)
+    {
+        //create
+        QCCNode* node = QCCNode::createCCNodeByType(CLASS_TYPE_CCSCROLLVIEW);
+        QCCScrollView* scrollView = dynamic_cast<QCCScrollView*>(node);
+        scrollView->m_isDynamicallyGenerated = true;
         //sync
         this->syncNodeAfterCreate(index, node);
         this->setWindowTitle(QString("%1*").arg(m_currentOpenFile));
