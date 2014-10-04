@@ -79,7 +79,6 @@ QCCNode* QLuaDataParser::parse(QStringList& list)
             QString lastName = nameList.split(".").last();
             map.insert("name", lastName);
             node->importData(map);
-
             Q_ASSERT(node != 0);
             if(root == 0)
             {
@@ -89,6 +88,7 @@ QCCNode* QLuaDataParser::parse(QStringList& list)
             {
                 //find parent.
                 QCCNode* parent = this->findParentNode(nameList, root);
+                Q_ASSERT(parent != 0);
                 parent->m_children.append(node);
                 node->m_parent = parent;
             }

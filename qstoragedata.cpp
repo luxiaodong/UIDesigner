@@ -1,5 +1,6 @@
 #include "qstoragedata.h"
 #include "qluadataparser.h"
+#include "qxmldataparser.h"
 
 QStorageData::QStorageData()
 {

@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>MainWindow</string>
+   <string>UIDesigner</string>
   </property>
   <widget class="QWidget" name="centralWidget"/>
   <widget class="QMenuBar" name="menuBar">
@@ -20,7 +20,7 @@
      <x>0</x>
      <y>0</y>
      <width>788</width>
-     <height>20</height>
+     <height>22</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">
@@ -158,7 +158,10 @@
   </action>
   <action name="actionDel">
    <property name="text">
-    <string>del</string>
+    <string>delete</string>
+   </property>
+   <property name="toolTip">
+    <string>delete</string>
    </property>
    <property name="shortcut">
     <string>Ctrl+D</string>

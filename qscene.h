@@ -3,6 +3,7 @@
 
 #include "qdefine.h"
 #include "qccnode.h"
+#include "qcclayer.h"
 
 #define GRAPHICS_ITEM_NAME_TAG  1
 #define GRAPHICS_ITEM_CLASS_TAG  2

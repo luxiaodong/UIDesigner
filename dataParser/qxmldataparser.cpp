@@ -1,14 +1,4 @@
-#include "qdataparser.h"
-
-QCCNode* QDataParser::readUIFile(QString )
-{
-    return 0;
-}
-
-bool QDataParser::writeUIFile(QString , QCCNode* )
-{
-    return false;
-}
+#include "qxmldataparser.h"
 
 QCCNode* QXmlDataParser::readUIFile(QString filePath)
 {
@@ -131,7 +121,7 @@ void QXmlDataParser::parseCCNode(QCCNode* node, QXmlStreamAttributes& attr)
 
     if(attr.hasAttribute("fixed") == true)
     {
-        node->m_isFixed = attr.value("fix").toString().toInt();
+        node->m_isFixed = attr.value("fixed").toString().toInt();
     }
 
     if(attr.hasAttribute("x") == true)
@@ -259,9 +249,9 @@ void QXmlDataParser::parseCCMenuItemImage(QCCMenuItemImage* node, QXmlStreamAttr
 
 void QXmlDataParser::parseCCContainerLayer(QCCContainerLayer* node, QXmlStreamAttributes& attr)
 {
-    if(attr.hasAttribute("containerConfigFilePath") == true)
+    if(attr.hasAttribute("filePath") == true)
     {
-        node->m_containerConfigFilePath = attr.value("containerConfigFilePath").toString();
+        node->m_containerConfigFilePath = attr.value("filePath").toString();
     }
 
     this->parseCCLayer(node, attr);
@@ -462,5 +452,6 @@ void QXmlDataParser::parseCCMenuItemImage(QCCMenuItemImage* node, QXmlStreamWrit
 void QXmlDataParser::parseCCContainerLayer(QCCContainerLayer* node, QXmlStreamWriter* stream)
 {
     this->parseCCLayer(node, stream);
-    stream->writeAttribute("containerConfigFilePath", QString("%1").arg(node->m_containerConfigFilePath));
+    stream->writeAttribute("filePath", QString("%1").arg(node->m_containerConfigFilePath));
 }
+

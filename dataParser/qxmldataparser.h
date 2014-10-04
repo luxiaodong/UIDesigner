@@ -1,15 +1,7 @@
-#ifndef QDATAPARSER_H
-#define QDATAPARSER_H
+#ifndef QXMLDATAPARSER_H
+#define QXMLDATAPARSER_H
 
-#include "qccnode.h"
-
-class QDataParser
-{
-public:
-    virtual ~QDataParser(){}
-    virtual QCCNode* readUIFile(QString filePath);
-    virtual bool writeUIFile(QString filePath, QCCNode* root);
-};
+#include "qdataparser.h"
 
 class QXmlDataParser : public QDataParser
 {
@@ -41,6 +33,4 @@ private:
     void parseCCContainerLayer(QCCContainerLayer*, QXmlStreamWriter*);
 };
 
-
-
-#endif // QDATAPARSER_H
+#endif // QXMLDATAPARSER_H

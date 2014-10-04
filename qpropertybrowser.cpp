@@ -88,14 +88,14 @@ void QPropertyBrowser::createProperty()
 
 void QPropertyBrowser::createPropertyFixed()
 {
-    m_fixed = m_manager->addProperty(QVariant::Bool, tr("fixed"));
+    m_fixed = m_manager->addProperty(QVariant::Bool, PROPERTY_TYPE_FIXED);
     m_fixed->setValue(false);
 }
 
 //-- 1 level
 void QPropertyBrowser::createPropertyX()
 {
-    m_x = m_manager->addProperty(QVariant::Int, "x");
+    m_x = m_manager->addProperty(QVariant::Int, PROPERTY_TYPE_X);
     m_x->setAttribute("minimum",-9999);
     m_x->setAttribute("maximum",9999);
     m_x->setValue(0);
@@ -103,7 +103,7 @@ void QPropertyBrowser::createPropertyX()
 
 void QPropertyBrowser::createPropertyY()
 {
-    m_y = m_manager->addProperty(QVariant::Int, "y");
+    m_y = m_manager->addProperty(QVariant::Int, PROPERTY_TYPE_Y);
     m_y->setAttribute("minimum",-9999);
     m_y->setAttribute("maximum",9999);
     m_y->setValue(0);
@@ -111,7 +111,7 @@ void QPropertyBrowser::createPropertyY()
 
 void QPropertyBrowser::createPropertyZ()
 {
-    m_z = m_manager->addProperty(QVariant::Int, "z");
+    m_z = m_manager->addProperty(QVariant::Int, PROPERTY_TYPE_Z);
     m_z->setAttribute("minimum",-9999);
     m_z->setAttribute("maximum",9999);
     m_z->setValue(0);
@@ -119,7 +119,7 @@ void QPropertyBrowser::createPropertyZ()
 
 void QPropertyBrowser::createPropertyTag()
 {
-    m_tag = m_manager->addProperty(QVariant::Int, "tag");
+    m_tag = m_manager->addProperty(QVariant::Int, PROPERTY_TYPE_TAG);
     m_tag->setAttribute("minimum",-1);
     m_tag->setAttribute("maximum",9999999);
     m_tag->setValue(-1);
@@ -127,7 +127,7 @@ void QPropertyBrowser::createPropertyTag()
 
 void QPropertyBrowser::createPropertyWidth()
 {
-    m_width = m_manager->addProperty(QVariant::Int, "width");
+    m_width = m_manager->addProperty(QVariant::Int, PROPERTY_TYPE_WIDTH);
     m_width->setAttribute("minimum",0);
     m_width->setAttribute("maximum",9999);
     m_width->setValue(0);
@@ -135,7 +135,7 @@ void QPropertyBrowser::createPropertyWidth()
 
 void QPropertyBrowser::createPropertyHeight()
 {
-    m_height = m_manager->addProperty(QVariant::Int, "height");
+    m_height = m_manager->addProperty(QVariant::Int, PROPERTY_TYPE_HEIGHT);
     m_height->setAttribute("minimum",0);
     m_height->setAttribute("maximum",9999);
     m_height->setValue(0);
@@ -143,7 +143,7 @@ void QPropertyBrowser::createPropertyHeight()
 
 void QPropertyBrowser::createPropertyAnchorX()
 {
-    m_anchorX = m_manager->addProperty(QVariant::Double, tr("anchorX"));
+    m_anchorX = m_manager->addProperty(QVariant::Double, PROPERTY_TYPE_ANCHORX);
     m_anchorX->setAttribute("minimum", 0.0f);
     m_anchorX->setAttribute("maximum", 1.0f);
     m_anchorX->setAttribute("singleStep", 0.01f);
@@ -152,7 +152,7 @@ void QPropertyBrowser::createPropertyAnchorX()
 
 void QPropertyBrowser::createPropertyAnchorY()
 {
-    m_anchorY = m_manager->addProperty(QVariant::Double, tr("anchorX"));
+    m_anchorY = m_manager->addProperty(QVariant::Double, PROPERTY_TYPE_ANCHORY);
     m_anchorY->setAttribute("minimum", 0.0f);
     m_anchorY->setAttribute("maximum", 1.0f);
     m_anchorY->setAttribute("singleStep", 0.01f);
@@ -161,7 +161,7 @@ void QPropertyBrowser::createPropertyAnchorY()
 
 void QPropertyBrowser::createPropertyScaleX()
 {
-    m_scaleX = m_manager->addProperty(QVariant::Double, tr("scaleX"));
+    m_scaleX = m_manager->addProperty(QVariant::Double, PROPERTY_TYPE_SCALEX);
     m_scaleX->setAttribute("minimum", -1000.0f);
     m_scaleX->setAttribute("maximum", 1000.0f);
     m_scaleX->setAttribute("singleStep", 0.01f);
@@ -170,7 +170,7 @@ void QPropertyBrowser::createPropertyScaleX()
 
 void QPropertyBrowser::createPropertyScaleY()
 {
-    m_scaleY = m_manager->addProperty(QVariant::Double, tr("scaleY"));
+    m_scaleY = m_manager->addProperty(QVariant::Double, PROPERTY_TYPE_SCALEY);
     m_scaleY->setAttribute("minimum", -1000.0f);
     m_scaleY->setAttribute("maximum", 1000.0f);
     m_scaleY->setAttribute("singleStep", 0.01f);
@@ -179,7 +179,7 @@ void QPropertyBrowser::createPropertyScaleY()
 
 void QPropertyBrowser::createPropertyRotation()
 {
-    m_rotation = m_manager->addProperty(QVariant::Int, "rotation");
+    m_rotation = m_manager->addProperty(QVariant::Int, PROPERTY_TYPE_ROTATION);
     m_rotation->setAttribute("minimum",0);
     m_rotation->setAttribute("maximum",360);
     m_rotation->setValue(0);
@@ -187,25 +187,25 @@ void QPropertyBrowser::createPropertyRotation()
 
 void QPropertyBrowser::createPropertyVisible()
 {
-    m_visible = m_manager->addProperty(QVariant::Bool, tr("visible"));
+    m_visible = m_manager->addProperty(QVariant::Bool, PROPERTY_TYPE_VISIBLE);
     m_visible->setValue(true);
 }
 
 void QPropertyBrowser::createPropertyTouchEnable()
 {
-    m_touchEnable = m_manager->addProperty(QVariant::Bool, tr("touchEnable"));
+    m_touchEnable = m_manager->addProperty(QVariant::Bool, PROPERTY_TYPE_TOUCHENABLE);
     m_touchEnable->setValue(false);
 }
 
 void QPropertyBrowser::createPropertyColor()
 {
-    m_color = m_manager->addProperty(QVariant::Color, tr("color"));
+    m_color = m_manager->addProperty(QVariant::Color, PROPERTY_TYPE_COLOR);
     m_color->setValue(QColor(Qt::black));
 }
 
 void QPropertyBrowser::createPropertyOpacity()
 {
-    m_opacity = m_manager->addProperty(QVariant::Int, "opacity");
+    m_opacity = m_manager->addProperty(QVariant::Int, PROPERTY_TYPE_OPACITY);
     m_opacity->setAttribute("minimum",0);
     m_opacity->setAttribute("maximum",255);
     m_opacity->setValue(255);
@@ -213,26 +213,26 @@ void QPropertyBrowser::createPropertyOpacity()
 
 void QPropertyBrowser::createPropertyFilePath()
 {
-    m_filePath = m_manager->addProperty(VariantManager::filePathTypeId(), tr("image"));
+    m_filePath = m_manager->addProperty(VariantManager::filePathTypeId(), PROPERTY_TYPE_IMAGE);
     m_filePath->setValue("");
     m_filePath->setAttribute("filter", FILTER_IMAGES);
 }
 
 void QPropertyBrowser::createPropertyFont()
 {
-    m_font = m_manager->addProperty(QVariant::Font, tr("font"));
+    m_font = m_manager->addProperty(QVariant::Font, PROPERTY_TYPE_FONT);
     m_font->setValue(QFont());
 }
 
 void QPropertyBrowser::createPropertyText()
 {
-    m_text = m_manager->addProperty(QVariant::String, tr("text"));
+    m_text = m_manager->addProperty(QVariant::String, PROPERTY_TYPE_TEXT);
     m_text->setValue(QString());
 }
 
 void QPropertyBrowser::createPropertyHorizontalAlignment()
 {
-    m_horizontalAlignment = m_manager->addProperty(QtVariantPropertyManager::enumTypeId(), "Horizontal");
+    m_horizontalAlignment = m_manager->addProperty(QtVariantPropertyManager::enumTypeId(), PROPERTY_TYPE_TEXT_HORIZONTAL);
     QStringList list;
     list<<"Left"<<"Center"<<"Right";
     m_horizontalAlignment->setAttribute("enumNames", list);
@@ -241,7 +241,7 @@ void QPropertyBrowser::createPropertyHorizontalAlignment()
 
 void QPropertyBrowser::createPropertyVerticalAlignment()
 {
-    m_verticalAlignment = m_manager->addProperty(QtVariantPropertyManager::enumTypeId(), "Vertical");
+    m_verticalAlignment = m_manager->addProperty(QtVariantPropertyManager::enumTypeId(), PROPERTY_TYPE_TEXT_VERTICAL);
     QStringList list;
     list<<"Top"<<"Center"<<"Bottom";
     m_verticalAlignment->setAttribute("enumNames", list);
@@ -251,7 +251,7 @@ void QPropertyBrowser::createPropertyVerticalAlignment()
 
 void QPropertyBrowser::createPropertyDimensionWith()
 {
-    m_dimensionWith = m_manager->addProperty(QVariant::Int, tr("width"));
+    m_dimensionWith = m_manager->addProperty(QVariant::Int, PROPERTY_TYPE_WIDTH );
     m_dimensionWith->setAttribute("minimum",0);
     m_dimensionWith->setAttribute("maximum",9999);
     m_dimensionWith->setValue(0);
@@ -259,7 +259,7 @@ void QPropertyBrowser::createPropertyDimensionWith()
 
 void QPropertyBrowser::createPropertyDimensionHeight()
 {
-    m_dimensionHeight = m_manager->addProperty(QVariant::Int, tr("height"));
+    m_dimensionHeight = m_manager->addProperty(QVariant::Int, PROPERTY_TYPE_HEIGHT );
     m_dimensionHeight->setAttribute("minimum",0);
     m_dimensionHeight->setAttribute("maximum",9999);
     m_dimensionHeight->setValue(0);
@@ -268,14 +268,14 @@ void QPropertyBrowser::createPropertyDimensionHeight()
 
 void QPropertyBrowser::createPropertyContainerFilePath()
 {
-    m_containerLayerFilePath = m_manager->addProperty(VariantManager::filePathTypeId(), tr("filePath"));
+    m_containerLayerFilePath = m_manager->addProperty(VariantManager::filePathTypeId(), PROPERTY_TYPE_TEXT_FILEPATH);
     m_containerLayerFilePath->setValue("");
     m_containerLayerFilePath->setAttribute("filter", FILTER_CONFIG);
 }
 
 void QPropertyBrowser::createPropertyInsetsX()
 {
-    m_insetsX = m_manager->addProperty(QVariant::Int, tr("x"));
+    m_insetsX = m_manager->addProperty(QVariant::Int, PROPERTY_TYPE_X);
     m_insetsX->setAttribute("minimum",1);
     m_insetsX->setAttribute("maximum",9999);
     m_insetsX->setValue(1);
@@ -283,7 +283,7 @@ void QPropertyBrowser::createPropertyInsetsX()
 
 void QPropertyBrowser::createPropertyInsetsY()
 {
-    m_insetsY = m_manager->addProperty(QVariant::Int, tr("y"));
+    m_insetsY = m_manager->addProperty(QVariant::Int, PROPERTY_TYPE_Y);
     m_insetsY->setAttribute("minimum",1);
     m_insetsY->setAttribute("maximum",9999);
     m_insetsY->setValue(1);
@@ -291,7 +291,7 @@ void QPropertyBrowser::createPropertyInsetsY()
 
 void QPropertyBrowser::createPropertyInsetsWidth()
 {
-    m_insetsWidth = m_manager->addProperty(QVariant::Int, tr("width"));
+    m_insetsWidth = m_manager->addProperty(QVariant::Int, PROPERTY_TYPE_WIDTH);
     m_insetsWidth->setAttribute("minimum",1);
     m_insetsWidth->setAttribute("maximum",9999);
     m_insetsWidth->setValue(1);
@@ -299,7 +299,7 @@ void QPropertyBrowser::createPropertyInsetsWidth()
 
 void QPropertyBrowser::createPropertyInsetsHeight()
 {
-    m_insetsHeight = m_manager->addProperty(QVariant::Int, tr("height"));
+    m_insetsHeight = m_manager->addProperty(QVariant::Int, PROPERTY_TYPE_HEIGHT);
     m_insetsHeight->setAttribute("minimum",1);
     m_insetsHeight->setAttribute("maximum",9999);
     m_insetsHeight->setValue(1);
@@ -307,7 +307,7 @@ void QPropertyBrowser::createPropertyInsetsHeight()
 
 void QPropertyBrowser::createPropertyPreferedWidth()
 {
-    m_preferredWidth = m_manager->addProperty(QVariant::Int, tr("width"));
+    m_preferredWidth = m_manager->addProperty(QVariant::Int, PROPERTY_TYPE_WIDTH);
     m_preferredWidth->setAttribute("minimum",1);
     m_preferredWidth->setAttribute("maximum",9999);
     m_preferredWidth->setValue(1);
@@ -315,7 +315,7 @@ void QPropertyBrowser::createPropertyPreferedWidth()
 
 void QPropertyBrowser::createPropertyPreferedHeight()
 {
-    m_preferredHeight = m_manager->addProperty(QVariant::Int, tr("height"));
+    m_preferredHeight = m_manager->addProperty(QVariant::Int, PROPERTY_TYPE_HEIGHT);
     m_preferredHeight->setAttribute("minimum",1);
     m_preferredHeight->setAttribute("maximum",9999);
     m_preferredHeight->setValue(1);
@@ -342,7 +342,7 @@ void QPropertyBrowser::createPropertyDirection()
 
 void QPropertyBrowser::createPropertyPercentage()
 {
-    m_percentage = m_manager->addProperty(QVariant::Double, tr("height"));
+    m_percentage = m_manager->addProperty(QVariant::Double, PROPERTY_TYPE_TEXT_PERCENT);
     m_percentage->setAttribute("minimum", 0.0f);
     m_percentage->setAttribute("maximum", 1.0f);
     m_percentage->setAttribute("singleStep", 0.01f);
@@ -351,7 +351,7 @@ void QPropertyBrowser::createPropertyPercentage()
 
 void QPropertyBrowser::createPropertyAtlasElementWidth()
 {
-    m_atlasElementWidth = m_manager->addProperty(QVariant::Int, "width");
+    m_atlasElementWidth = m_manager->addProperty(QVariant::Int, PROPERTY_TYPE_WIDTH);
     m_atlasElementWidth->setAttribute("minimum",1);
     m_atlasElementWidth->setAttribute("maximum",9999);
     m_atlasElementWidth->setValue(10);
@@ -359,7 +359,7 @@ void QPropertyBrowser::createPropertyAtlasElementWidth()
 
 void QPropertyBrowser::createPropertyAtlasElementHeight()
 {
-    m_atlasElementHeight = m_manager->addProperty(QVariant::Int, "height");
+    m_atlasElementHeight = m_manager->addProperty(QVariant::Int, PROPERTY_TYPE_HEIGHT);
     m_atlasElementHeight->setAttribute("minimum",1);
     m_atlasElementHeight->setAttribute("maximum",9999);
     m_atlasElementHeight->setValue(10);
@@ -375,7 +375,7 @@ void QPropertyBrowser::createPropertyAtlasStartChar()
 
 void QPropertyBrowser::createPropertyAtlasText()
 {
-    m_atlasText = m_manager->addProperty(QVariant::String, tr("text"));
+    m_atlasText = m_manager->addProperty(QVariant::String, PROPERTY_TYPE_TEXT);
     m_atlasText->setValue(QString());
 }
 
@@ -398,7 +398,7 @@ void QPropertyBrowser::createPropertyScrollViewCount()
 
 void QPropertyBrowser::createPropertyScrollViewOffsetX()
 {
-    m_scrollViewOffsetX = m_manager->addProperty(QVariant::Int, "x");
+    m_scrollViewOffsetX = m_manager->addProperty(QVariant::Int, PROPERTY_TYPE_X);
     m_scrollViewOffsetX->setAttribute("minimum",0);
     m_scrollViewOffsetX->setAttribute("maximum",999);
     m_scrollViewOffsetX->setValue(0);
@@ -406,7 +406,7 @@ void QPropertyBrowser::createPropertyScrollViewOffsetX()
 
 void QPropertyBrowser::createPropertyScrollViewOffsetY()
 {
-    m_scrollViewOffsetY = m_manager->addProperty(QVariant::Int, "y");
+    m_scrollViewOffsetY = m_manager->addProperty(QVariant::Int, PROPERTY_TYPE_Y);
     m_scrollViewOffsetY->setAttribute("minimum",0);
     m_scrollViewOffsetY->setAttribute("maximum",999);
     m_scrollViewOffsetY->setValue(0);
@@ -414,7 +414,7 @@ void QPropertyBrowser::createPropertyScrollViewOffsetY()
 
 void QPropertyBrowser::createPropertyScrollViewSpaceWidth()
 {
-    m_scrollViewSpaceWidth = m_manager->addProperty(QVariant::Int, "width");
+    m_scrollViewSpaceWidth = m_manager->addProperty(QVariant::Int, PROPERTY_TYPE_WIDTH);
     m_scrollViewSpaceWidth->setAttribute("minimum",0);
     m_scrollViewSpaceWidth->setAttribute("maximum",999);
     m_scrollViewSpaceWidth->setValue(0);
@@ -422,7 +422,7 @@ void QPropertyBrowser::createPropertyScrollViewSpaceWidth()
 
 void QPropertyBrowser::createPropertyScrollViewSpaceHeight()
 {
-    m_scrollViewSpaceHeight = m_manager->addProperty(QVariant::Int, "height");
+    m_scrollViewSpaceHeight = m_manager->addProperty(QVariant::Int, PROPERTY_TYPE_HEIGHT);
     m_scrollViewSpaceHeight->setAttribute("minimum",0);
     m_scrollViewSpaceHeight->setAttribute("maximum",999);
     m_scrollViewSpaceHeight->setValue(0);
@@ -430,7 +430,7 @@ void QPropertyBrowser::createPropertyScrollViewSpaceHeight()
 
 void QPropertyBrowser::createPropertyScrollViewContentWidth()
 {
-    m_scrollViewContentWidth = m_manager->addProperty(QVariant::Int, "width");
+    m_scrollViewContentWidth = m_manager->addProperty(QVariant::Int, PROPERTY_TYPE_WIDTH);
     m_scrollViewContentWidth->setAttribute("minimum",0);
     m_scrollViewContentWidth->setAttribute("maximum",999);
     m_scrollViewContentWidth->setValue(0);
@@ -438,7 +438,7 @@ void QPropertyBrowser::createPropertyScrollViewContentWidth()
 
 void QPropertyBrowser::createPropertyScrollViewContentHeight()
 {
-    m_scrollViewContentHeight = m_manager->addProperty(QVariant::Int, "height");
+    m_scrollViewContentHeight = m_manager->addProperty(QVariant::Int, PROPERTY_TYPE_HEIGHT);
     m_scrollViewContentHeight->setAttribute("minimum",0);
     m_scrollViewContentHeight->setAttribute("maximum",999);
     m_scrollViewContentHeight->setValue(0);
@@ -453,7 +453,7 @@ void QPropertyBrowser::createPropertyScrollViewIsDynamicallyGenerated()
 //-- 2 level
 void QPropertyBrowser::createPropertyPoint()
 {
-    m_point = m_manager->addProperty(QVariant::String, tr("position"));
+    m_point = m_manager->addProperty(QVariant::String, PROPERTY_TYPE_POSITION);
     m_point->addSubProperty(m_x);
     m_point->addSubProperty(m_y);
     m_point->setValue(QString(""));
@@ -461,7 +461,7 @@ void QPropertyBrowser::createPropertyPoint()
 
 void QPropertyBrowser::createPropertySize()
 {
-    m_size = m_manager->addProperty(QVariant::String, tr("size"));
+    m_size = m_manager->addProperty(QVariant::String, PROPERTY_TYPE_SIZE);
     m_size->addSubProperty(m_width);
     m_size->addSubProperty(m_height);
     m_size->setValue(QString(""));
@@ -470,7 +470,7 @@ void QPropertyBrowser::createPropertySize()
 
 void QPropertyBrowser::createPropertyAnchor()
 {
-    m_anchor = m_manager->addProperty(QVariant::String, tr("anchor"));
+    m_anchor = m_manager->addProperty(QVariant::String, PROPERTY_TYPE_ANCHOR);
     m_anchor->addSubProperty(m_anchorX);
     m_anchor->addSubProperty(m_anchorY);
     m_anchor->setValue(QString(""));
@@ -478,7 +478,7 @@ void QPropertyBrowser::createPropertyAnchor()
 
 void QPropertyBrowser::createPropertyScale()
 {
-    m_scale = m_manager->addProperty(QVariant::String, tr("scale"));
+    m_scale = m_manager->addProperty(QVariant::String, PROPERTY_TYPE_SCALE);
     m_scale->addSubProperty(m_scaleX);
     m_scale->addSubProperty(m_scaleY);
     m_scale->setValue(QString(""));
@@ -486,7 +486,7 @@ void QPropertyBrowser::createPropertyScale()
 
 void QPropertyBrowser::createPropertyDimensionSize()
 {
-    m_dimensionSize = m_manager->addProperty(QVariant::String, tr("dimension"));
+    m_dimensionSize = m_manager->addProperty(QVariant::String, PROPERTY_TYPE_DIMENSION);
     m_dimensionSize->addSubProperty(m_dimensionWith);
     m_dimensionSize->addSubProperty(m_dimensionHeight);
     m_dimensionSize->setValue(QString(""));
@@ -494,7 +494,7 @@ void QPropertyBrowser::createPropertyDimensionSize()
 
 void QPropertyBrowser::createPropertyTextAlignment()
 {
-    m_textAlignment = m_manager->addProperty(QVariant::String, tr("textAlignment"));
+    m_textAlignment = m_manager->addProperty(QVariant::String, PROPERTY_TYPE_TEXT_ALIGNMENT);
     m_textAlignment->addSubProperty(m_horizontalAlignment);
     m_textAlignment->addSubProperty(m_verticalAlignment);
     m_textAlignment->setValue(QString(""));
@@ -502,7 +502,7 @@ void QPropertyBrowser::createPropertyTextAlignment()
 
 void QPropertyBrowser::createPropertyInsetsRect()
 {
-    m_insetsRect = m_manager->addProperty(QVariant::String, tr("insetsRect"));
+    m_insetsRect = m_manager->addProperty(QVariant::String, PROPERTY_TYPE_INSETSRECT);
     m_insetsRect->addSubProperty(m_insetsX);
     m_insetsRect->addSubProperty(m_insetsY);
     m_insetsRect->addSubProperty(m_insetsWidth);
@@ -512,7 +512,7 @@ void QPropertyBrowser::createPropertyInsetsRect()
 
 void QPropertyBrowser::createPropertyPreferredSize()
 {
-    m_preferredSize = m_manager->addProperty(QVariant::String, tr("preferredSize"));
+    m_preferredSize = m_manager->addProperty(QVariant::String, PROPERTY_TYPE_PREFERREDSIZE);
     m_preferredSize->addSubProperty(m_preferredWidth);
     m_preferredSize->addSubProperty(m_preferredHeight);
     m_preferredSize->setValue(QString(""));
@@ -520,7 +520,7 @@ void QPropertyBrowser::createPropertyPreferredSize()
 
 void QPropertyBrowser::createPropertyScrollViewOffset()
 {
-    m_scrollViewOffset = m_manager->addProperty(QVariant::String, tr("Offset"));
+    m_scrollViewOffset = m_manager->addProperty(QVariant::String, PROPERTY_TYPE_OFFSET);
     m_scrollViewOffset->addSubProperty(m_scrollViewOffsetX);
     m_scrollViewOffset->addSubProperty(m_scrollViewOffsetY);
     m_scrollViewOffset->setValue(QString(""));
@@ -528,7 +528,7 @@ void QPropertyBrowser::createPropertyScrollViewOffset()
 
 void QPropertyBrowser::createPropertyScrollViewSpace()
 {
-    m_scrollViewSpace = m_manager->addProperty(QVariant::String, tr("Space"));
+    m_scrollViewSpace = m_manager->addProperty(QVariant::String, PROPERTY_TYPE_SPACE);
     m_scrollViewSpace->addSubProperty(m_scrollViewSpaceWidth);
     m_scrollViewSpace->addSubProperty(m_scrollViewSpaceHeight);
     m_scrollViewSpace->setValue(QString(""));
@@ -536,7 +536,7 @@ void QPropertyBrowser::createPropertyScrollViewSpace()
 
 void QPropertyBrowser::createPropertyScrollViewContent()
 {
-    m_scrollViewContent = m_manager->addProperty(QVariant::String, tr("Content"));
+    m_scrollViewContent = m_manager->addProperty(QVariant::String, PROPERTY_TYPE_CONTENT);
     m_scrollViewContent->addSubProperty(m_scrollViewContentWidth);
     m_scrollViewContent->addSubProperty(m_scrollViewContentHeight);
     m_scrollViewContent->setValue(QString(""));
@@ -545,7 +545,7 @@ void QPropertyBrowser::createPropertyScrollViewContent()
 //-- 3 level
 void QPropertyBrowser::createPropertyCCNode()
 {
-    m_ccNode = m_manager->addProperty(QVariant::String, tr("CCNode"));
+    m_ccNode = m_manager->addProperty(QVariant::String, tr(CLASS_TYPE_CCNODE));
     m_ccNode->addSubProperty(m_fixed);
     m_ccNode->addSubProperty(m_visible);
     m_ccNode->addSubProperty(m_z);
@@ -559,26 +559,26 @@ void QPropertyBrowser::createPropertyCCNode()
 
 void QPropertyBrowser::createPropertyCCLayer()
 {
-    m_ccLayer = m_manager->addProperty(QVariant::String, tr("CCLayer"));
+    m_ccLayer = m_manager->addProperty(QVariant::String, tr(CLASS_TYPE_CCLAYER));
     m_ccLayer->addSubProperty(m_touchEnable);
 }
 
 void QPropertyBrowser::createPropertyCCLayerColor()
 {
-    m_ccLayerColor = m_manager->addProperty(QVariant::String, tr("CCLayerColor"));
+    m_ccLayerColor = m_manager->addProperty(QVariant::String, tr(CLASS_TYPE_CCLAYERCOLOR));
     m_ccLayerColor->addSubProperty(m_color);
     m_ccLayerColor->addSubProperty(m_opacity);
 }
 
 void QPropertyBrowser::createPropertyCCSprite()
 {
-    m_ccSprite = m_manager->addProperty(QVariant::String, tr("CCSprite"));
+    m_ccSprite = m_manager->addProperty(QVariant::String, tr(CLASS_TYPE_CCSPRITE));
     m_ccSprite->addSubProperty(m_filePath);
 }
 
 void QPropertyBrowser::createPropertyCCLabelTTF()
 {
-    m_ccLabelTTF = m_manager->addProperty(QVariant::String, tr("CCLabelTTF"));
+    m_ccLabelTTF = m_manager->addProperty(QVariant::String, tr(CLASS_TYPE_CCLABELTTF));
     m_ccLabelTTF->addSubProperty(m_text);
     m_ccLabelTTF->addSubProperty(m_font);
     m_ccLabelTTF->addSubProperty(m_dimensionSize);
@@ -587,20 +587,20 @@ void QPropertyBrowser::createPropertyCCLabelTTF()
 
 void QPropertyBrowser::createPropertyCCContainerLayer()
 {
-    m_ccContainerLayer = m_manager->addProperty(QVariant::String, tr("ContainerLayer"));
+    m_ccContainerLayer = m_manager->addProperty(QVariant::String, tr(CLASS_TYPE_CCCONTAINERLAYER));
     m_ccContainerLayer->addSubProperty(m_containerLayerFilePath);
 }
 
 void QPropertyBrowser::createPropertyCCScale9Sprite()
 {
-    m_ccScale9Sprite = m_manager->addProperty(QVariant::String, tr("CCScale9Sprite"));
+    m_ccScale9Sprite = m_manager->addProperty(QVariant::String, tr(CLASS_TYPE_CCSCALE9SPRITE));
     m_ccScale9Sprite->addSubProperty(m_insetsRect);
     m_ccScale9Sprite->addSubProperty(m_preferredSize);
 }
 
 void QPropertyBrowser::createPropertyCCProgressTimer()
 {
-    m_ccProgressTimer = m_manager->addProperty(QVariant::String, tr("CCProgressTimer"));
+    m_ccProgressTimer = m_manager->addProperty(QVariant::String, tr(CLASS_TYPE_CCPROGRESSTIMER));
     m_ccProgressTimer->addSubProperty(m_progressTimerType);
     m_ccProgressTimer->addSubProperty(m_direction);
     m_ccProgressTimer->addSubProperty(m_percentage);
@@ -608,7 +608,7 @@ void QPropertyBrowser::createPropertyCCProgressTimer()
 
 void QPropertyBrowser::createPropertyCCLabelAtlas()
 {
-    m_ccLabelAtlas = m_manager->addProperty(QVariant::String, tr("CCLabelAtlas"));
+    m_ccLabelAtlas = m_manager->addProperty(QVariant::String, tr(CLASS_TYPE_CCLABELATLAS));
     m_ccLabelAtlas->addSubProperty(m_atlasText);
     m_ccLabelAtlas->addSubProperty(m_atlasElementWidth);
     m_ccLabelAtlas->addSubProperty(m_atlasElementHeight);
@@ -617,7 +617,7 @@ void QPropertyBrowser::createPropertyCCLabelAtlas()
 
 void QPropertyBrowser::createPropertyCCScrollView()
 {
-    m_ccScrollView = m_manager->addProperty(QVariant::String, tr("CCScrollView"));
+    m_ccScrollView = m_manager->addProperty(QVariant::String, tr(CLASS_TYPE_CCSCROLLVIEW));
     m_ccScrollView->addSubProperty(m_scrollViewIsDynamicallyGenerated);
     m_ccScrollView->addSubProperty(m_containerLayerFilePath);
     m_ccScrollView->addSubProperty(m_scrollViewDirection);
@@ -678,7 +678,7 @@ void QPropertyBrowser::initProperty(QCCNode* node)
 void QPropertyBrowser::initPropertyCCNode(QCCNode* node)
 {
     m_fixed->setValue(node->m_isFixed);
-    m_visible->setValue(node->m_isVisible );
+    m_visible->setValue(node->m_isVisible);
     m_z->setValue(node->m_z);
     m_tag->setValue(node->m_tag);
     m_x->setValue(node->m_x);

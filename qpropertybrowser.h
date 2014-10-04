@@ -4,7 +4,18 @@
 #include "variantmanager.h"
 #include "variantfactory.h"
 #include "qttreepropertybrowser.h"
+
 #include "qccnode.h"
+#include "qcclayer.h"
+#include "qcclayercolor.h"
+#include "qccsprite.h"
+#include "qccprogresstimer.h"
+#include "qccscale9sprite.h"
+#include "qcccontainerlayer.h"
+#include "qccmenuitemimage.h"
+#include "qcclabelatlas.h"
+#include "qcclabelttf.h"
+#include "qccscrollview.h"
 
 class QPropertyBrowser : public QtTreePropertyBrowser
 {

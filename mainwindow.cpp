@@ -136,7 +136,6 @@ void MainWindow::syncNodeAfterCreate(QModelIndex index, QCCNode* node)
 
     //更换当前选择
     this->viewClicked( m_model->index( m_model->rowCount(index) - 1 , 0, index) );
-
 }
 
 QModelIndex MainWindow::searchIndex(QModelIndex parentIndex, QGraphicsItem* item)
@@ -297,7 +296,8 @@ void MainWindow::viewClicked(const QModelIndex& index)
 }
 
 //model slot
-void MainWindow::dataChanged(const QModelIndex & topLeft, const QModelIndex & bottomRight, const QVector<int> & roles)
+//void MainWindow::dataChanged(const QModelIndex & topLeft, const QModelIndex & bottomRight, const QVector<int> & roles)
+void MainWindow::dataChanged(const QModelIndex & topLeft, const QModelIndex & bottomRight, const QVector<int> &)
 {
     if(topLeft == bottomRight)
     {
@@ -404,10 +404,14 @@ void MainWindow::changedPropertyTag(int tag)
     }
 }
 
-void MainWindow::changedPropertySize(int width, int height)
-{}
+//void MainWindow::changedPropertySize(int width, int height)
+void MainWindow::changedPropertySize(int , int )
+{
 
-void MainWindow::changedPropertyAnchor(float anchorX, float anchorY)
+}
+
+//void MainWindow::changedPropertyAnchor(float anchorX, float anchorY)
+void MainWindow::changedPropertyAnchor(float , float )
 {}
 
 void MainWindow::changedPropertyScale(float scaleX, float scaleY)
@@ -444,7 +448,8 @@ void MainWindow::changedPropertyVisible(bool visible)
     }
 }
 
-void MainWindow::changedPropertyTouchEnable(bool touchEnable)
+//void MainWindow::changedPropertyTouchEnable(bool touchEnable)
+void MainWindow::changedPropertyTouchEnable(bool )
 {}
 
 void MainWindow::changedPropertyColor(QColor& color)
