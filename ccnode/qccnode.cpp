@@ -102,7 +102,7 @@ QCCNode::QCCNode()
     m_x = 0;
     m_y = 0;
     m_z = 0;
-    m_tag = -1;
+    m_tag = 0;
     m_width = 0;
     m_height = 0;
     m_rotation = 0;
@@ -150,7 +150,11 @@ QMap<QString, QString> QCCNode::exportData()
     map.insert("z", QString("%1").arg(m_z));
     map.insert("width", QString("%1").arg(m_width));
     map.insert("height", QString("%1").arg(m_height));
-    map.insert("tag", QString("%1").arg(m_tag));
+
+    if(m_tag != 0)
+    {
+        map.insert("tag", QString("%1").arg(m_tag));
+    }
 
     if(m_isFixed == true)
     {

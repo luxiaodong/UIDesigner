@@ -239,9 +239,9 @@ void QXmlDataParser::parseCCLabelTTF(QCCLabelTTF* node, QXmlStreamAttributes& at
 
 void QXmlDataParser::parseCCMenuItemImage(QCCMenuItemImage* node, QXmlStreamAttributes& attr)
 {
-    if(attr.hasAttribute("image_n") == true)
+    if(attr.hasAttribute("filePath") == true)
     {
-        node->m_filePath = attr.value("image_n").toString();
+        node->m_filePath = attr.value("filePath").toString();
     }
 
     this->parseCCLayer(node, attr);
@@ -423,7 +423,7 @@ void QXmlDataParser::parseCCMenuItemImage(QCCMenuItemImage* node, QXmlStreamWrit
     this->parseCCLayer(node, stream);
 
     QString image_n = node->m_filePath;
-    stream->writeAttribute("image_n", QString("%1").arg(image_n));
+    stream->writeAttribute("filePath", QString("%1").arg(image_n));
 
     QStringList imageFormat;
     imageFormat<<"jpg"<<"png";

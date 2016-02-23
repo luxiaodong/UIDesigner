@@ -1,6 +1,7 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 #include "qabstracttreemodel.h"
+#include "qexportcode.h"
 #include <QDebug>
 
 MainWindow::MainWindow(QWidget *parent) :
@@ -242,6 +243,7 @@ void MainWindow::connectSignalAndSlot()
     connect(m_scene, SIGNAL(showMessage(QString)), this->statusBar(), SLOT(showMessage(QString)));
     connect(m_scene, SIGNAL(changeItemSelect(QGraphicsItem*)), this, SLOT(changedItemSelect(QGraphicsItem*)));
     connect(m_scene, SIGNAL(changeItemPoint(int,int)),this,SLOT(changedItemPoint(int,int)));
+    connect(m_scene, SIGNAL(changeBoundingSize(int,int)),this,SLOT(changedBoundingSize(int,int)));
 
     connect(this, SIGNAL(changeItemPoint(int,int)), m_scene, SLOT(changedItemPoint(int,int)));
     connect(this, SIGNAL(changeItemSelect(QCCNode*)), m_scene,SLOT(changedItemSelect(QCCNode*)));
@@ -282,6 +284,7 @@ void MainWindow::connectSignalAndSlot()
 
     connect(this, SIGNAL(changePropertyPoint(int,int)), m_browser, SLOT(changedPropertyPoint(int,int)));
     connect(this, SIGNAL(changePropertySize(int,int)), m_browser, SLOT(changedPropertySize(int,int)));
+    connect(this, SIGNAL(changePropertyTextDimension(int,int)),m_browser,SLOT(changedPropertyTextDimension(int,int)));
 }
 
 //model slot;
@@ -356,6 +359,22 @@ void MainWindow::changedItemPoint(int x, int y)
         node->m_y = y;
         emit changePropertyPoint(x, y);
         this->setWindowTitle(QString("%1*").arg(m_currentOpenFile));
+    }
+}
+
+void MainWindow::changedBoundingSize(int w, int h)
+{
+    QCCNode* node = this->currentSelectNode();
+    if(node != 0)
+    {
+        if(node->m_classType == QString(CLASS_TYPE_CCLABELTTF))
+        {
+            QCCLabelTTF* label = dynamic_cast<QCCLabelTTF*>(node);
+            label->m_dimensionWith = w;
+            label->m_dimensionHeight = h;
+            emit changePropertyTextDimension(w,h);
+            this->setWindowTitle(QString("%1*").arg(m_currentOpenFile));
+        }
     }
 }
 
@@ -895,6 +914,26 @@ void MainWindow::on_actionSave_As_triggered()
     this->setWindowTitle(m_currentOpenFile);
 }
 
+void MainWindow::on_actionExport_code_triggered()
+{
+    QString file = m_currentOpenFile;
+    if( file.isEmpty() == true )
+    {
+        QString oldDir = m_storageData->resourceDir();
+        file = QFileDialog::getOpenFileName(this, QString("Open Directory"), oldDir, FILTER_CONFIG);
+        if(file.isEmpty() == true)
+        {
+            return ;
+        }
+    }
+
+    if(file.right(4) == QString(".lua"))
+    {
+        QExportCode code;
+        code.parseFile(file);
+    }
+}
+
 void MainWindow::on_actionCopy_triggered()
 {
     QModelIndex index = m_treeView->currentIndex();
@@ -1056,13 +1095,16 @@ void MainWindow::on_actionCContainer_triggered()
     {
         QString filePath = QFileDialog::getOpenFileName(this, QString("Open File"), m_storageData->resourceDir(), FILTER_CONFIG);
 
-        //create
-        QCCNode* node = QCCNode::createCCNodeByType(CLASS_TYPE_CCCONTAINERLAYER);
-        QCCContainerLayer* layer = dynamic_cast<QCCContainerLayer*>(node);
-        layer->m_containerConfigFilePath = filePath.remove(QString("%1/").arg(m_storageData->resourceDir()));
-        //sync
-        this->syncNodeAfterCreate(index, node);
-        this->setWindowTitle(QString("%1*").arg(m_currentOpenFile));
+        if(filePath.isEmpty() == false)
+        {
+            //create
+            QCCNode* node = QCCNode::createCCNodeByType(CLASS_TYPE_CCCONTAINERLAYER);
+            QCCContainerLayer* layer = dynamic_cast<QCCContainerLayer*>(node);
+            layer->m_containerConfigFilePath = filePath.remove(QString("%1/").arg(m_storageData->resourceDir()));
+            //sync
+            this->syncNodeAfterCreate(index, node);
+            this->setWindowTitle(QString("%1*").arg(m_currentOpenFile));
+        }
     }
 }
 

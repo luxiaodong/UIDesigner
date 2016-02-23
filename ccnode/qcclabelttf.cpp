@@ -63,41 +63,38 @@ void QCCLabelTTF::updateGraphicsItem()
     item->setHtml(m_text);
     item->setDefaultTextColor(QColor(m_color));
 
-    item->setTextWidth(-1);
-    QSizeF s = item->boundingRect().size();
-    m_width = s.width();
-    m_height = s.height();
-
-    int width = m_width;
-    if(m_dimensionWith > 0)
+    if(m_dimensionWith == 0)
     {
-        width = m_dimensionWith;
-        m_dimensionHeight = m_height;
+        item->setTextWidth(-1);
+        QSizeF s = item->boundingRect().size();
+        m_width = s.width();
+        m_height = s.height();
+        m_dimensionWith = 0;
+        m_dimensionHeight = 0;
     }
-
-    item->setTransformOriginPoint(-width/2, -m_height/2);
-    item->resetTransform();
-    item->setTransform(QTransform().rotate(m_rotation), true);
-    item->setTransform(QTransform::fromScale(m_scaleX,m_scaleY), true);
-    item->setTransform(QTransform::fromTranslate(-width/2, -m_height/2), true);
-    item->setZValue(m_z);
-    item->setVisible(m_isVisible);
-    item->setFlag(QGraphicsItem::ItemIsMovable, !m_isFixed);
-
-    if(m_dimensionWith != 0)
+    else
     {
         item->setTextWidth(m_dimensionWith);
+        m_width = m_dimensionWith;
+        m_height = m_dimensionHeight;
+
         QTextBlockFormat format;
-        int alignArray[3] = {Qt::AlignLeft,Qt::AlignCenter,Qt::AlignRight};
-        format.setAlignment((Qt::AlignmentFlag)(alignArray[m_horizontalAlignment]));
+        int horzArray[3] = {Qt::AlignLeft,Qt::AlignHCenter,Qt::AlignRight};
+        int vertArray[3] = {Qt::AlignTop,Qt::AlignVCenter,Qt::AlignBottom};
+        format.setAlignment((Qt::AlignmentFlag)(horzArray[m_horizontalAlignment] | vertArray[m_verticalAlignment] ));
         QTextCursor cursor = item->textCursor();
         cursor.select(QTextCursor::Document);
         cursor.mergeBlockFormat(format);
         cursor.clearSelection();
         item->setTextCursor(cursor);
     }
-    else
-    {
-        item->setTextWidth(-1);
-    }
+
+    item->setTransformOriginPoint(-m_width/2, -m_height/2);
+    item->resetTransform();
+    item->setTransform(QTransform().rotate(m_rotation), true);
+    item->setTransform(QTransform::fromScale(m_scaleX,m_scaleY), true);
+    item->setTransform(QTransform::fromTranslate(-m_width/2, -m_height/2), true);
+    item->setZValue(m_z);
+    item->setVisible(m_isVisible);
+    item->setFlag(QGraphicsItem::ItemIsMovable, !m_isFixed);
 }

@@ -39,7 +39,8 @@ void QCCContainerLayer::updateGraphicsItem()
     QImage image = QImage(root->m_width, root->m_height, QImage::Format_ARGB32);
     image.fill(0);
     QPainter painter(&image);
-    scene.render(&painter);
+    //差了一个像素，不知道为什么
+    scene.render(&painter, QRectF(1,1,root->m_width-1, root->m_height-1), QRectF(1,1,root->m_width-1, root->m_height-1) );
     //image.save(QString("%1.png").arg(fullPath), "png");
 
     QGraphicsPixmapItem* item = dynamic_cast<QGraphicsPixmapItem*>(m_graphicsItem);

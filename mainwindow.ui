@@ -31,6 +31,7 @@
     <addaction name="actionOpen_File"/>
     <addaction name="actionSave"/>
     <addaction name="actionSave_As"/>
+    <addaction name="actionExport_code"/>
    </widget>
    <widget class="QMenu" name="menuEdit">
     <property name="title">
@@ -256,6 +257,11 @@
   <action name="actionCCScrollView">
    <property name="text">
     <string>CCScrollView</string>
+   </property>
+  </action>
+  <action name="actionExport_code">
+   <property name="text">
+    <string>export code</string>
    </property>
   </action>
  </widget>

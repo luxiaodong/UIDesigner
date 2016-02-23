@@ -44,7 +44,8 @@ signals:
 
     //property;
     void changePropertyPoint(int x, int y);
-    void changePropertySize(int width, int height);
+    void changePropertySize(int w, int h);
+    void changePropertyTextDimension(int w, int h);
 
 public slots:
     //view slot;
@@ -56,6 +57,7 @@ public slots:
     //scene slot;
     void changedItemSelect(QGraphicsItem* item);
     void changedItemPoint(int x, int y);
+    void changedBoundingSize(int w, int h);
 
     //property slot;
     void changedPropertyFixed(bool fixed);
@@ -98,6 +100,7 @@ private slots:
     void on_actionOpen_File_triggered();
     void on_actionSave_triggered();
     void on_actionSave_As_triggered();
+    void on_actionExport_code_triggered();
     void on_actionCopy_triggered();
     void on_actionParse_triggered();
     void on_actionDel_triggered();

@@ -246,7 +246,6 @@ void QPropertyBrowser::createPropertyVerticalAlignment()
     list<<"Top"<<"Center"<<"Bottom";
     m_verticalAlignment->setAttribute("enumNames", list);
     m_verticalAlignment->setValue(1);
-    m_verticalAlignment->setEnabled(false);
 }
 
 void QPropertyBrowser::createPropertyDimensionWith()
@@ -972,6 +971,14 @@ void QPropertyBrowser::changedPropertySize(int width, int height)
     this->blockSignals(true);
     m_width->setValue(width);
     m_height->setValue(height);
+    this->blockSignals(false);
+}
+
+void QPropertyBrowser::changedPropertyTextDimension(int w, int h)
+{
+    this->blockSignals(true);
+    m_dimensionWith->setValue(w);
+    m_dimensionHeight->setValue(h);
     this->blockSignals(false);
 }
 

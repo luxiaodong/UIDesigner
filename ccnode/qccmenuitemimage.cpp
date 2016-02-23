@@ -7,13 +7,13 @@ QCCMenuItemImage::QCCMenuItemImage()
 void QCCMenuItemImage::importData(QMap<QString, QString>& map)
 {
     QCCLayerColor::importData(map);
-    m_filePath = map.value("image_n", QString(""));
+    m_filePath = map.value("filePath", QString(""));
 }
 
 QMap<QString, QString> QCCMenuItemImage::exportData()
 {
     QMap<QString, QString> map = QCCLayerColor::exportData();
-    map.insert("image_n", m_filePath);
+    map.insert("filePath", m_filePath);
     return map;
 }
 

@@ -65,7 +65,8 @@ signals:
 public slots:
     void valueChanged(QtProperty*,QVariant);
     void changedPropertyPoint(int x, int y);
-    void changedPropertySize(int width, int height);
+    void changedPropertySize(int w, int h);
+    void changedPropertyTextDimension(int w, int h);
 
 private:
     void initPropertyCCNode(QCCNode* node);

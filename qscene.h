@@ -28,6 +28,7 @@ signals:
     void showMessage(QString msg);
     void changeItemSelect(QGraphicsItem* item);
     void changeItemPoint(int x, int y);
+    void changeBoundingSize(int w, int h);
 
 public slots:
     void changedItemSelect(QCCNode* node);
