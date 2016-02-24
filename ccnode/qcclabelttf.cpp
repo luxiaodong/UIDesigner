@@ -51,43 +51,48 @@ QMap<QString, QString> QCCLabelTTF::exportData()
 
 QGraphicsItem* QCCLabelTTF::createGraphicsItem()
 {
-    m_graphicsItem = new QGraphicsTextItem();
+    m_graphicsItem = new QGraphicsPixmapItem();
     this->updateGraphicsItem();
     return m_graphicsItem;
 }
 
 void QCCLabelTTF::updateGraphicsItem()
 {
-    QGraphicsTextItem* item = dynamic_cast<QGraphicsTextItem*>(m_graphicsItem);
-    item->setFont(m_font);
-    item->setHtml(m_text);
-    item->setDefaultTextColor(QColor(m_color));
-
-    if(m_dimensionWith == 0)
+    if(m_text.isEmpty() == true)
     {
-        item->setTextWidth(-1);
-        QSizeF s = item->boundingRect().size();
-        m_width = s.width();
-        m_height = s.height();
-        m_dimensionWith = 0;
-        m_dimensionHeight = 0;
+        return ;
+    }
+
+    if(m_dimensionWith != 0 && m_dimensionHeight !=0 )
+    {
+        m_width = m_dimensionWith;
+        m_height = m_dimensionHeight;
     }
     else
     {
-        item->setTextWidth(m_dimensionWith);
-        m_width = m_dimensionWith;
-        m_height = m_dimensionHeight;
-
-        QTextBlockFormat format;
-        int horzArray[3] = {Qt::AlignLeft,Qt::AlignHCenter,Qt::AlignRight};
-        int vertArray[3] = {Qt::AlignTop,Qt::AlignVCenter,Qt::AlignBottom};
-        format.setAlignment((Qt::AlignmentFlag)(horzArray[m_horizontalAlignment] | vertArray[m_verticalAlignment] ));
-        QTextCursor cursor = item->textCursor();
-        cursor.select(QTextCursor::Document);
-        cursor.mergeBlockFormat(format);
-        cursor.clearSelection();
-        item->setTextCursor(cursor);
+        //QFontMetrics
+        QFontMetrics metrics(m_font);
+        m_width = metrics.width(m_text);
+        m_height = metrics.height();
     }
+
+    QImage image = QImage(m_width, m_height, QImage::Format_RGBA8888);
+    image.fill(0);
+    QPainter painter(&image);
+
+    painter.setPen(QColor(m_color));
+    painter.setFont(m_font);
+
+    int horzArray[3] = {Qt::AlignLeft,Qt::AlignHCenter,Qt::AlignRight};
+    int vertArray[3] = {Qt::AlignTop,Qt::AlignVCenter,Qt::AlignBottom};
+    Qt::AlignmentFlag flag = (Qt::AlignmentFlag)(horzArray[m_horizontalAlignment] | vertArray[m_verticalAlignment]);
+    QTextOption option = QTextOption(flag);
+    option.setFlags( QTextOption::AddSpaceForLineAndParagraphSeparators | QTextOption::ShowLineAndParagraphSeparators);
+    option.setWrapMode(QTextOption::WordWrap);
+    painter.drawText(QRect(0,0,m_width,m_height), m_text, option);
+
+    QGraphicsPixmapItem* item = dynamic_cast<QGraphicsPixmapItem*>(m_graphicsItem);
+    item->setPixmap(QPixmap::fromImage(image));
 
     item->setTransformOriginPoint(-m_width/2, -m_height/2);
     item->resetTransform();

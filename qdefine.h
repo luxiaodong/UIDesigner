@@ -42,6 +42,7 @@
 #include <QTableView>
 #include <QUrl>
 #include <QMimeData>
+#include <QFontMetrics>
 
 //1.add string manager
 //2.add lua file browser.

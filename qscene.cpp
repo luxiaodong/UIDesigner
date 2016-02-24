@@ -37,16 +37,16 @@ void QScene::mouseMoveEvent(QGraphicsSceneMouseEvent *event)
         QGraphicsItem* parentItem = item->parentItem();
         if(parentItem != 0)
         {
-            y = parentItem->boundingRect().size().height() - 1 - y;
+            y = parentItem->boundingRect().size().height() - y;
         }
         else
         {
-            y = this->height() - 1 - y;
+            y = this->height() - y;
         }
 
         emit changeItemPoint(x, y);
     }
-    //emit currentItemPropertyChanged(item);
+
     QGraphicsScene::mouseMoveEvent(event);
 }
 
@@ -131,14 +131,9 @@ void QScene::changedItemSelect(QCCNode* node)
     m_selectItem = item;
 
     QRectF r = m_selectItem->boundingRect();
-    m_boundingRect->setRect(r.x(),r.y(),r.width()-2,r.height()-2);
+    m_boundingRect->setRect(r);
     m_boundingRect->setParentItem(m_selectItem);
     m_boundingRect->setVisible(true);
-
-//    if(node->m_classType == QString(CLASS_TYPE_CCLABELTTF))
-//    {
-//        emit changeBoundingSize(r.width(), r.height());
-//    }
 }
 
 void QScene::changedItemPoint(int x, int y)

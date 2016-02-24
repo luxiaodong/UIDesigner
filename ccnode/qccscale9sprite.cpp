@@ -81,8 +81,6 @@ void QCCScale9Sprite::updateGraphicsItem()
     painter.drawImage( QRect(w1 + w2,h1 + h2,    w3,     h3), image_9 );
 
     item->setPixmap(QPixmap::fromImage(imageOut));
-
-    //应该存储原来的宽和高
     m_width = m_preferredSize.width();
     m_height = m_preferredSize.height();
 

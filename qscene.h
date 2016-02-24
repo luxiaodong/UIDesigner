@@ -4,9 +4,9 @@
 #include "qdefine.h"
 #include "qccnode.h"
 #include "qcclayer.h"
+#include "qcclabelttf.h"
 
 #define GRAPHICS_ITEM_NAME_TAG  1
-#define GRAPHICS_ITEM_CLASS_TAG  2
 
 //少了一个切换select的item
 class QScene : public QGraphicsScene

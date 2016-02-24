@@ -19,7 +19,7 @@ public:
     virtual void importData(QMap<QString, QString>&);
     virtual QMap<QString, QString> exportData();
     virtual QGraphicsItem* createGraphicsItem();
-    virtual void updateGraphicsItem();
+    virtual void updateGraphicsItem(); //尽量不要在这个函数里改变基础属性
 
     //是不是应该把xml那块移动这边, 绘画那一块已经在这边了
 

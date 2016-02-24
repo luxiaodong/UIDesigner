@@ -262,7 +262,7 @@ void QPropertyBrowser::createPropertyDimensionHeight()
     m_dimensionHeight->setAttribute("minimum",0);
     m_dimensionHeight->setAttribute("maximum",9999);
     m_dimensionHeight->setValue(0);
-    m_dimensionHeight->setEnabled(false);
+    //m_dimensionHeight->setEnabled(false);
 }
 
 void QPropertyBrowser::createPropertyContainerFilePath()

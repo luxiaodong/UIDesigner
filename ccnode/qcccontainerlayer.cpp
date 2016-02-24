@@ -49,18 +49,10 @@ void QCCContainerLayer::updateGraphicsItem()
     m_width = root->m_width;
     m_height = root->m_height;
 
-    if(root->m_classType == CLASS_TYPE_CCSPRITE)
-    {
-        item->resetTransform();
-        item->setTransform(QTransform().rotate(m_rotation), true);
-        item->setTransform(QTransform::fromScale(m_scaleX,m_scaleY), true);
-        item->setTransform(QTransform::fromTranslate(-m_width/2, -m_height/2), true);
-    }
-    else if(root->m_classType == CLASS_TYPE_CCLAYER || root->m_classType == CLASS_TYPE_CCLAYERCOLOR)
-    {
-        item->setTransform(QTransform::fromTranslate(0, -m_height));
-    }
-
+    item->resetTransform();
+    item->setTransform(QTransform().rotate(m_rotation), true);
+    item->setTransform(QTransform::fromScale(m_scaleX,m_scaleY), true);
+    item->setTransform(QTransform::fromTranslate(-m_width/2, -m_height/2), true);
     item->setZValue(m_z);
     item->setVisible(m_isVisible);
     item->setFlag(QGraphicsItem::ItemIsMovable, !m_isFixed);
