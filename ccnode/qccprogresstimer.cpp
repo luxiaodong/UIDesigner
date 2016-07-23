@@ -38,7 +38,14 @@ void QCCProgressTimer::updateGraphicsItem()
     QSize s = image.size();
 
     if (m_progressTimerType == kCCProgressTimerTypeRadial)
-    {}
+    {
+        if(m_direction == 0)//顺时针
+        {
+            //float angle = m_percentage*360;
+        }
+        else if(m_direction == 1) //逆时针
+        {}
+    }
     else if(m_progressTimerType == kCCProgressTimerTypeBar)
     {
         QRect r;

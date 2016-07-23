@@ -43,6 +43,7 @@ public:
     float m_scaleX;
     float m_scaleY;
     bool m_isVisible;
+    bool m_isSkipCreate;
 
 public:
     QList<QCCNode*> m_children;

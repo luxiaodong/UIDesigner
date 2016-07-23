@@ -18,96 +18,12 @@ QCCNode* QLuaDataParser::readUIFile(QString filePath)
     QStringList list;
     QString prefix = QString("%1.").arg(rootStr);
 
-    QMap<QString, QString> pic;
-    QMap<QString, QString> txt;
-
     while(stream.atEnd() == false)
     {
         QString line = stream.readLine().trimmed();
-
-        if(line.contains("local pic = {}") == true)
+        if( line.left(2) != QString("--") &&  line.contains(prefix) )
         {
-            for(;;)
-            {
-                line = stream.readLine().trimmed();
-                if(line.left(4) == "pic.")
-                {
-                    QStringList temp = line.split("=");
-                    pic.insert( temp.first().trimmed(), temp.last().trimmed() );
-                }
-                else
-                {
-                    break;
-                }
-            }
-        }
-        if(line.contains("local txt = {}") == true)
-        {
-            for(;;)
-            {
-                line = stream.readLine().trimmed();
-                if(line.left(4) == "txt.")
-                {
-                    QStringList temp = line.split("=");
-                    txt.insert( temp.first().trimmed(), temp.last().trimmed() );
-                }
-                else
-                {
-                    break;
-                }
-            }
-        }
-        else
-        {
-            if((line.left(2) != QString("--")) && (line.contains(prefix) == true))
-            {
-                if(line.contains(QString(CLASS_TYPE_CCSPRITE)) ||
-                   line.contains(QString(CLASS_TYPE_CCLABELTTF)) ||
-                   line.contains(QString(CLASS_TYPE_CCLABELATLAS)) ||
-                   line.contains(QString(CLASS_TYPE_CCSCALE9SPRITE)) ||
-                   line.contains(QString(CLASS_TYPE_CCMENUITEM_IMAGE)) ||
-                   line.contains(QString(CLASS_TYPE_CCPROGRESSTIMER)) )
-                {
-                    if(line.contains(QString(CLASS_TYPE_CCSPRITE)) ||
-                       line.contains(QString(CLASS_TYPE_CCSCALE9SPRITE)) ||
-                       line.contains(QString(CLASS_TYPE_CCMENUITEM_IMAGE)) ||
-                       line.contains(QString(CLASS_TYPE_CCLABELATLAS)) ||
-                       line.contains(QString(CLASS_TYPE_CCPROGRESSTIMER)) )
-                    {
-                        QString key = QString();
-                        if(line.contains("filePath=") == true)
-                        {
-                            QRegExp r(QString("[{\" \"=,;\"}]"));
-                            key = line.split("filePath=").last().split(r,QString::SkipEmptyParts).first();
-                        }
-
-                        QString value = pic.value(key,QString());
-                        if(value.isEmpty() == false)
-                        {
-                            line.replace(key, value);
-                        }
-                    }
-
-                    if(line.contains( QString(CLASS_TYPE_CCLABELTTF) ) ||
-                       line.contains(QString(CLASS_TYPE_CCLABELATLAS)) )
-                    {
-                        QString key = QString();
-                        if(line.contains("text=") == true)
-                        {
-                            QRegExp r(QString("[{\" \"=,;\"}]"));
-                            key = line.split("text=").last().split(r,QString::SkipEmptyParts).first();
-                        }
-
-                        QString value = txt.value(key,QString());
-                        if(value.isEmpty() == false)
-                        {
-                            line.replace(key, value);
-                        }
-                    }
-                }
-
-                list.append(line.remove(prefix));
-            }
+            list.append(line.remove(prefix));
         }
     }
 
@@ -132,86 +48,16 @@ bool QLuaDataParser::writeUIFile(QString filePath, QCCNode* root)
     m_lines.clear();
     this->parse(root);
 
-    QMap<QString, QString> pic;
-    QMap<QString, QString> txt;
-
     foreach(QString single, m_lines)
     {
-        //提取图片和文本, 以便管理
-        QMap<QString, QString> map = this->parseLine(single);
-        QString classType = map.value("classType");
-
-        if(classType == QString(CLASS_TYPE_CCSPRITE) ||
-           classType == QString(CLASS_TYPE_CCLABELTTF) ||
-           classType == QString(CLASS_TYPE_CCLABELATLAS) ||
-           classType == QString(CLASS_TYPE_CCSCALE9SPRITE) ||
-           classType == QString(CLASS_TYPE_CCMENUITEM_IMAGE) ||
-           classType == QString(CLASS_TYPE_CCPROGRESSTIMER))
-        {
-            QString temp = single;
-            QStringList temp1;
-            if(classType == QString(CLASS_TYPE_CCSPRITE) ||
-               classType == QString(CLASS_TYPE_CCSCALE9SPRITE) ||
-               classType == QString(CLASS_TYPE_CCMENUITEM_IMAGE) ||
-               classType == QString(CLASS_TYPE_CCLABELATLAS) ||
-               classType == QString(CLASS_TYPE_CCPROGRESSTIMER))
-            {
-                if(temp.contains("filePath=") == true )
-                {
-                    temp1 = temp.split("filePath=");
-                    QStringList temp2 = temp1.at(1).split("\"");
-                    QString value = temp2.at(1);
-                    pic.insert(map.value("name").split(".").last(), value);
-                    single.replace(QString("\"%1\"").arg(value), QString("pic.%1").arg( map.value("name").split(".").last() ) );
-                }
-            }
-
-            if(classType == QString(CLASS_TYPE_CCLABELTTF) ||
-               classType == QString(CLASS_TYPE_CCLABELATLAS))
-            {
-                if(temp.contains("text=") == true)
-                {
-                    temp1 = temp.split("text=");
-                    QStringList temp2 = temp1.at(1).split("\"");
-                    QString value = temp2.at(1);
-                    txt.insert(map.value("name").split(".").last(), value);
-                    single.replace(QString("\"%1\"").arg(value), QString("txt.%1").arg( map.value("name").split(".").last() ) );
-                }
-            }
-        }
-
         str += QString("%1.%2\n").arg(rootStr, single);
     }
 
     str += QString("\n");
     str += QString("return %1;\n").arg(rootStr);
 
-    QString res;
-    if(pic.size() >0 )
-    {
-        res += QString("\n");
-        res += QString("local pic = {};\n");
-        QStringList keys = pic.keys();
-        foreach(QString key, keys)
-        {
-            res += QString("pic.%1 = \"%2\";\n").arg(key, pic.value(key));
-        }
-    }
-
-    if(txt.size() >0 )
-    {
-        res += QString("\n");
-        res += QString("local txt = {};\n");
-        QStringList keys = txt.keys();
-        foreach(QString key, keys)
-        {
-            res += QString("txt.%1 = \"%2\";\n").arg(key, txt.value(key));
-        }
-    }
-
     QTextStream stream(&file);
     stream.setCodec("UTF-8");
-    stream<<res;
     stream<<str;
     file.close();
     return true;

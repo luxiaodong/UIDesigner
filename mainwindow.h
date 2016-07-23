@@ -69,6 +69,7 @@ public slots:
     void changedPropertyScale(float scaleX, float scaleY);
     void changedPropertyRotation(int rotation);
     void changedPropertyVisible(bool visible);
+    void changedPropertySkipCreate(bool skipCreate);
     void changedPropertyTouchEnable(bool touchEnable);
     void changedPropertyColor(QColor& color);
     void changedPropertyOpacity(int opacity);

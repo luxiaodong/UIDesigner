@@ -26,6 +26,7 @@ void QPropertyBrowser::createProperty()
     createPropertyScaleY();
     createPropertyRotation();
     createPropertyVisible();
+    createPropertySkipCreate();
     createPropertyTouchEnable();
     createPropertyColor();
     createPropertyOpacity();
@@ -191,6 +192,12 @@ void QPropertyBrowser::createPropertyVisible()
     m_visible->setValue(true);
 }
 
+void QPropertyBrowser::createPropertySkipCreate()
+{
+    m_skipCreate = m_manager->addProperty(QVariant::Bool, PROPERTY_TYPE_SKIPCREATE);
+    m_skipCreate->setValue(false);
+}
+
 void QPropertyBrowser::createPropertyTouchEnable()
 {
     m_touchEnable = m_manager->addProperty(QVariant::Bool, PROPERTY_TYPE_TOUCHENABLE);
@@ -327,7 +334,7 @@ void QPropertyBrowser::createPropertyProgressTimerType()
     list<<"Radial"<<"Bar";
     m_progressTimerType->setAttribute("enumNames", list);
     m_progressTimerType->setValue(1);
-    m_progressTimerType->setEnabled(false);
+    //m_progressTimerType->setEnabled(false);
 }
 
 void QPropertyBrowser::createPropertyDirection()
@@ -547,6 +554,7 @@ void QPropertyBrowser::createPropertyCCNode()
     m_ccNode = m_manager->addProperty(QVariant::String, tr(CLASS_TYPE_CCNODE));
     m_ccNode->addSubProperty(m_fixed);
     m_ccNode->addSubProperty(m_visible);
+    m_ccNode->addSubProperty(m_skipCreate);
     m_ccNode->addSubProperty(m_z);
     m_ccNode->addSubProperty(m_tag);
     m_ccNode->addSubProperty(m_point);
@@ -678,6 +686,7 @@ void QPropertyBrowser::initPropertyCCNode(QCCNode* node)
 {
     m_fixed->setValue(node->m_isFixed);
     m_visible->setValue(node->m_isVisible);
+    m_skipCreate->setValue(node->m_isSkipCreate);
     m_z->setValue(node->m_z);
     m_tag->setValue(node->m_tag);
     m_x->setValue(node->m_x);
@@ -831,6 +840,11 @@ void QPropertyBrowser::valueChanged(QtProperty* property, QVariant )
         bool visible = m_visible->value().toBool();
         emit changePropertyVisible(visible);
     }
+    else if(property == m_skipCreate)
+    {
+        bool skipCreate = m_skipCreate->value().toBool();
+        emit changePropertySkipCreate(skipCreate);
+    }
     else if(property == m_touchEnable)
     {
         bool touchEnable = m_touchEnable->value().toBool();
@@ -894,7 +908,23 @@ void QPropertyBrowser::valueChanged(QtProperty* property, QVariant )
     }
     else if(property == m_progressTimerType)
     {
-        float type = m_progressTimerType->value().toFloat();
+        int type = m_progressTimerType->value().toInt();
+
+        if(type == 0) //list<<"Radial"<<"Bar";
+        {
+            QStringList list;
+            list<<"clockwise"<<"anticlockwise";
+            m_direction->setAttribute("enumNames", list);
+            m_direction->setValue(0);
+        }
+        else if(type == 1)
+        {
+            QStringList list;
+            list<<"LeftToRight"<<"RightToLeft"<<"BottomToTop"<<"TopToBottom";
+            m_direction->setAttribute("enumNames", list);
+            m_direction->setValue(0);
+        }
+
         emit changePropertyProgressTimerType( type );
     }
     else if(property == m_direction)

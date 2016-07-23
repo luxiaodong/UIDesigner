@@ -45,9 +45,8 @@ MainWindow::MainWindow(QWidget *parent) :
     m_copyBuffer.clear();
     this->setAcceptDrops(true);
 
-    //test
-//    this->setSceneSize(9, 9);
-//    this->test();
+    QSettings settings("UIDesigner");
+    qDebug()<<settings.value("resourceDir", "none");
 }
 
 MainWindow::~MainWindow()
@@ -258,6 +257,7 @@ void MainWindow::connectSignalAndSlot()
     connect(m_browser, SIGNAL(changePropertyScale(float,float)), this, SLOT(changedPropertyScale(float,float)));
     connect(m_browser, SIGNAL(changePropertyRotation(int)), this, SLOT(changedPropertyRotation(int)));
     connect(m_browser, SIGNAL(changePropertyVisible(bool)), this, SLOT(changedPropertyVisible(bool)));
+    connect(m_browser, SIGNAL(changePropertySkipCreate(bool)), this, SLOT(changedPropertySkipCreate(bool)));
     connect(m_browser, SIGNAL(changePropertyTouchEnable(bool)), this, SLOT(changedPropertyTouchEnable(bool)));
     connect(m_browser, SIGNAL(changePropertyColor(QColor&)), this, SLOT(changedPropertyColor(QColor&)));
     connect(m_browser, SIGNAL(changePropertyOpacity(int)), this, SLOT(changedPropertyOpacity(int)));
@@ -467,7 +467,16 @@ void MainWindow::changedPropertyVisible(bool visible)
     }
 }
 
-//void MainWindow::changedPropertyTouchEnable(bool touchEnable)
+void MainWindow::changedPropertySkipCreate(bool skipCreate)
+{
+    QCCNode* node = this->currentSelectNode();
+    if(node != 0)
+    {
+        node->m_isSkipCreate = skipCreate;
+        this->setWindowTitle(QString("%1*").arg(m_currentOpenFile));
+    }
+}
+
 void MainWindow::changedPropertyTouchEnable(bool )
 {}
 

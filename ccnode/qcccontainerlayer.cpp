@@ -39,8 +39,7 @@ void QCCContainerLayer::updateGraphicsItem()
     QImage image = QImage(root->m_width, root->m_height, QImage::Format_ARGB32);
     image.fill(0);
     QPainter painter(&image);
-    //差了一个像素，不知道为什么
-    scene.render(&painter, QRectF(1,1,root->m_width-1, root->m_height-1), QRectF(1,1,root->m_width-1, root->m_height-1) );
+    scene.render(&painter, QRectF(0, 0,root->m_width, root->m_height), QRectF(0,0,root->m_width, root->m_height) );
     //image.save(QString("%1.png").arg(fullPath), "png");
 
     QGraphicsPixmapItem* item = dynamic_cast<QGraphicsPixmapItem*>(m_graphicsItem);
@@ -52,7 +51,7 @@ void QCCContainerLayer::updateGraphicsItem()
     item->resetTransform();
     item->setTransform(QTransform().rotate(m_rotation), true);
     item->setTransform(QTransform::fromScale(m_scaleX,m_scaleY), true);
-    item->setTransform(QTransform::fromTranslate(-m_width/2, -m_height/2), true);
+    item->setTransform(QTransform::fromTranslate(0, -m_height), true);
     item->setZValue(m_z);
     item->setVisible(m_isVisible);
     item->setFlag(QGraphicsItem::ItemIsMovable, !m_isFixed);

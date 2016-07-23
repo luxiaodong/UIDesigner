@@ -76,6 +76,7 @@ const char PROPERTY_TYPE_SCALEX[] = "scaleX";
 const char PROPERTY_TYPE_SCALEY[] = "scaleY";
 const char PROPERTY_TYPE_ROTATION[] = "rotation";
 const char PROPERTY_TYPE_VISIBLE[] = "visible";
+const char PROPERTY_TYPE_SKIPCREATE[] = "skipCreate";
 const char PROPERTY_TYPE_TOUCHENABLE[] = "touchEnable";
 const char PROPERTY_TYPE_COLOR[] = "color";
 const char PROPERTY_TYPE_OPACITY[] = "opacity";
@@ -123,7 +124,6 @@ typedef enum
 } CCHorizontalTextAlignment;
 
 typedef enum {
-    /// Radial Counter-Clockwise
     kCCProgressTimerTypeRadial,
     kCCProgressTimerTypeBar
 } CCProgressTimerType;
