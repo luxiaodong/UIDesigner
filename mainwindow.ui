@@ -60,6 +60,7 @@
     </property>
     <addaction name="actionResource"/>
     <addaction name="actionSave_path"/>
+    <addaction name="actionRenameTools"/>
    </widget>
    <widget class="QMenu" name="menuView">
     <property name="title">
@@ -262,6 +263,11 @@
   <action name="actionExport_code">
    <property name="text">
     <string>export code</string>
+   </property>
+  </action>
+  <action name="actionRenameTools">
+   <property name="text">
+    <string>renameTools</string>
    </property>
   </action>
  </widget>

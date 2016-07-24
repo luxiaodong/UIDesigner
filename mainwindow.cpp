@@ -2,6 +2,7 @@
 #include "ui_mainwindow.h"
 #include "qabstracttreemodel.h"
 #include "qexportcode.h"
+#include "qfilerenametools.h"
 #include <QDebug>
 
 MainWindow::MainWindow(QWidget *parent) :
@@ -1239,6 +1240,14 @@ void MainWindow::on_actionRatio(QAction* action)
         int height = m_scene->height();
         this->setSceneSize(width, height);
     }
+}
+
+void MainWindow::on_actionRenameTools_triggered()
+{
+    this->setVisible(false);
+    QFileRenameTools tools;
+    tools.exec();
+    this->setVisible(true);
 }
 
 void MainWindow::dragEnterEvent(QDragEnterEvent *event)

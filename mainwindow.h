@@ -113,6 +113,7 @@ private slots:
     void on_actionCCProgressTimer_triggered();
     void on_actionCCLabelAtlas_triggered();
     void on_actionCCScrollView_triggered();
+    void on_actionRenameTools_triggered();
 
 protected:
     virtual void closeEvent(QCloseEvent *event);

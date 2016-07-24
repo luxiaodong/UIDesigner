@@ -19,7 +19,8 @@ SOURCES += main.cpp\
     qpropertybrowser.cpp \
     qstoragedata.cpp \
     qselectsizedialog.cpp \
-    qexportcode.cpp
+    qexportcode.cpp \
+    qfilerenametools.cpp
 
 HEADERS  += mainwindow.h \
     qabstracttreemodel.h \
@@ -29,10 +30,12 @@ HEADERS  += mainwindow.h \
     qpropertybrowser.h \
     qstoragedata.h \
     qselectsizedialog.h \
-    qexportcode.h
+    qexportcode.h \
+    qfilerenametools.h
 
 FORMS    += mainwindow.ui \
-    qselectsizedialog.ui
+    qselectsizedialog.ui \
+    qfilerenametools.ui
 
 include(ccnode/ccnode.pri)
 include(dataParser/dataParser.pri)
