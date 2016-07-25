@@ -551,8 +551,24 @@ void MainWindow::changedPropertyText(QString& text)
     QCCNode* node = this->currentSelectNode();
     if(node != 0)
     {
+        QString displayText = text;
+        if( m_languages.count() > 0 )
+        {
+            displayText = m_languages.value(text, text);
+        }
+
         QCCLabelTTF* temp = dynamic_cast<QCCLabelTTF*>(node);
-        temp->m_text = text;
+        temp->m_text = displayText;
+
+        if(displayText == text)
+        {
+            temp->m_isInLanguage = false;
+        }
+        else
+        {
+            temp->m_isInLanguage = true;
+        }
+
         temp->updateGraphicsItem();
         emit changeItemSelect(node);
         this->setWindowTitle(QString("%1*").arg(m_currentOpenFile));

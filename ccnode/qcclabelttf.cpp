@@ -11,6 +11,7 @@ QCCLabelTTF::QCCLabelTTF()
     m_verticalAlignment = kCCVerticalTextAlignmentCenter;
     m_dimensionWith = 0;
     m_dimensionHeight = 0;
+    m_isInLanguage = false;
 }
 
 void QCCLabelTTF::importData(QMap<QString, QString>& map)
@@ -29,6 +30,8 @@ void QCCLabelTTF::importData(QMap<QString, QString>& map)
         m_horizontalAlignment = map.value("horizontalAlignment").toInt();
         m_verticalAlignment = map.value("verticalAlignment").toInt();
     }
+
+    m_isInLanguage = map.value("isInlanguage","0").toInt();
 }
 
 QMap<QString, QString> QCCLabelTTF::exportData()
@@ -44,6 +47,11 @@ QMap<QString, QString> QCCLabelTTF::exportData()
         map.insert("dimensionHeight", QString("%1").arg(m_dimensionHeight));
         map.insert("horizontalAlignment",QString("%1").arg(m_horizontalAlignment));
         map.insert("verticalAlignment",QString("%1").arg(m_verticalAlignment));
+    }
+
+    if(m_isInLanguage == true)
+    {
+        map.insert("isInlanguage", QString('1'));
     }
 
     return map;

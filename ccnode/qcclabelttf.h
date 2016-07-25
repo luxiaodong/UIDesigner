@@ -20,6 +20,7 @@ public:
     int m_verticalAlignment;
     int m_dimensionWith;
     int m_dimensionHeight;
+    bool m_isInLanguage;
 };
 
 
