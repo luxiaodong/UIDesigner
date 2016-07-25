@@ -181,8 +181,6 @@ void QFileRenameTools::general_click()
     {
         for(int i = 0; i < m_srcList.count(); ++i)
         {
-qDebug()<<QString( m_srcList.at(i));
-qDebug()<<QString( dstRoot + QString("/") + m_dstList.at(i));
             QFile::copy( m_srcList.at(i), QString( dstRoot + QString("/") + m_dstList.at(i)));
         }
     }

@@ -9,3 +9,7 @@ int main(int argc, char *argv[])
     
     return a.exec();
 }
+
+// todo
+// 坐标需要统一, 转换的地方要统一
+// 语言设置
