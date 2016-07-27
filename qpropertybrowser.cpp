@@ -27,6 +27,7 @@ void QPropertyBrowser::createProperty()
     createPropertyRotation();
     createPropertyVisible();
     createPropertySkipCreate();
+    createPropertySkipInit();
     createPropertyTouchEnable();
     createPropertyColor();
     createPropertyOpacity();
@@ -196,6 +197,12 @@ void QPropertyBrowser::createPropertySkipCreate()
 {
     m_skipCreate = m_manager->addProperty(QVariant::Bool, PROPERTY_TYPE_SKIPCREATE);
     m_skipCreate->setValue(false);
+}
+
+void QPropertyBrowser::createPropertySkipInit()
+{
+    m_skipInit = m_manager->addProperty(QVariant::Bool, PROPERTY_TYPE_SKIPINIT);
+    m_skipInit->setValue(false);
 }
 
 void QPropertyBrowser::createPropertyTouchEnable()
@@ -555,6 +562,7 @@ void QPropertyBrowser::createPropertyCCNode()
     m_ccNode->addSubProperty(m_fixed);
     m_ccNode->addSubProperty(m_visible);
     m_ccNode->addSubProperty(m_skipCreate);
+    m_ccNode->addSubProperty(m_skipInit);
     m_ccNode->addSubProperty(m_z);
     m_ccNode->addSubProperty(m_tag);
     m_ccNode->addSubProperty(m_point);
@@ -687,6 +695,7 @@ void QPropertyBrowser::initPropertyCCNode(QCCNode* node)
     m_fixed->setValue(node->m_isFixed);
     m_visible->setValue(node->m_isVisible);
     m_skipCreate->setValue(node->m_isSkipCreate);
+    m_skipInit->setValue(node->m_isSkipInit);
     m_z->setValue(node->m_z);
     m_tag->setValue(node->m_tag);
     m_x->setValue(node->m_x);
@@ -844,6 +853,11 @@ void QPropertyBrowser::valueChanged(QtProperty* property, QVariant )
     {
         bool skipCreate = m_skipCreate->value().toBool();
         emit changePropertySkipCreate(skipCreate);
+    }
+    else if(property == m_skipInit)
+    {
+        bool skipInit = m_skipInit->value().toBool();
+        emit changePropertySkipInit(skipInit);
     }
     else if(property == m_touchEnable)
     {

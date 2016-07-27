@@ -39,6 +39,7 @@ signals:
     void changePropertyRotation(int rotation);
     void changePropertyVisible(bool visible);
     void changePropertySkipCreate(bool skip);
+    void changePropertySkipInit(bool skip);
     void changePropertyTouchEnable(bool touchEnable);
     void changePropertyColor(QColor& color);
     void changePropertyOpacity(int opacity);
@@ -100,6 +101,7 @@ private:
     void createPropertyRotation();
     void createPropertyVisible();
     void createPropertySkipCreate();
+    void createPropertySkipInit();
     void createPropertyTouchEnable();
     void createPropertyColor();
     void createPropertyOpacity();
@@ -175,6 +177,7 @@ private:
     QtVariantProperty*  m_rotation;
     QtVariantProperty*  m_visible;
     QtVariantProperty*  m_skipCreate;
+    QtVariantProperty*  m_skipInit;
     QtVariantProperty*  m_touchEnable;
     QtVariantProperty*  m_color;
     QtVariantProperty*  m_opacity;

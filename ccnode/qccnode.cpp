@@ -112,6 +112,7 @@ QCCNode::QCCNode()
     m_scaleY = 1.0f;
     m_isVisible = true;
     m_isSkipCreate = false;
+    m_isSkipInit = false;
 }
 
 QCCNode::~QCCNode()
@@ -140,6 +141,7 @@ void QCCNode::importData(QMap<QString, QString>& map)
     m_scaleY = map.value("scaleY", QString("1.0")).toFloat();
     m_isVisible = map.value("visible", QString("1")).toInt();
     m_isSkipCreate = map.value("skipCreate", QString("0")).toInt();
+    m_isSkipInit = map.value("skipInit", QString("0")).toInt();
 }
 
 QMap<QString, QString> QCCNode::exportData()
@@ -189,6 +191,11 @@ QMap<QString, QString> QCCNode::exportData()
     if(m_isSkipCreate == true)
     {
         map.insert("skipCreate", "1");
+    }
+
+    if(m_isSkipInit == true)
+    {
+        map.insert("skipInit", "1");
     }
 
     return map;

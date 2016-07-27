@@ -44,6 +44,7 @@ public:
     float m_scaleY;
     bool m_isVisible;
     bool m_isSkipCreate;
+    bool m_isSkipInit;
 
 public:
     QList<QCCNode*> m_children;

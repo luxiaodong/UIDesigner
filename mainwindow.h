@@ -70,6 +70,7 @@ public slots:
     void changedPropertyRotation(int rotation);
     void changedPropertyVisible(bool visible);
     void changedPropertySkipCreate(bool skipCreate);
+    void changedPropertySkipInit(bool skipInit);
     void changedPropertyTouchEnable(bool touchEnable);
     void changedPropertyColor(QColor& color);
     void changedPropertyOpacity(int opacity);

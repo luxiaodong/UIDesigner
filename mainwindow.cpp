@@ -259,6 +259,7 @@ void MainWindow::connectSignalAndSlot()
     connect(m_browser, SIGNAL(changePropertyRotation(int)), this, SLOT(changedPropertyRotation(int)));
     connect(m_browser, SIGNAL(changePropertyVisible(bool)), this, SLOT(changedPropertyVisible(bool)));
     connect(m_browser, SIGNAL(changePropertySkipCreate(bool)), this, SLOT(changedPropertySkipCreate(bool)));
+    connect(m_browser, SIGNAL(changePropertySkipInit(bool)), this, SLOT(changedPropertySkipInit(bool)));
     connect(m_browser, SIGNAL(changePropertyTouchEnable(bool)), this, SLOT(changedPropertyTouchEnable(bool)));
     connect(m_browser, SIGNAL(changePropertyColor(QColor&)), this, SLOT(changedPropertyColor(QColor&)));
     connect(m_browser, SIGNAL(changePropertyOpacity(int)), this, SLOT(changedPropertyOpacity(int)));
@@ -474,6 +475,16 @@ void MainWindow::changedPropertySkipCreate(bool skipCreate)
     if(node != 0)
     {
         node->m_isSkipCreate = skipCreate;
+        this->setWindowTitle(QString("%1*").arg(m_currentOpenFile));
+    }
+}
+
+void MainWindow::changedPropertySkipInit(bool skipInit)
+{
+    QCCNode* node = this->currentSelectNode();
+    if(node != 0)
+    {
+        node->m_isSkipInit = skipInit;
         this->setWindowTitle(QString("%1*").arg(m_currentOpenFile));
     }
 }
