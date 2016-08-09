@@ -10,7 +10,9 @@ SOURCES += $$PWD/qccnode.cpp \
             $$PWD/qccmenuitemimage.cpp \
             $$PWD/qccprogresstimer.cpp \
             $$PWD/qcccontainerlayer.cpp \
-            $$PWD/qccscrollview.cpp
+            $$PWD/qccscrollview.cpp \
+            $$PWD/qccuibutton.cpp
+
 HEADERS += $$PWD/qccnode.h \
             $$PWD/qcclayer.h \
             $$PWD/qcclayercolor.h \
@@ -21,4 +23,5 @@ HEADERS += $$PWD/qccnode.h \
             $$PWD/qccmenuitemimage.h \
             $$PWD/qccprogresstimer.h \
             $$PWD/qcccontainerlayer.h \
-            $$PWD/qccscrollview.h
+            $$PWD/qccscrollview.h \
+            $$PWD/qccuibutton.h

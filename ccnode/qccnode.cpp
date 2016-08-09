@@ -9,6 +9,7 @@
 #include "qcclabelatlas.h"
 #include "qcclabelttf.h"
 #include "qccscrollview.h"
+#include "qccuibutton.h"
 
 #include <QImage>
 #include <QPainter>
@@ -59,6 +60,10 @@ QCCNode* QCCNode::createCCNodeByType(QString type)
     else if(type == CLASS_TYPE_CCSCROLLVIEW)
     {
         node = new QCCScrollView();
+    }
+    else if(type == CLASS_TYPE_CCUIBUTTON)
+    {
+        node = new QCCUiButton();
     }
 
     Q_ASSERT(node != 0);
@@ -173,7 +178,7 @@ QMap<QString, QString> QCCNode::exportData()
 //    map.insert("anchorX", QString("%1").arg(m_anchorX));
 //    map.insert("anchorY", QString("%1").arg(m_anchorY));
 
-    if(m_scaleX < 0.99 || m_scaleY > 1.01)
+    if(m_scaleX < 0.99 || m_scaleX > 1.01)
     {
         map.insert("scaleX", QString("%1").arg(m_scaleX));
     }
@@ -203,13 +208,22 @@ QMap<QString, QString> QCCNode::exportData()
 
 QGraphicsItem* QCCNode::createGraphicsItem()
 {
-    qDebug()<<"ccnode can't be create for GraphicsItem";
-    Q_ASSERT(0);
-    return 0;
+    m_graphicsItem = new QGraphicsRectItem();
+    this->updateGraphicsItem();
+    return m_graphicsItem;
 }
 
 void QCCNode::updateGraphicsItem()
 {
-    qDebug()<<"ccnode can't be update for GraphicsItem";
-    Q_ASSERT(0);
+    QGraphicsRectItem* item = dynamic_cast<QGraphicsRectItem*>(m_graphicsItem);
+    item->setRect(0,0,1,1);
+    item->resetTransform();
+    item->setTransform(QTransform().rotate(m_rotation), true);
+    item->setTransform(QTransform::fromScale(m_scaleX,m_scaleY), true);
+    //item->setTransform(QTransform::fromTranslate(0, -m_height), true);
+    item->setZValue(m_z);
+    item->setVisible(m_isVisible);
+    item->setFlag(QGraphicsItem::ItemIsMovable, !m_isFixed);
+    item->setBrush( QBrush(Qt::NoBrush) );
 }
+

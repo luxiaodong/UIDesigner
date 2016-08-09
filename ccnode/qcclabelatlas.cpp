@@ -53,6 +53,7 @@ void QCCLabelAtlas::updateGraphicsItem()
         {
             char c = m_text.at(i).toLatin1();
             int index = c - m_startChar;
+
             if(index < 0 || index >= m_elementCountPerWidth*m_elementCountPerHeight)
             {
                 index = 0;

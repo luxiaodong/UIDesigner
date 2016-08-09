@@ -45,6 +45,7 @@
     <property name="title">
      <string>class</string>
     </property>
+    <addaction name="actionCCNode"/>
     <addaction name="actionCCSprite"/>
     <addaction name="actionCCLabelTTF"/>
     <addaction name="actionCCMenu"/>
@@ -53,6 +54,7 @@
     <addaction name="actionCCProgressTimer"/>
     <addaction name="actionCCLabelAtlas"/>
     <addaction name="actionCCScrollView"/>
+    <addaction name="actionCCUIButton"/>
    </widget>
    <widget class="QMenu" name="menuSetting">
     <property name="title">
@@ -274,6 +276,16 @@
   <action name="actionLoadLanguage">
    <property name="text">
     <string>loadLanguage</string>
+   </property>
+  </action>
+  <action name="actionCCNode">
+   <property name="text">
+    <string>CCNode</string>
+   </property>
+  </action>
+  <action name="actionCCUIButton">
+   <property name="text">
+    <string>CCUIButton</string>
    </property>
   </action>
  </widget>

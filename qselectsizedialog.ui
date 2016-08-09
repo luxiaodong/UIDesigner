@@ -75,6 +75,9 @@
        </item>
        <item>
         <widget class="QComboBox" name="comboBox">
+         <property name="currentText">
+          <string>CCLayer</string>
+         </property>
          <item>
           <property name="text">
            <string>CCSprite</string>

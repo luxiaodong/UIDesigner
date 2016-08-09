@@ -57,34 +57,6 @@ MainWindow::~MainWindow()
 
 void MainWindow::test()
 {
-    QCCNode* root = new QCCNode();
-    QCCNode* node1 = new QCCNode();
-    QCCNode* node11 = new QCCNode();
-    QCCNode* node12 = new QCCNode();
-    QCCNode* node2 = new QCCNode();
-
-    root->m_name = "name_1";
-    root->m_classType = "class_1";
-    node1->m_name = "1";
-    node11->m_name = "11";
-    node12->m_name = "12";
-    node2->m_name = "2";
-
-    node1->m_classType = CLASS_TYPE_CCSPRITE;
-    node11->m_classType = CLASS_TYPE_CCSPRITE;
-    node12->m_classType = CLASS_TYPE_CCSPRITE;
-    node2->m_classType = CLASS_TYPE_CCSPRITE;
-
-    root->m_children.append(node1);
-    root->m_children.append(node2);
-
-    node1->m_children.append(node11);
-    node1->m_children.append(node12);
-
-//    this->replaceRootNode(root);
-
-//    m_scene->test();
-//    m_browser->test();
 }
 
 void MainWindow::replaceRootNode(QCCNode* node)
@@ -347,8 +319,16 @@ void MainWindow::changedItemSelect(QGraphicsItem* item)
     {
         m_treeView->setCurrentIndex(index);
         QTreeItem* treeItem = m_model->itemAt(index);
-        m_browser->initProperty(treeItem->m_node);
-        emit changeItemSelect(treeItem->m_node);
+//        QCCNode* node = treeItem->m_node;
+//        if(node->m_isFixed == true)
+//        {
+//            this->changedItemSelect(item->parentItem());
+//        }
+//        else
+        {
+            m_browser->initProperty(treeItem->m_node);
+            emit changeItemSelect(treeItem->m_node);
+        }
     }
 }
 
@@ -1059,6 +1039,19 @@ void MainWindow::on_actionDel_triggered()
     }
 }
 
+void MainWindow::on_actionCCNode_triggered()
+{
+    QModelIndex index = m_treeView->currentIndex();
+    if(index.isValid() == true)
+    {
+        //create
+        QCCNode* node = QCCNode::createCCNodeByType(CLASS_TYPE_CCNODE);
+        //sync
+        this->syncNodeAfterCreate(index, node);
+        this->setWindowTitle(QString("%1*").arg(m_currentOpenFile));
+    }
+}
+
 void MainWindow::on_actionCCSprite_triggered()
 {
     QModelIndex index = m_treeView->currentIndex();
@@ -1252,6 +1245,33 @@ void MainWindow::on_actionCCScrollView_triggered()
         QCCNode* node = QCCNode::createCCNodeByType(CLASS_TYPE_CCSCROLLVIEW);
         QCCScrollView* scrollView = dynamic_cast<QCCScrollView*>(node);
         scrollView->m_isDynamicallyGenerated = true;
+        //sync
+        this->syncNodeAfterCreate(index, node);
+        this->setWindowTitle(QString("%1*").arg(m_currentOpenFile));
+    }
+}
+
+void MainWindow::on_actionCCUIButton_triggered()
+{
+    QModelIndex index = m_treeView->currentIndex();
+    if(index.isValid() == true)
+    {
+        if(m_lastBrowserFile.isEmpty() == true)
+        {
+            m_lastBrowserFile = m_storageData->resourceDir();
+        }
+
+        QString filePath = QFileDialog::getOpenFileName(this, QString("Open File"), m_lastBrowserFile, FILTER_IMAGES);
+        if(this->isCCSpriteCanBeCreate(filePath) == false)
+        {
+            return;
+        }
+
+        m_lastBrowserFile = filePath;
+        //create
+        QCCNode* node = QCCNode::createCCNodeByType(CLASS_TYPE_CCUIBUTTON);
+        QCCSprite* sprite = dynamic_cast<QCCSprite*>(node);
+        sprite->m_filePath = filePath.remove(QString("%1/").arg(m_storageData->resourceDir()));
         //sync
         this->syncNodeAfterCreate(index, node);
         this->setWindowTitle(QString("%1*").arg(m_currentOpenFile));

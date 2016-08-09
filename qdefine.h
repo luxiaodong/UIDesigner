@@ -61,6 +61,7 @@ const char CLASS_TYPE_CCPROGRESSTIMER[] = "CCProgressTimer";
 const char CLASS_TYPE_CCMENUITEM_IMAGE[] = "CCMenuItemImage";
 const char CLASS_TYPE_CCCONTAINERLAYER[] = "CCContainerLayer";
 const char CLASS_TYPE_CCSCROLLVIEW[] = "CCScrollView";
+const char CLASS_TYPE_CCUIBUTTON[] = "CCUIButton";
 
 const char PROPERTY_TYPE_NAME[] = "name";
 const char PROPERTY_TYPE_FIXED[] = "fixed";

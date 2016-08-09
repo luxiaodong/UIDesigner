@@ -28,26 +28,63 @@ void QScene::mousePressEvent(QGraphicsSceneMouseEvent *event)
 
 void QScene::mouseMoveEvent(QGraphicsSceneMouseEvent *event)
 {
-    QGraphicsItem* item = this->mouseGrabberItem();
-    if (item != 0 && item == m_selectItem)
-    {
-        int x = item->x();
-        int y = item->y();
+//qDebug()<<"scene pos:"<<event->scenePos();
+//    QList<QGraphicsItem *> list = this->items(event->scenePos(), Qt::ContainsItemBoundingRect);
+//    bool isFind = false;
+//    foreach (QGraphicsItem* single, list)
+//    {
+//        if(single == m_selectItem)
+//        {
+//            isFind = true;
+//            break;
+//        }
+//    }
 
-        QGraphicsItem* parentItem = item->parentItem();
-        if(parentItem != 0)
-        {
-            y = parentItem->boundingRect().size().height() - y;
-        }
-        else
-        {
-            y = this->height() - y;
-        }
+//    if(isFind == true)
+//    {
+//        QGraphicsItem* item =  m_selectItem;
+////场景的pos转成item的pos
+//qDebug()<<"before item pos is. "<<item->pos();
+//        //item->setPos( item->mapFromScene( event->scenePos() ) );
+//qDebug()<<"after item pos is. "<<item->pos();
 
-        emit changeItemPoint(x, y);
-    }
+//        int x = item->x();
+//        int y = item->y();
 
-    QGraphicsScene::mouseMoveEvent(event);
+//        QGraphicsItem* parentItem = item->parentItem();
+//        if(parentItem != 0)
+//        {
+//            y = parentItem->boundingRect().size().height() - y;
+//        }
+//        else
+//        {
+//            y = this->height() - y;
+//        }
+
+//        emit changeItemPoint(x, y);
+//    }
+
+
+//    QGraphicsItem* item = this->mouseGrabberItem();
+//    if (item != 0 && item == m_selectItem)
+//    {
+//        int x = item->x();
+//        int y = item->y();
+
+//        QGraphicsItem* parentItem = item->parentItem();
+//        if(parentItem != 0)
+//        {
+//            y = parentItem->boundingRect().size().height() - y;
+//        }
+//        else
+//        {
+//            y = this->height() - y;
+//        }
+
+//        emit changeItemPoint(x, y);
+//    }
+
+//    QGraphicsScene::mouseMoveEvent(event);
 }
 
 void QScene::test()
@@ -100,6 +137,9 @@ void QScene::reset()
     m_selectItem = 0;
     m_boundingRect = new QGraphicsRectItem();
     m_boundingRect->setPen(QPen(QColor(Qt::red)));
+    m_boundingRect->setZValue(10000000);
+    m_boundingRect->setVisible(false);
+    this->addItem(m_boundingRect);
 }
 
 void QScene::createGraphicsItemByCCNode(QCCNode* node, QGraphicsItem* parentItem)
@@ -131,8 +171,7 @@ void QScene::changedItemSelect(QCCNode* node)
     m_selectItem = item;
 
     QRectF r = m_selectItem->boundingRect();
-    m_boundingRect->setRect(r);
-    m_boundingRect->setParentItem(m_selectItem);
+    m_boundingRect->setRect( m_selectItem->mapToScene(r).boundingRect()  );
     m_boundingRect->setVisible(true);
 }
 
@@ -147,5 +186,8 @@ void QScene::changedItemPoint(int x, int y)
         }
 
         m_selectItem->setPos(x, height - y);
+        QRectF r = m_selectItem->boundingRect();
+        m_boundingRect->setRect( m_selectItem->mapToScene(r).boundingRect()  );
+        m_boundingRect->setVisible(true);
     }
 }

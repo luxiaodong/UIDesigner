@@ -106,6 +106,7 @@ private slots:
     void on_actionCopy_triggered();
     void on_actionParse_triggered();
     void on_actionDel_triggered();
+    void on_actionCCNode_triggered();
     void on_actionCCSprite_triggered();
     void on_actionCCLabelTTF_triggered();
     void on_actionCCMenu_triggered();
@@ -114,6 +115,7 @@ private slots:
     void on_actionCCProgressTimer_triggered();
     void on_actionCCLabelAtlas_triggered();
     void on_actionCCScrollView_triggered();
+    void on_actionCCUIButton_triggered();
     void on_actionRenameTools_triggered();
     void on_actionLoadLanguage_triggered();
 

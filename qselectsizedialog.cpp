@@ -8,6 +8,7 @@ QSelectSizeDialog::QSelectSizeDialog(QWidget *parent) :
     ui->setupUi(this);
     connect(ui->ok, SIGNAL(clicked()), this, SLOT(clickOk()));
     connect(ui->cancel, SIGNAL(clicked()), this, SLOT(reject()));
+    ui->comboBox->setEnabled(false);
 }
 
 QSelectSizeDialog::~QSelectSizeDialog()

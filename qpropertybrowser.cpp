@@ -659,7 +659,9 @@ void QPropertyBrowser::initProperty(QCCNode* node)
     {
         this->initPropertyCCLayerColor(dynamic_cast<QCCLayerColor*>(node));
     }
-    else if(classType == CLASS_TYPE_CCSPRITE || classType == CLASS_TYPE_CCMENUITEM_IMAGE)
+    else if(classType == CLASS_TYPE_CCSPRITE
+            || classType == CLASS_TYPE_CCMENUITEM_IMAGE
+            || classType == CLASS_TYPE_CCUIBUTTON)
     {
         this->initPropertyCCSprite( dynamic_cast<QCCSprite*>(node));
     }
