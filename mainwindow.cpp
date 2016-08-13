@@ -240,6 +240,7 @@ void MainWindow::connectSignalAndSlot()
     connect(m_browser, SIGNAL(changePropertyText(QString&)), this, SLOT(changedPropertyText(QString&)));
     connect(m_browser, SIGNAL(changePropertyAlignment(int, int)), this, SLOT(changedPropertyAlignment(int, int)));
     connect(m_browser, SIGNAL(changePropertyTextDimension(int, int)), this, SLOT(changedPropertyTextDimension(int, int)));
+    connect(m_browser, SIGNAL(changePropertyTextStrike(int, QColor&)), this, SLOT(changedPropertyTextStrike(int, QColor&)));
     connect(m_browser, SIGNAL(changePropertyCCContainerLayerFilePath(QString&)), this, SLOT(changedPropertyCCContainerLayerFilePath(QString&)));
     connect(m_browser, SIGNAL(changePropertyInsetsRect(QRect)), this, SLOT(changedPropertyInsetsRect(QRect)));
     connect(m_browser, SIGNAL(changePropertyPreferedSize(QSize)), this, SLOT(changedPropertyPreferedSize(QSize)));
@@ -590,6 +591,20 @@ void MainWindow::changedPropertyTextDimension(int width, int height)
         temp->m_dimensionHeight = height;
         temp->updateGraphicsItem();
         emit changeItemSelect(node);
+        this->setWindowTitle(QString("%1*").arg(m_currentOpenFile));
+    }
+}
+
+void MainWindow::changedPropertyTextStrike(int size, QColor& color)
+{
+    QCCNode* node = this->currentSelectNode();
+    if(node != 0)
+    {
+        QCCLabelTTF* temp = dynamic_cast<QCCLabelTTF*>(node);
+        temp->m_strikeSize = size;
+        temp->m_strikeColor = color;
+        temp->updateGraphicsItem();
+        //emit changeItemSelect(node);
         this->setWindowTitle(QString("%1*").arg(m_currentOpenFile));
     }
 }

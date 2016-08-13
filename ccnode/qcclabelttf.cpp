@@ -12,6 +12,8 @@ QCCLabelTTF::QCCLabelTTF()
     m_dimensionWith = 0;
     m_dimensionHeight = 0;
     m_isInLanguage = false;
+    m_strikeSize = 0;
+    m_strikeColor = QColor(Qt::black);
 }
 
 void QCCLabelTTF::importData(QMap<QString, QString>& map)
@@ -32,6 +34,12 @@ void QCCLabelTTF::importData(QMap<QString, QString>& map)
     }
 
     m_isInLanguage = map.value("isInlanguage","0").toInt();
+    m_strikeSize = map.value("strikeSize",0).toInt();
+
+    int r = map.value("strikeColor_r", QString("0")).toInt();
+    int g = map.value("strikeColor_g", QString("0")).toInt();
+    int b = map.value("strikeColor_b", QString("0")).toInt();
+    m_strikeColor = QColor(r,g,b,255);
 }
 
 QMap<QString, QString> QCCLabelTTF::exportData()
@@ -52,6 +60,18 @@ QMap<QString, QString> QCCLabelTTF::exportData()
     if(m_isInLanguage == true)
     {
         map.insert("isInlanguage", QString('1'));
+    }
+
+    if (m_strikeSize > 0)
+    {
+        map.insert("strikeSize", QString("%1").arg(m_strikeSize));
+
+        if( m_strikeColor != QColor(Qt::black) )
+        {
+            map.insert("strikeColor_r", QString("%1").arg(m_strikeColor.red()));
+            map.insert("strikeColor_g", QString("%1").arg(m_strikeColor.green()));
+            map.insert("strikeColor_b", QString("%1").arg(m_strikeColor.blue()));
+        }
     }
 
     return map;

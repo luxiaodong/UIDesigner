@@ -38,6 +38,8 @@ void QPropertyBrowser::createProperty()
     createPropertyVerticalAlignment();
     createPropertyDimensionWith();
     createPropertyDimensionHeight();
+    createPropertyTextStrikeSize();
+    createPropertyTextStrikeColor();
     createPropertyContainerFilePath();
     createPropertyInsetsX();
     createPropertyInsetsY();
@@ -69,6 +71,7 @@ void QPropertyBrowser::createProperty()
     createPropertyScale();
     createPropertyTextAlignment();
     createPropertyDimensionSize();
+    createPropertyTextStrike();
     createPropertyInsetsRect();
     createPropertyPreferredSize();
     createPropertyScrollViewOffset();
@@ -246,7 +249,7 @@ void QPropertyBrowser::createPropertyText()
 
 void QPropertyBrowser::createPropertyHorizontalAlignment()
 {
-    m_horizontalAlignment = m_manager->addProperty(QtVariantPropertyManager::enumTypeId(), PROPERTY_TYPE_TEXT_HORIZONTAL);
+    m_horizontalAlignment = m_manager->addProperty(QVariant::Int, PROPERTY_TYPE_OPACITY);
     QStringList list;
     list<<"Left"<<"Center"<<"Right";
     m_horizontalAlignment->setAttribute("enumNames", list);
@@ -260,6 +263,20 @@ void QPropertyBrowser::createPropertyVerticalAlignment()
     list<<"Top"<<"Center"<<"Bottom";
     m_verticalAlignment->setAttribute("enumNames", list);
     m_verticalAlignment->setValue(1);
+}
+
+void QPropertyBrowser::createPropertyTextStrikeSize()
+{
+    m_textStrikeSize = m_manager->addProperty(QVariant::Int, PROPERTY_TYPE_TEXT_STRIKE_SIZE);
+    m_textStrikeSize->setAttribute("minimum",0);
+    m_textStrikeSize->setAttribute("maximum",9);
+    m_horizontalAlignment->setValue(0);
+}
+
+void QPropertyBrowser::createPropertyTextStrikeColor()
+{
+    m_textStrikeColor = m_manager->addProperty(QVariant::Color, PROPERTY_TYPE_COLOR);
+    m_textStrikeColor->setValue(QColor(Qt::black));
 }
 
 void QPropertyBrowser::createPropertyDimensionWith()
@@ -281,7 +298,7 @@ void QPropertyBrowser::createPropertyDimensionHeight()
 
 void QPropertyBrowser::createPropertyContainerFilePath()
 {
-    m_containerLayerFilePath = m_manager->addProperty(VariantManager::filePathTypeId(), PROPERTY_TYPE_TEXT_FILEPATH);
+    m_containerLayerFilePath = m_manager->addProperty(VariantManager::filePathTypeId(), PROPERTY_TYPE_CONTAINER_FILEPATH);
     m_containerLayerFilePath->setValue("");
     m_containerLayerFilePath->setAttribute("filter", FILTER_CONFIG);
 }
@@ -355,7 +372,7 @@ void QPropertyBrowser::createPropertyDirection()
 
 void QPropertyBrowser::createPropertyPercentage()
 {
-    m_percentage = m_manager->addProperty(QVariant::Double, PROPERTY_TYPE_TEXT_PERCENT);
+    m_percentage = m_manager->addProperty(QVariant::Double, PROPERTY_TYPE_BAR_PERCENT);
     m_percentage->setAttribute("minimum", 0.0f);
     m_percentage->setAttribute("maximum", 1.0f);
     m_percentage->setAttribute("singleStep", 0.01f);
@@ -513,6 +530,14 @@ void QPropertyBrowser::createPropertyTextAlignment()
     m_textAlignment->setValue(QString(""));
 }
 
+void QPropertyBrowser::createPropertyTextStrike()
+{
+    m_textStrike = m_manager->addProperty(QVariant::String, PROPERTY_TYPE_TEXT_STRIKE);
+    m_textStrike->addSubProperty(m_textStrikeColor);
+    m_textStrike->addSubProperty(m_textStrikeSize);
+    m_textStrike->setValue(QString(""));
+}
+
 void QPropertyBrowser::createPropertyInsetsRect()
 {
     m_insetsRect = m_manager->addProperty(QVariant::String, PROPERTY_TYPE_INSETSRECT);
@@ -598,6 +623,7 @@ void QPropertyBrowser::createPropertyCCLabelTTF()
     m_ccLabelTTF->addSubProperty(m_font);
     m_ccLabelTTF->addSubProperty(m_dimensionSize);
     m_ccLabelTTF->addSubProperty(m_textAlignment);
+    m_ccLabelTTF->addSubProperty(m_textStrike);
 }
 
 void QPropertyBrowser::createPropertyCCContainerLayer()
@@ -743,6 +769,8 @@ void QPropertyBrowser::initPropertyCCLabelTTF(QCCLabelTTF* node)
     m_dimensionHeight->setValue(node->m_dimensionHeight);
     m_horizontalAlignment->setValue(node->m_horizontalAlignment);
     m_verticalAlignment->setValue(node->m_verticalAlignment);
+    m_textStrikeSize->setValue(node->m_strikeSize);
+    m_textStrikeColor->setValue(node->m_strikeColor);
     this->addProperty(m_ccLabelTTF);
 }
 
@@ -902,6 +930,12 @@ void QPropertyBrowser::valueChanged(QtProperty* property, QVariant )
         int width = m_dimensionWith->value().toInt();
         int height = m_dimensionHeight->value().toInt();
         emit changePropertyTextDimension(width, height);
+    }
+    else if(property == m_textStrikeSize || property == m_textStrikeColor)
+    {
+        int size = m_textStrikeSize->value().toInt();
+        QColor color = m_textStrikeColor->value().value<QColor>();
+        emit changePropertyTextStrike(size, color);
     }
     else if(property == m_containerLayerFilePath)
     {

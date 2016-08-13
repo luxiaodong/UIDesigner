@@ -92,8 +92,10 @@ const char PROPERTY_TYPE_TEXT_ALIGNMENT_LEFT[] = "Left";
 const char PROPERTY_TYPE_TEXT_ALIGNMENT_RIGHT[] = "Right";
 const char PROPERTY_TYPE_TEXT_ALIGNMENT_TOP[] = "Top";
 const char PROPERTY_TYPE_TEXT_ALIGNMENT_BOTTOM[] = "Bottom";
-const char PROPERTY_TYPE_TEXT_FILEPATH[] = "filePath";
-const char PROPERTY_TYPE_TEXT_PERCENT[] = "percent";
+const char PROPERTY_TYPE_TEXT_STRIKE_SIZE[] = "strikeSize";
+const char PROPERTY_TYPE_TEXT_STRIKE_COLOR[] = "strikeColor";
+const char PROPERTY_TYPE_BAR_PERCENT[] = "percent";
+const char PROPERTY_TYPE_CONTAINER_FILEPATH[] = "filePath";
 
 const char PROPERTY_TYPE_POSITION[] = "position";
 const char PROPERTY_TYPE_SIZE[] = "size";
@@ -101,6 +103,7 @@ const char PROPERTY_TYPE_ANCHOR[] = "anchor";
 const char PROPERTY_TYPE_SCALE[] = "scale";
 const char PROPERTY_TYPE_DIMENSION[] = "dimension";
 const char PROPERTY_TYPE_TEXT_ALIGNMENT[] = "textAlignment";
+const char PROPERTY_TYPE_TEXT_STRIKE[] = "textStrike";
 
 const char PROPERTY_TYPE_INSETSRECT[] = "insetsRect";
 const char PROPERTY_TYPE_PREFERREDSIZE[] = "preferredSize";

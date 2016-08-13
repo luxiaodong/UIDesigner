@@ -21,6 +21,8 @@ public:
     int m_dimensionWith;
     int m_dimensionHeight;
     bool m_isInLanguage;
+    int m_strikeSize;
+    QColor m_strikeColor;
 };
 
 

@@ -22,7 +22,7 @@ QMap<QString, QString> QCCLayerColor::exportData()
 {
     QMap<QString, QString> map = QCCLayer::exportData();
 
-    if( !(m_color.red() == 255 && m_color.green() == 255 && m_color.blue() == 255) )
+    if( m_color != QColor(Qt::white) )
     {
         map.insert("color_r", QString("%1").arg(m_color.red()));
         map.insert("color_g", QString("%1").arg(m_color.green()));

@@ -79,6 +79,7 @@ public slots:
     void changedPropertyText(QString& text);
     void changedPropertyAlignment(int horizontal, int vertical);
     void changedPropertyTextDimension(int width, int height);
+    void changedPropertyTextStrike(int size, QColor& color);
     void changedPropertyCCContainerLayerFilePath(QString& filePath);
     void changedPropertyInsetsRect(QRect);
     void changedPropertyPreferedSize(QSize);

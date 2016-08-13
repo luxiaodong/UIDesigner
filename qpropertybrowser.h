@@ -48,6 +48,7 @@ signals:
     void changePropertyText(QString& text);
     void changePropertyAlignment(int horizontal, int vertical);
     void changePropertyTextDimension(int width, int height);
+    void changePropertyTextStrike(int size, QColor& color);
     void changePropertyCCContainerLayerFilePath(QString& filePath);
     void changePropertyInsetsRect(QRect);
     void changePropertyPreferedSize(QSize);
@@ -112,6 +113,8 @@ private:
     void createPropertyVerticalAlignment();
     void createPropertyDimensionWith();
     void createPropertyDimensionHeight();
+    void createPropertyTextStrikeSize();
+    void createPropertyTextStrikeColor();
     void createPropertyContainerFilePath();
     void createPropertyInsetsX();
     void createPropertyInsetsY();
@@ -143,6 +146,7 @@ private:
     void createPropertyScale();
     void createPropertyDimensionSize();
     void createPropertyTextAlignment();
+    void createPropertyTextStrike();
     void createPropertyInsetsRect();
     void createPropertyPreferredSize();
     void createPropertyScrollViewOffset();
@@ -188,6 +192,8 @@ private:
     QtVariantProperty*  m_verticalAlignment;
     QtVariantProperty*  m_dimensionWith;
     QtVariantProperty*  m_dimensionHeight;
+    QtVariantProperty*  m_textStrikeSize;
+    QtVariantProperty*  m_textStrikeColor;
     QtVariantProperty*  m_containerLayerFilePath;
     QtVariantProperty*  m_insetsX;
     QtVariantProperty*  m_insetsY;
@@ -219,6 +225,7 @@ private:
     QtVariantProperty*  m_scale;
     QtVariantProperty*  m_dimensionSize;
     QtVariantProperty*  m_textAlignment;
+    QtVariantProperty*  m_textStrike;
     QtVariantProperty*  m_insetsRect;
     QtVariantProperty*  m_preferredSize;
     QtVariantProperty*  m_scrollViewOffset;
