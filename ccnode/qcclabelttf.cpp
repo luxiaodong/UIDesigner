@@ -1,5 +1,6 @@
 #include "qcclabelttf.h"
 
+static QMap<QString, QString> g_languages;
 
 QCCLabelTTF::QCCLabelTTF()
 {
@@ -91,6 +92,27 @@ void QCCLabelTTF::updateGraphicsItem()
         return ;
     }
 
+    static bool isLanguageLoaded = false;
+    if (isLanguageLoaded == false)
+    {
+        isLanguageLoaded = this->loadLanguageFile();
+    }
+
+    QString displayText = m_text;
+    if( g_languages.count() > 0 )
+    {
+        displayText = g_languages.value(m_text, m_text);
+    }
+
+    if(displayText == m_text)
+    {
+        this->m_isInLanguage = false;
+    }
+    else
+    {
+        this->m_isInLanguage = true;
+    }
+
     if(m_dimensionWith != 0 && m_dimensionHeight !=0 )
     {
         m_width = m_dimensionWith;
@@ -100,7 +122,7 @@ void QCCLabelTTF::updateGraphicsItem()
     {
         //QFontMetrics
         QFontMetrics metrics(m_font);
-        m_width = metrics.width(m_text);
+        m_width = metrics.width(displayText);
         m_height = metrics.height();
     }
 
@@ -117,7 +139,7 @@ void QCCLabelTTF::updateGraphicsItem()
     QTextOption option = QTextOption(flag);
     option.setFlags( QTextOption::AddSpaceForLineAndParagraphSeparators | QTextOption::ShowLineAndParagraphSeparators);
     option.setWrapMode(QTextOption::WordWrap);
-    painter.drawText(QRect(0,0,m_width,m_height), m_text, option);
+    painter.drawText(QRect(0,0,m_width,m_height), displayText, option);
 
     QGraphicsPixmapItem* item = dynamic_cast<QGraphicsPixmapItem*>(m_graphicsItem);
     item->setPixmap(QPixmap::fromImage(image));
@@ -130,4 +152,52 @@ void QCCLabelTTF::updateGraphicsItem()
     item->setZValue(m_z);
     item->setVisible(m_isVisible);
     item->setFlag(QGraphicsItem::ItemIsMovable, !m_isFixed);
+}
+
+bool QCCLabelTTF::loadLanguageFile()
+{
+    QSettings settings("UIDesigner");
+    QString fileDir = settings.value("resourceDir",QString("")).toString();
+
+    QString filePath = QString("%1/language.lua").arg(fileDir);
+    QFile file(filePath);
+    if( file.open(QIODevice::ReadOnly) == false)
+    {
+        return false;
+    }
+
+    QTextStream stream(&file);
+    stream.setCodec("UTF-8");
+    bool isRealLanguageFile = false;
+    while( stream.atEnd() == false )
+    {
+        QString line = stream.readLine().trimmed();
+        if(line.contains("language") == true && line.contains("=") )
+        {
+            isRealLanguageFile = true;
+            g_languages.clear();
+        }
+
+        if(isRealLanguageFile == true)
+        {
+            if(line.count('[') == 1  && line.count(']') == 1 && line.count('=') == 1 && line.count('"') == 4 && line.contains(',') )
+            {
+                int index1 = line.indexOf('"');
+                int index2 = line.indexOf('"', index1 + 1);
+                int index3 = line.indexOf('=', index2 + 1);
+                int index4 = line.indexOf('"', index3 + 1);
+                int index5 = line.indexOf('"', index4 + 1);
+
+                if( (index1 != -1) && (index2 != -1) && (index4 != -1) && (index5 != -1))
+                {
+                    QString key = line.mid(index1 + 1, index2 - index1 - 1);
+                    QString value = line.mid(index4 + 1, index5 - index4 - 1);
+                    g_languages.insert(key, value);
+                }
+            }
+        }
+    }
+
+    file.close();
+    return true;
 }

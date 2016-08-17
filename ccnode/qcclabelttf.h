@@ -13,7 +13,10 @@ public:
     virtual QGraphicsItem* createGraphicsItem();
     virtual void updateGraphicsItem();
 
-public:
+private:
+    bool loadLanguageFile();
+
+public:  
     QFont m_font;
     QString m_text;
     int m_horizontalAlignment;

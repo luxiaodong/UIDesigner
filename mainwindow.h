@@ -118,7 +118,7 @@ private slots:
     void on_actionCCScrollView_triggered();
     void on_actionCCUIButton_triggered();
     void on_actionRenameTools_triggered();
-    void on_actionLoadLanguage_triggered();
+//    void on_actionLoadLanguage_triggered();
 
 protected:
     virtual void closeEvent(QCloseEvent *event);
@@ -138,7 +138,6 @@ private:
     QString             m_lastBrowserFile;
     QMap<QString, QString> m_copyBuffer;
     int                 m_viewRatio;
-    QMap<QString, QString> m_languages;
 
 private:
     Ui::MainWindow *ui;

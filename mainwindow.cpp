@@ -543,24 +543,8 @@ void MainWindow::changedPropertyText(QString& text)
     QCCNode* node = this->currentSelectNode();
     if(node != 0)
     {
-        QString displayText = text;
-        if( m_languages.count() > 0 )
-        {
-            displayText = m_languages.value(text, text);
-        }
-
         QCCLabelTTF* temp = dynamic_cast<QCCLabelTTF*>(node);
-        temp->m_text = displayText;
-
-        if(displayText == text)
-        {
-            temp->m_isInLanguage = false;
-        }
-        else
-        {
-            temp->m_isInLanguage = true;
-        }
-
+        temp->m_text = text;
         temp->updateGraphicsItem();
         emit changeItemSelect(node);
         this->setWindowTitle(QString("%1*").arg(m_currentOpenFile));
@@ -1312,62 +1296,6 @@ void MainWindow::on_actionRenameTools_triggered()
     QFileRenameTools tools;
     tools.exec();
     this->setVisible(true);
-}
-
-void MainWindow::on_actionLoadLanguage_triggered()
-{
-    QString oldDir = m_storageData->resourceDir();
-    if ( oldDir.isEmpty() == true )
-    {
-        return ;
-    }
-
-    QString filePath = QFileDialog::getOpenFileName(this, oldDir);
-
-    if(filePath.isEmpty() == true)
-    {
-        return ;
-    }
-
-    QFile file(filePath);
-    if( file.open(QIODevice::ReadOnly) == false)
-    {
-        return ;
-    }
-
-    QTextStream stream(&file);
-    stream.setCodec("UTF-8");
-    bool isRealLanguageFile = false;
-    while( stream.atEnd() == false )
-    {
-        QString line = stream.readLine().trimmed();
-        if(line.contains("language") == true && line.contains("=") )
-        {
-            isRealLanguageFile = true;
-            m_languages.clear();
-        }
-
-        if(isRealLanguageFile == true)
-        {
-            if(line.count('[') == 1  && line.count(']') == 1 && line.count('=') == 1 && line.count('"') == 2 && line.contains(',') )
-            {
-                int index1 = line.indexOf('[');
-                int index2 = line.indexOf(']', index1 + 1);
-                int index3 = line.indexOf('=', index2 + 1);
-                int index4 = line.indexOf('"', index3 + 1);
-                int index5 = line.indexOf('"', index4 + 1);
-
-                if( (index1 != -1) && (index2 != -1) && (index4 != -1) && (index5 != -1))
-                {
-                    QString key = line.mid(index1 + 1, index2 - index1 - 1);
-                    QString value = line.mid(index4 + 1, index5 - index4 - 1);
-                    m_languages.insert(key, value);
-                }
-            }
-        }
-    }
-
-    file.close();
 }
 
 void MainWindow::dragEnterEvent(QDragEnterEvent *event)
