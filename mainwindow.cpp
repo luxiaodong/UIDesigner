@@ -1298,6 +1298,58 @@ void MainWindow::on_actionRenameTools_triggered()
     this->setVisible(true);
 }
 
+void MainWindow::on_actionPlistTools_triggered()
+{
+    //
+    m_plistDirs.clear();
+
+    QString plistDir = QString("%1/plist/src").arg(m_storageData->resourceDir());
+    this->traverseFiles(plistDir);
+
+    //QString program("D:\\Program Files (x86)\\TexturePacker\bin\\TexturePacker.exe");
+    QString program("D:/Program Files (x86)/TexturePacker/bin/TexturePacker.exe");
+
+    foreach(QString single, m_plistDirs)
+    {
+        QString srcPath = single;
+        QString dstPath = single.replace("/src/","/bin/");
+
+        QString test = QString("%1.plist").arg(dstPath);
+        if(QFile::exists(test) == false)
+        {
+            qDebug()<<test;
+        }
+
+        //test
+        QString line = QString("--format cocos2d --data %1.plist --sheet %2.png %3").arg(dstPath, dstPath, srcPath);
+        QProcess::execute(program, line.split(" "));
+    }
+}
+
+void MainWindow::traverseFiles(QString filePath)
+{
+    QDir dir(filePath);
+    dir.setFilter(QDir::Dirs);
+    dir.setSorting(QDir::Name);
+
+    QFileInfoList fileInfoList = dir.entryInfoList(QDir::Dirs | QDir::NoDotAndDotDot);
+
+    if(fileInfoList.isEmpty() == true)
+    {
+        m_plistDirs.append(filePath);
+    }
+    else
+    {
+        foreach(QFileInfo fileInfo, fileInfoList)
+        {
+            if(fileInfo.isDir())
+            {
+                this->traverseFiles(fileInfo.absoluteFilePath());
+            }
+        }
+    }
+}
+
 void MainWindow::dragEnterEvent(QDragEnterEvent *event)
 {
     if (event->mimeData()->hasFormat("text/uri-list"))

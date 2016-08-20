@@ -35,6 +35,7 @@ private:
 private:
     bool isCCSpriteCanBeCreate(QString filePath);
     void openConfigFile(QString& filePath);
+    void traverseFiles(QString filePath);
 
 signals:
     //view;
@@ -118,7 +119,7 @@ private slots:
     void on_actionCCScrollView_triggered();
     void on_actionCCUIButton_triggered();
     void on_actionRenameTools_triggered();
-//    void on_actionLoadLanguage_triggered();
+    void on_actionPlistTools_triggered();
 
 protected:
     virtual void closeEvent(QCloseEvent *event);
@@ -138,6 +139,9 @@ private:
     QString             m_lastBrowserFile;
     QMap<QString, QString> m_copyBuffer;
     int                 m_viewRatio;
+
+private:
+    QStringList         m_plistDirs;
 
 private:
     Ui::MainWindow *ui;

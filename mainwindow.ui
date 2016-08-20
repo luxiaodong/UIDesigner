@@ -62,7 +62,7 @@
     </property>
     <addaction name="actionResource"/>
     <addaction name="actionSave_path"/>
-    <addaction name="actionLoadLanguage"/>
+    <addaction name="actionPlistTools"/>
     <addaction name="actionRenameTools"/>
    </widget>
    <widget class="QMenu" name="menuView">
@@ -273,9 +273,9 @@
     <string>renameTools</string>
    </property>
   </action>
-  <action name="actionLoadLanguage">
+  <action name="actionPlistTools">
    <property name="text">
-    <string>loadLanguage</string>
+    <string>plistTools</string>
    </property>
   </action>
   <action name="actionCCNode">

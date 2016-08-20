@@ -43,6 +43,7 @@
 #include <QUrl>
 #include <QMimeData>
 #include <QFontMetrics>
+#include <QProcess>
 
 //1.add string manager
 //2.add lua file browser.
