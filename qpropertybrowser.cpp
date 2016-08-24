@@ -249,7 +249,7 @@ void QPropertyBrowser::createPropertyText()
 
 void QPropertyBrowser::createPropertyHorizontalAlignment()
 {
-    m_horizontalAlignment = m_manager->addProperty(QVariant::Int, PROPERTY_TYPE_OPACITY);
+    m_horizontalAlignment = m_manager->addProperty(QtVariantPropertyManager::enumTypeId(), PROPERTY_TYPE_TEXT_HORIZONTAL);
     QStringList list;
     list<<"Left"<<"Center"<<"Right";
     m_horizontalAlignment->setAttribute("enumNames", list);

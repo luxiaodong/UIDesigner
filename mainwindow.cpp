@@ -1048,6 +1048,7 @@ void MainWindow::on_actionCCNode_triggered()
         //sync
         this->syncNodeAfterCreate(index, node);
         this->setWindowTitle(QString("%1*").arg(m_currentOpenFile));
+        this->changedItemSelect(node->m_graphicsItem);
     }
 }
 
@@ -1076,6 +1077,7 @@ void MainWindow::on_actionCCSprite_triggered()
         //sync
         this->syncNodeAfterCreate(index, node);
         this->setWindowTitle(QString("%1*").arg(m_currentOpenFile));
+        this->changedItemSelect(node->m_graphicsItem);
     }
 }
 
@@ -1089,6 +1091,8 @@ void MainWindow::on_actionCCLabelTTF_triggered()
         //sync
         this->syncNodeAfterCreate(index, node);
         this->setWindowTitle(QString("%1*").arg(m_currentOpenFile));
+
+        this->changedItemSelect(node->m_graphicsItem);
     }
 }
 
@@ -1116,6 +1120,7 @@ void MainWindow::on_actionCCMenu_triggered()
         //sync
         this->syncNodeAfterCreate(index, node);
         this->setWindowTitle(QString("%1*").arg(m_currentOpenFile));
+        this->changedItemSelect(node->m_graphicsItem);
     }
 }
 
@@ -1135,6 +1140,7 @@ void MainWindow::on_actionCContainer_triggered()
             //sync
             this->syncNodeAfterCreate(index, node);
             this->setWindowTitle(QString("%1*").arg(m_currentOpenFile));
+            this->changedItemSelect(node->m_graphicsItem);
         }
     }
 }
@@ -1169,6 +1175,7 @@ void MainWindow::on_actionCCScale9Sprite_triggered()
         //sync
         this->syncNodeAfterCreate(index, node);
         this->setWindowTitle(QString("%1*").arg(m_currentOpenFile));
+        this->changedItemSelect(node->m_graphicsItem);
     }
 }
 
@@ -1197,6 +1204,7 @@ void MainWindow::on_actionCCProgressTimer_triggered()
         //sync
         this->syncNodeAfterCreate(index, node);
         this->setWindowTitle(QString("%1*").arg(m_currentOpenFile));
+        this->changedItemSelect(node->m_graphicsItem);
     }
 }
 
@@ -1232,6 +1240,7 @@ void MainWindow::on_actionCCLabelAtlas_triggered()
         //sync
         this->syncNodeAfterCreate(index, node);
         this->setWindowTitle(QString("%1*").arg(m_currentOpenFile));
+        this->changedItemSelect(node->m_graphicsItem);
     }
 }
 
@@ -1247,6 +1256,7 @@ void MainWindow::on_actionCCScrollView_triggered()
         //sync
         this->syncNodeAfterCreate(index, node);
         this->setWindowTitle(QString("%1*").arg(m_currentOpenFile));
+        this->changedItemSelect(node->m_graphicsItem);
     }
 }
 
@@ -1274,6 +1284,7 @@ void MainWindow::on_actionCCUIButton_triggered()
         //sync
         this->syncNodeAfterCreate(index, node);
         this->setWindowTitle(QString("%1*").arg(m_currentOpenFile));
+        this->changedItemSelect(node->m_graphicsItem);
     }
 }
 
@@ -1300,7 +1311,6 @@ void MainWindow::on_actionRenameTools_triggered()
 
 void MainWindow::on_actionPlistTools_triggered()
 {
-    //
     m_plistDirs.clear();
 
     QString plistDir = QString("%1/plist/src").arg(m_storageData->resourceDir());
@@ -1314,11 +1324,11 @@ void MainWindow::on_actionPlistTools_triggered()
         QString srcPath = single;
         QString dstPath = single.replace("/src/","/bin/");
 
-        QString test = QString("%1.plist").arg(dstPath);
-        if(QFile::exists(test) == false)
-        {
-            qDebug()<<test;
-        }
+//        QString test = QString("%1.plist").arg(dstPath);
+//        if(QFile::exists(test) == false)
+//        {
+//            qDebug()<<test;
+//        }
 
         //test
         QString line = QString("--format cocos2d --data %1.plist --sheet %2.png %3").arg(dstPath, dstPath, srcPath);
