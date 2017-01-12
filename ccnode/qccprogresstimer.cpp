@@ -45,6 +45,8 @@ void QCCProgressTimer::updateGraphicsItem()
         }
         else if(m_direction == 1) //逆时针
         {}
+
+        item->setPixmap(QPixmap::fromImage(image));
     }
     else if(m_progressTimerType == kCCProgressTimerTypeBar)
     {
