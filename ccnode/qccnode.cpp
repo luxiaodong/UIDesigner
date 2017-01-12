@@ -14,6 +14,7 @@
 #include <QImage>
 #include <QPainter>
 
+static QMap<QString, QString> g_pathMap; //路径映射，短路径到长路径
 QCCNode* QCCNode::createCCNodeByType(QString type)
 {
     QCCNode* node = 0;
@@ -72,6 +73,66 @@ QCCNode* QCCNode::createCCNodeByType(QString type)
     node->m_z = count++;
     node->m_classType = type;
     return node;
+}
+
+void QCCNode::createPathMap()
+{
+    g_pathMap.clear();
+    QSettings settings("UIDesigner");
+    QString prefix = settings.value("resourceDir",QString("")).toString();
+    QString resDir = QString("%1/").arg(prefix);
+    QCCNode::traverseFiles(prefix, resDir);
+}
+
+void QCCNode::traverseFiles(QString filePath, QString relationPath)
+{
+    QDir dir(filePath);
+    dir.setFilter(QDir::Dirs);
+    dir.setSorting(QDir::Name);
+
+    QFileInfoList fileInfoList = dir.entryInfoList(QDir::Dirs | QDir::Files | QDir::NoDotAndDotDot);
+
+    if(fileInfoList.isEmpty() == false)
+    {
+        foreach(QFileInfo fileInfo, fileInfoList)
+        {
+            if(fileInfo.isDir())
+            {
+                QCCNode::traverseFiles(fileInfo.absoluteFilePath(), relationPath);
+            }
+            else if(fileInfo.isFile())
+            {
+                QString absFilePath = fileInfo.absoluteFilePath();
+                QString shortPath = absFilePath.split("/").last();
+
+                if(absFilePath.contains("/res/pic/") || absFilePath.contains("/res/text/") )
+                {
+                    QString test = g_pathMap.value(shortPath, "");
+                    if (test.isEmpty() == true)
+                    {
+                        g_pathMap.insert(shortPath, absFilePath.remove(relationPath));
+                    }
+                    else
+                    {
+                        qDebug()<<absFilePath.remove(relationPath);
+                        qDebug()<<test;
+                    }
+                }
+            }
+        }
+    }
+}
+
+QString QCCNode::longPathToShortPath(QString longPath)
+{
+    QStringList list = longPath.split("/");
+    return list.last();
+}
+
+QString QCCNode::shortPathToLongPath(QString shortPath)
+{
+    QString path = g_pathMap.value(shortPath, "");
+    return path;
 }
 
 QString QCCNode::resourceFullPath(QString relationPath)

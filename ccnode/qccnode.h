@@ -11,6 +11,8 @@ class QCCNode
 {
 public:
     static QCCNode* createCCNodeByType(QString type);
+    static void createPathMap();
+    static void traverseFiles(QString dir, QString dir2);
 public:
     QCCNode();
     virtual ~QCCNode();
@@ -26,6 +28,8 @@ public:
 public:
     QString resourceFullPath(QString relationPath);
     QString luaVariableName();
+    QString longPathToShortPath(QString longPath);
+    QString shortPathToLongPath(QString longPath);
 
 public:
     QString m_name;

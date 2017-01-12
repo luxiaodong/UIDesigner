@@ -846,6 +846,7 @@ void MainWindow::on_actionNew_triggered()
     QSelectSizeDialog dialog;
     if(dialog.exec() == QDialog::Accepted)
     {
+        QCCNode::createPathMap();
         if(dialog.m_rootClassType == CLASS_TYPE_CCSPRITE || dialog.m_rootClassType == CLASS_TYPE_CCSCALE9SPRITE)
         {
             if(m_lastBrowserFile.isEmpty() == true)
@@ -905,6 +906,7 @@ void MainWindow::on_actionNew_triggered()
 
 void MainWindow::on_actionOpen_File_triggered()
 {
+    QCCNode::createPathMap();
     QString oldDir = m_storageData->resourceDir();
     QString filePath = QFileDialog::getOpenFileName(this, QString("Open Directory"), oldDir, FILTER_CONFIG);
     this->openConfigFile(filePath);
