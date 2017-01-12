@@ -9,11 +9,20 @@ QCCMenuItemImage::QCCMenuItemImage()
 void QCCMenuItemImage::importData(QMap<QString, QString>& map)
 {
     QCCLayerColor::importData(map);
-    m_filePath = map.value("filePath", QString(""));
+    QString shortPath = map.value("filePath", QString(""));
 
-    if(m_filePath.isEmpty() == true)
+    if(shortPath.isEmpty() == true)
     {
-        m_filePath = map.value("image_n", QString(""));
+        shortPath = map.value("image_n", QString(""));
+    }
+
+    if(shortPath.contains("/"))
+    {
+        m_filePath = shortPath;
+    }
+    else
+    {
+        m_filePath = this->shortPathToLongPath(shortPath);
     }
 }
 
@@ -34,16 +43,21 @@ QMap<QString, QString> QCCMenuItemImage::exportData()
     QString abs_image_p = QString("%1/%2").arg(resourceDir, image_p);
     QString abs_image_d = QString("%1/%2").arg(resourceDir, image_d);
 
-    map.insert("image_n", image_n);
+    //map.insert("image_n", image_n);
+
+    QString shortPath = this->longPathToShortPath(image_n);
+    map.insert("image_n", shortPath);
 
     if(QFile::exists(abs_image_p) == true)
     {
-        map.insert("image_p", image_p);
+        shortPath = this->longPathToShortPath(image_p);
+        map.insert("image_p", shortPath);
     }
 
     if(QFile::exists(abs_image_d) == true)
     {
-        map.insert("image_d", image_d);
+        shortPath = this->longPathToShortPath(image_d);
+        map.insert("image_d", shortPath);
     }
 
     return map;

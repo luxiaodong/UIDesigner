@@ -9,13 +9,22 @@ QCCSprite::QCCSprite()
 void QCCSprite::importData(QMap<QString, QString>& map)
 {
     QCCLayerColor::importData(map);
-    m_filePath = map.value("filePath", QString(""));
+    QString shortPath = map.value("filePath", QString(""));
+    if (shortPath.contains("/"))
+    {
+        m_filePath = shortPath;
+    }
+    else
+    {
+        m_filePath = this->shortPathToLongPath(shortPath);
+    }
 }
 
 QMap<QString, QString> QCCSprite::exportData()
 {
     QMap<QString, QString> map = QCCLayerColor::exportData();
-    map.insert("filePath", m_filePath);
+    QString shortPath = this->longPathToShortPath(m_filePath);
+    map.insert("filePath", shortPath);
     return map;
 }
 
