@@ -48,6 +48,8 @@ MainWindow::MainWindow(QWidget *parent) :
 
     QSettings settings("UIDesigner");
     qDebug()<<settings.value("resourceDir", "none");
+
+    this->test();
 }
 
 MainWindow::~MainWindow()
@@ -57,6 +59,11 @@ MainWindow::~MainWindow()
 
 void MainWindow::test()
 {
+    m_scene->reset();
+    m_scene->setSceneRect(0, 0, 400, 400);
+
+    QGraphicsTextItem* item = new QGraphicsTextItem("cclabettf");
+    m_scene->addItem(item);
 }
 
 void MainWindow::replaceRootNode(QCCNode* node)
@@ -216,9 +223,7 @@ void MainWindow::connectSignalAndSlot()
     connect(m_scene, SIGNAL(changeItemSelect(QGraphicsItem*)), this, SLOT(changedItemSelect(QGraphicsItem*)));
     connect(m_scene, SIGNAL(changeItemPoint(int,int)),this,SLOT(changedItemPoint(int,int)));
     connect(m_scene, SIGNAL(changeBoundingSize(int,int)),this,SLOT(changedBoundingSize(int,int)));
-
-    connect(this, SIGNAL(changeItemPoint(int,int)), m_scene, SLOT(changedItemPoint(int,int)));
-    connect(this, SIGNAL(changeItemSelect(QCCNode*)), m_scene,SLOT(changedItemSelect(QCCNode*)));
+    connect(m_scene, SIGNAL(changeMouseMove(int,int)),this,SLOT(changedMouseMove(int,int)));
 
     //property emit and window slot
     connect(m_browser, SIGNAL(changePropertyFixed(bool)), this, SLOT(changedPropertyFixed(bool)));
@@ -229,6 +234,7 @@ void MainWindow::connectSignalAndSlot()
     connect(m_browser, SIGNAL(changePropertyAnchor(float,float)), this, SLOT(changedPropertyAnchor(float,float)));
     connect(m_browser, SIGNAL(changePropertyScale(float,float)), this, SLOT(changedPropertyScale(float,float)));
     connect(m_browser, SIGNAL(changePropertyRotation(int)), this, SLOT(changedPropertyRotation(int)));
+    connect(m_browser, SIGNAL(changePropertyDock(int,int)), this, SLOT(changedPropertyDock(int,int)));
     connect(m_browser, SIGNAL(changePropertyVisible(bool)), this, SLOT(changedPropertyVisible(bool)));
     connect(m_browser, SIGNAL(changePropertySkipCreate(bool)), this, SLOT(changedPropertySkipCreate(bool)));
     connect(m_browser, SIGNAL(changePropertySkipInit(bool)), this, SLOT(changedPropertySkipInit(bool)));
@@ -256,10 +262,6 @@ void MainWindow::connectSignalAndSlot()
     connect(m_browser, SIGNAL(changePropertyScrollViewSpace(int,int)), this, SLOT(changedPropertyScrollViewSpace(int,int)));
     connect(m_browser, SIGNAL(changePropertyScrollViewContent(int,int)), this, SLOT(changedPropertyScrollViewContent(int,int)));
     connect(m_browser, SIGNAL(changePropertyDynamicallyGenerated(bool)), this, SLOT(changedPropertyDynamicallyGenerated(bool)));
-
-    connect(this, SIGNAL(changePropertyPoint(int,int)), m_browser, SLOT(changedPropertyPoint(int,int)));
-    connect(this, SIGNAL(changePropertySize(int,int)), m_browser, SLOT(changedPropertySize(int,int)));
-    connect(this, SIGNAL(changePropertyTextDimension(int,int)),m_browser,SLOT(changedPropertyTextDimension(int,int)));
 }
 
 //model slot;
@@ -268,7 +270,7 @@ void MainWindow::viewClicked(const QModelIndex& index)
     if (index.column() == 0)
     {
         QTreeItem* item = m_model->itemAt(index);
-        emit changeItemSelect(item->m_node);
+        m_scene->changedItemSelect(item->m_node);
         m_browser->initProperty(item->m_node);
     }
 }
@@ -328,7 +330,7 @@ void MainWindow::changedItemSelect(QGraphicsItem* item)
 //        else
         {
             m_browser->initProperty(treeItem->m_node);
-            emit changeItemSelect(treeItem->m_node);
+            m_scene->changedItemSelect(treeItem->m_node);
         }
     }
 }
@@ -338,9 +340,10 @@ void MainWindow::changedItemPoint(int x, int y)
     QCCNode* node = this->currentSelectNode();
     if(node != 0)
     {
-        node->m_x = x;
-        node->m_y = y;
-        emit changePropertyPoint(x, y);
+        QPoint pt = node->convertToNodePoint(x, y);
+        node->m_x = pt.x();
+        node->m_y = pt.y();
+        m_browser->changedPropertyPoint(node->m_x, node->m_y);
         this->setWindowTitle(QString("%1*").arg(m_currentOpenFile));
     }
 }
@@ -355,10 +358,15 @@ void MainWindow::changedBoundingSize(int w, int h)
             QCCLabelTTF* label = dynamic_cast<QCCLabelTTF*>(node);
             label->m_dimensionWith = w;
             label->m_dimensionHeight = h;
-            emit changePropertyTextDimension(w,h);
+            m_browser->changePropertyTextDimension(w,h);
             this->setWindowTitle(QString("%1*").arg(m_currentOpenFile));
         }
     }
+}
+
+void MainWindow::changedMouseMove(int x, int y)
+{
+    this->statusBar()->showMessage( QString("(%1,%2)").arg(x).arg(y) );
 }
 
 //property slot;
@@ -380,7 +388,8 @@ void MainWindow::changedPropertyPoint(int x, int y)
     {
         node->m_x = x;
         node->m_y = y;
-        emit changeItemPoint(x, y);
+        QPoint pt = node->convertToItemPoint(x,y);
+        m_scene->changedItemPoint(pt.x(), pt.y());
         this->setWindowTitle(QString("%1*").arg(m_currentOpenFile));
     }
 }
@@ -412,9 +421,17 @@ void MainWindow::changedPropertySize(int , int )
 
 }
 
-//void MainWindow::changedPropertyAnchor(float anchorX, float anchorY)
-void MainWindow::changedPropertyAnchor(float , float )
-{}
+void MainWindow::changedPropertyAnchor(float anchorX, float anchorY)
+{
+    QCCNode* node = this->currentSelectNode();
+    if(node != 0)
+    {
+        node->m_anchorX = anchorX;
+        node->m_anchorY = anchorY;
+        node->updateGraphicsItem();
+        this->setWindowTitle(QString("%1*").arg(m_currentOpenFile));
+    }
+}
 
 void MainWindow::changedPropertyScale(float scaleX, float scaleY)
 {
@@ -437,6 +454,19 @@ void MainWindow::changedPropertyRotation(int rotation)
         node->updateGraphicsItem();
         this->setWindowTitle(QString("%1*").arg(m_currentOpenFile));
     }
+}
+
+void MainWindow::changedPropertyDock(int horizontal, int vertical)
+{
+//    QCCNode* node = this->currentSelectNode();
+//    if(node != 0)
+//    {
+//        node->m_dockHorizontal = horizontal;
+//        node->m_dockVertical = vertical;
+//        QPoint pt = node->convertToItemPoint(node->m_x, node->m_y);
+//        m_scene->changedItemPoint(pt.x(), pt.y());
+//        this->setWindowTitle(QString("%1*").arg(m_currentOpenFile));
+//    }
 }
 
 void MainWindow::changedPropertyVisible(bool visible)
@@ -520,7 +550,7 @@ void MainWindow::changedPropertyFilePath(QString& filePath)
         relationFilePath.remove( QString("%1/").arg(m_storageData->resourceDir()) );
         sprite->m_filePath = relationFilePath;
         sprite->updateGraphicsItem();
-        emit changeItemSelect(node);
+        m_scene->changedItemSelect(node);
         this->setWindowTitle(QString("%1*").arg(m_currentOpenFile));
     }
 }
@@ -533,7 +563,7 @@ void MainWindow::changedPropertyFont(QFont& font)
         QCCLabelTTF* temp = dynamic_cast<QCCLabelTTF*>(node);
         temp->m_font = font;
         temp->updateGraphicsItem();
-        emit changeItemSelect(node);
+        m_scene->changedItemSelect(node);
         this->setWindowTitle(QString("%1*").arg(m_currentOpenFile));
     }
 }
@@ -546,7 +576,7 @@ void MainWindow::changedPropertyText(QString& text)
         QCCLabelTTF* temp = dynamic_cast<QCCLabelTTF*>(node);
         temp->m_text = text;
         temp->updateGraphicsItem();
-        emit changeItemSelect(node);
+        m_scene->changedItemSelect(node);
         this->setWindowTitle(QString("%1*").arg(m_currentOpenFile));
     }
 }
@@ -560,7 +590,7 @@ void MainWindow::changedPropertyAlignment(int horizontal, int vertical)
         temp->m_horizontalAlignment = horizontal;
         temp->m_verticalAlignment = vertical;
         temp->updateGraphicsItem();
-        emit changeItemSelect(node);
+        m_scene->changedItemSelect(node);
         this->setWindowTitle(QString("%1*").arg(m_currentOpenFile));
     }
 }
@@ -574,7 +604,7 @@ void MainWindow::changedPropertyTextDimension(int width, int height)
         temp->m_dimensionWith = width;
         temp->m_dimensionHeight = height;
         temp->updateGraphicsItem();
-        emit changeItemSelect(node);
+        m_scene->changedItemSelect(node);
         this->setWindowTitle(QString("%1*").arg(m_currentOpenFile));
     }
 }
@@ -588,7 +618,7 @@ void MainWindow::changedPropertyTextStrike(int size, QColor& color)
         temp->m_strikeSize = size;
         temp->m_strikeColor = color;
         temp->updateGraphicsItem();
-        //emit changeItemSelect(node);
+        //m_scene->changedItemSelect(node);
         this->setWindowTitle(QString("%1*").arg(m_currentOpenFile));
     }
 }
@@ -612,7 +642,7 @@ void MainWindow::changedPropertyCCContainerLayerFilePath(QString& filePath)
                 relationFilePath.remove( QString("%1/").arg(m_storageData->resourceDir()) );
                 temp->m_containerConfigFilePath = relationFilePath;
                 temp->updateGraphicsItem();
-                emit changeItemSelect(node);
+                m_scene->changedItemSelect(node);
                 this->setWindowTitle(QString("%1*").arg(m_currentOpenFile));
             }
         }
@@ -630,7 +660,7 @@ void MainWindow::changedPropertyCCContainerLayerFilePath(QString& filePath)
                 relationFilePath.remove( QString("%1/").arg(m_storageData->resourceDir()) );
                 temp->m_containerConfigFilePath = relationFilePath;
                 temp->updateGraphicsItem();
-                emit changeItemSelect(node);
+                m_scene->changedItemSelect(node);
                 this->setWindowTitle(QString("%1*").arg(m_currentOpenFile));
             }
         }
@@ -645,7 +675,7 @@ void MainWindow::changedPropertyInsetsRect(QRect r)
         QCCScale9Sprite* temp = dynamic_cast<QCCScale9Sprite*>(node);
         temp->m_insetsRect = r;
         temp->updateGraphicsItem();
-        emit changeItemSelect(node);
+        m_scene->changedItemSelect(node);
         this->setWindowTitle(QString("%1*").arg(m_currentOpenFile));
     }
 }
@@ -658,7 +688,7 @@ void MainWindow::changedPropertyPreferedSize(QSize s)
         QCCScale9Sprite* temp = dynamic_cast<QCCScale9Sprite*>(node);
         temp->m_preferredSize = s;
         temp->updateGraphicsItem();
-        emit changeItemSelect(node);
+        m_scene->changedItemSelect(node);
         this->setWindowTitle(QString("%1*").arg(m_currentOpenFile));
     }
 }
@@ -671,7 +701,7 @@ void MainWindow::changedPropertyProgressTimerType(int type)
         QCCProgressTimer* temp = dynamic_cast<QCCProgressTimer*>(node);
         temp->m_progressTimerType = type;
         temp->updateGraphicsItem();
-        emit changeItemSelect(node);
+        m_scene->changedItemSelect(node);
         this->setWindowTitle(QString("%1*").arg(m_currentOpenFile));
     }
 }
@@ -684,7 +714,7 @@ void MainWindow::changedPropertyDirection(int direction)
         QCCProgressTimer* temp = dynamic_cast<QCCProgressTimer*>(node);
         temp->m_direction = direction;
         temp->updateGraphicsItem();
-        emit changeItemSelect(node);
+        m_scene->changedItemSelect(node);
         this->setWindowTitle(QString("%1*").arg(m_currentOpenFile));
     }
 }
@@ -697,7 +727,7 @@ void MainWindow::changedPropertyPercentage(float percentage)
         QCCProgressTimer* temp = dynamic_cast<QCCProgressTimer*>(node);
         temp->m_percentage = percentage;
         temp->updateGraphicsItem();
-        emit changeItemSelect(node);
+        m_scene->changedItemSelect(node);
         this->setWindowTitle(QString("%1*").arg(m_currentOpenFile));
     }
 }
@@ -711,7 +741,7 @@ void MainWindow::changedPropertyAtlasElementSize(int width, int height)
         temp->m_elementWidth = width;
         temp->m_elementHeight = height;
         temp->updateGraphicsItem();
-        emit changeItemSelect(node);
+        m_scene->changedItemSelect(node);
         this->setWindowTitle(QString("%1*").arg(m_currentOpenFile));
     }
 }
@@ -724,7 +754,7 @@ void MainWindow::changedPropertyAtlasStartChar(int startChar)
         QCCLabelAtlas* temp = dynamic_cast<QCCLabelAtlas*>(node);
         temp->m_startChar = startChar;
         temp->updateGraphicsItem();
-        emit changeItemSelect(node);
+        m_scene->changedItemSelect(node);
         this->setWindowTitle(QString("%1*").arg(m_currentOpenFile));
     }
 }
@@ -737,7 +767,7 @@ void MainWindow::changedPropertyAtlasText(QString& text)
         QCCLabelAtlas* temp = dynamic_cast<QCCLabelAtlas*>(node);
         temp->m_text = text;
         temp->updateGraphicsItem();
-        emit changeItemSelect(node);
+        m_scene->changedItemSelect(node);
         this->setWindowTitle(QString("%1*").arg(m_currentOpenFile));
     }
 }
@@ -750,7 +780,7 @@ void MainWindow::changedPropertyScrollViewDirection(int direction)
         QCCScrollView* temp = dynamic_cast<QCCScrollView*>(node);
         temp->m_direction = direction;
         temp->updateGraphicsItem();
-        emit changeItemSelect(node);
+        m_scene->changedItemSelect(node);
         this->setWindowTitle(QString("%1*").arg(m_currentOpenFile));
     }
 }
@@ -763,7 +793,7 @@ void MainWindow::changedPropertyScrollViewCount(int count)
         QCCScrollView* temp = dynamic_cast<QCCScrollView*>(node);
         temp->m_count = count;
         temp->updateGraphicsItem();
-        emit changeItemSelect(node);
+        m_scene->changedItemSelect(node);
         this->setWindowTitle(QString("%1*").arg(m_currentOpenFile));
     }
 }
@@ -777,7 +807,7 @@ void MainWindow::changedPropertyScrollViewOffset(int x, int y)
         temp->m_offsetX = x;
         temp->m_offsetY = y;
         temp->updateGraphicsItem();
-        emit changeItemSelect(node);
+        m_scene->changedItemSelect(node);
         this->setWindowTitle(QString("%1*").arg(m_currentOpenFile));
     }
 }
@@ -791,7 +821,7 @@ void MainWindow::changedPropertyScrollViewSpace(int width, int height)
         temp->m_spaceWidth = width;
         temp->m_spaceHeight = height;
         temp->updateGraphicsItem();
-        emit changeItemSelect(node);
+        m_scene->changedItemSelect(node);
         this->setWindowTitle(QString("%1*").arg(m_currentOpenFile));
     }
 }
@@ -805,7 +835,7 @@ void MainWindow::changedPropertyScrollViewContent(int width, int height)
         temp->m_contentWidth = width;
         temp->m_contentHeight = height;
         temp->updateGraphicsItem();
-        emit changeItemSelect(node);
+        m_scene->changedItemSelect(node);
         this->setWindowTitle(QString("%1*").arg(m_currentOpenFile));
     }
 }
@@ -818,7 +848,7 @@ void MainWindow::changedPropertyDynamicallyGenerated(bool isDynamically)
         QCCScrollView* temp = dynamic_cast<QCCScrollView*>(node);
         temp->m_isDynamicallyGenerated = isDynamically;
         temp->updateGraphicsItem();
-        emit changeItemSelect(node);
+        m_scene->changedItemSelect(node);
         this->setWindowTitle(QString("%1*").arg(m_currentOpenFile));
     }
 }
@@ -909,6 +939,7 @@ void MainWindow::on_actionOpen_File_triggered()
     QCCNode::createPathMap();
     QString oldDir = m_storageData->resourceDir();
     QString filePath = QFileDialog::getOpenFileName(this, QString("Open Directory"), oldDir, FILTER_CONFIG);
+//    QString filePath = "/Users/luxiaodong/Project/Svn/lsmob_trunk/frameworks/template/Resources/res/ui/test.lua";
     this->openConfigFile(filePath);
 }
 

@@ -98,6 +98,7 @@ const char PROPERTY_TYPE_TEXT_STRIKE_COLOR[] = "strikeColor";
 const char PROPERTY_TYPE_BAR_PERCENT[] = "percent";
 const char PROPERTY_TYPE_CONTAINER_FILEPATH[] = "filePath";
 
+const char PROPERTY_TYPE_DOCK[] = "dock";
 const char PROPERTY_TYPE_POSITION[] = "position";
 const char PROPERTY_TYPE_SIZE[] = "size";
 const char PROPERTY_TYPE_ANCHOR[] = "anchor";
@@ -114,6 +115,20 @@ const char PROPERTY_TYPE_CONTENT[] = "content";
 
 const char FILTER_IMAGES[] = "Images (*.png *.jpg)";
 const char FILTER_CONFIG[] = "Config (*.lua)";
+
+typedef enum
+{
+    kCCVerticalDockBottom,
+    kCCVerticalDockCenter,
+    kCCVerticalDockTop
+} CCVerticalDock;
+
+typedef enum
+{
+    kCCHorizontalDockLeft,
+    kCCHorizontalDockCenter,
+    kCCHorizontalDockRight
+} CCHorizontalDock;
 
 typedef enum
 {

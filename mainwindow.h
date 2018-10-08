@@ -40,13 +40,7 @@ private:
 signals:
     //view;
     //scene;
-    void changeItemSelect(QCCNode* node);
-    void changeItemPoint(int x, int y);
-
     //property;
-    void changePropertyPoint(int x, int y);
-    void changePropertySize(int w, int h);
-    void changePropertyTextDimension(int w, int h);
 
 public slots:
     //view slot;
@@ -59,6 +53,7 @@ public slots:
     void changedItemSelect(QGraphicsItem* item);
     void changedItemPoint(int x, int y);
     void changedBoundingSize(int w, int h);
+    void changedMouseMove(int x, int y);
 
     //property slot;
     void changedPropertyFixed(bool fixed);
@@ -69,6 +64,7 @@ public slots:
     void changedPropertyAnchor(float anchorX, float anchorY);
     void changedPropertyScale(float scaleX, float scaleY);
     void changedPropertyRotation(int rotation);
+    void changedPropertyDock(int horizontal, int vertical);
     void changedPropertyVisible(bool visible);
     void changedPropertySkipCreate(bool skipCreate);
     void changedPropertySkipInit(bool skipInit);

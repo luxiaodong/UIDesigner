@@ -29,6 +29,7 @@ signals:
     void changeItemSelect(QGraphicsItem* item);
     void changeItemPoint(int x, int y);
     void changeBoundingSize(int w, int h);
+    void changeMouseMove(int x, int y);
 
 public slots:
     void changedItemSelect(QCCNode* node);

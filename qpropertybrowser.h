@@ -37,6 +37,7 @@ signals:
     void changePropertyAnchor(float anchorX, float anchorY);
     void changePropertyScale(float scaleX, float scaleY);
     void changePropertyRotation(int rotation);
+    void changePropertyDock(int, int);
     void changePropertyVisible(bool visible);
     void changePropertySkipCreate(bool skip);
     void changePropertySkipInit(bool skip);
@@ -100,6 +101,8 @@ private:
     void createPropertyScaleX();
     void createPropertyScaleY();
     void createPropertyRotation();
+    void createPropertyDockHorizontal();
+    void createPropertyDockVertical();
     void createPropertyVisible();
     void createPropertySkipCreate();
     void createPropertySkipInit();
@@ -144,6 +147,7 @@ private:
     void createPropertySize();
     void createPropertyAnchor();
     void createPropertyScale();
+    void createPropertyDock();
     void createPropertyDimensionSize();
     void createPropertyTextAlignment();
     void createPropertyTextStrike();
@@ -179,6 +183,8 @@ private:
     QtVariantProperty*  m_scaleX;
     QtVariantProperty*  m_scaleY;
     QtVariantProperty*  m_rotation;
+    QtVariantProperty*  m_dockHorizontal;
+    QtVariantProperty*  m_dockVertical;
     QtVariantProperty*  m_visible;
     QtVariantProperty*  m_skipCreate;
     QtVariantProperty*  m_skipInit;
@@ -223,6 +229,7 @@ private:
     QtVariantProperty*  m_size;
     QtVariantProperty*  m_anchor;
     QtVariantProperty*  m_scale;
+    QtVariantProperty*  m_dock;
     QtVariantProperty*  m_dimensionSize;
     QtVariantProperty*  m_textAlignment;
     QtVariantProperty*  m_textStrike;

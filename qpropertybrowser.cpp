@@ -25,6 +25,8 @@ void QPropertyBrowser::createProperty()
     createPropertyScaleX();
     createPropertyScaleY();
     createPropertyRotation();
+    createPropertyDockHorizontal();
+    createPropertyDockVertical();
     createPropertyVisible();
     createPropertySkipCreate();
     createPropertySkipInit();
@@ -69,6 +71,7 @@ void QPropertyBrowser::createProperty()
     createPropertySize();
     createPropertyAnchor();
     createPropertyScale();
+    createPropertyDock();
     createPropertyTextAlignment();
     createPropertyDimensionSize();
     createPropertyTextStrike();
@@ -188,6 +191,24 @@ void QPropertyBrowser::createPropertyRotation()
     m_rotation->setAttribute("minimum",0);
     m_rotation->setAttribute("maximum",360);
     m_rotation->setValue(0);
+}
+
+void QPropertyBrowser::createPropertyDockHorizontal()
+{
+    m_dockHorizontal = m_manager->addProperty(QtVariantPropertyManager::enumTypeId(), PROPERTY_TYPE_TEXT_HORIZONTAL);
+    QStringList list;
+    list<<"Left"<<"Center"<<"Right";
+    m_dockHorizontal->setAttribute("enumNames", list);
+    m_dockHorizontal->setValue(1);
+}
+
+void QPropertyBrowser::createPropertyDockVertical()
+{
+    m_dockVertical = m_manager->addProperty(QtVariantPropertyManager::enumTypeId(), PROPERTY_TYPE_TEXT_VERTICAL);
+    QStringList list;
+    list<<"Bottom"<<"Center"<<"Top";
+    m_dockVertical->setAttribute("enumNames", list);
+    m_dockVertical->setValue(1);
 }
 
 void QPropertyBrowser::createPropertyVisible()
@@ -514,6 +535,14 @@ void QPropertyBrowser::createPropertyScale()
     m_scale->setValue(QString(""));
 }
 
+void QPropertyBrowser::createPropertyDock()
+{
+    m_dock = m_manager->addProperty(QVariant::String, PROPERTY_TYPE_DOCK);
+    m_dock->addSubProperty(m_dockHorizontal);
+    m_dock->addSubProperty(m_dockVertical);
+    m_dock->setValue(QString(""));
+}
+
 void QPropertyBrowser::createPropertyDimensionSize()
 {
     m_dimensionSize = m_manager->addProperty(QVariant::String, PROPERTY_TYPE_DIMENSION);
@@ -590,9 +619,10 @@ void QPropertyBrowser::createPropertyCCNode()
     m_ccNode->addSubProperty(m_skipInit);
     m_ccNode->addSubProperty(m_z);
     m_ccNode->addSubProperty(m_tag);
+    //m_ccNode->addSubProperty(m_dock);
     m_ccNode->addSubProperty(m_point);
+    m_ccNode->addSubProperty(m_anchor);
     m_ccNode->addSubProperty(m_size);
-    //m_ccNode->addSubProperty(m_anchor);
     m_ccNode->addSubProperty(m_scale);
     m_ccNode->addSubProperty(m_rotation);
 }
@@ -735,6 +765,8 @@ void QPropertyBrowser::initPropertyCCNode(QCCNode* node)
     m_scaleX->setValue(node->m_scaleX);
     m_scaleY->setValue(node->m_scaleY);
     m_rotation->setValue(node->m_rotation);
+    m_dockHorizontal->setValue(node->m_dockHorizontal);
+    m_dockVertical->setValue(node->m_dockVertical);
     this->addProperty(m_ccNode);
 }
 
@@ -873,6 +905,12 @@ void QPropertyBrowser::valueChanged(QtProperty* property, QVariant )
     {
         int rotation = m_rotation->value().toInt();
         emit changePropertyRotation(rotation);
+    }
+    else if(property == m_dockHorizontal || property == m_dockVertical)
+    {
+        int horizontal = m_dockHorizontal->value().toInt();
+        int vertical = m_dockVertical->value().toInt();
+        emit changePropertyDock(horizontal, vertical);
     }
     else if(property == m_visible)
     {
