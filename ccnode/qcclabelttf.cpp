@@ -15,6 +15,8 @@ QCCLabelTTF::QCCLabelTTF()
     m_isInLanguage = false;
     m_strikeSize = 0;
     m_strikeColor = QColor(Qt::black);
+    m_anchorX = 0.5f;
+    m_anchorY = 0.5f;
 }
 
 void QCCLabelTTF::importData(QMap<QString, QString>& map)
@@ -144,11 +146,12 @@ void QCCLabelTTF::updateGraphicsItem()
     QGraphicsPixmapItem* item = dynamic_cast<QGraphicsPixmapItem*>(m_graphicsItem);
     item->setPixmap(QPixmap::fromImage(image));
 
-    item->setTransformOriginPoint(-m_width/2, -m_height/2);
+    //item->setTransformOriginPoint(-m_width/2, -m_height/2);
     item->resetTransform();
     item->setTransform(QTransform().rotate(m_rotation), true);
     item->setTransform(QTransform::fromScale(m_scaleX,m_scaleY), true);
-    item->setTransform(QTransform::fromTranslate(-m_width/2, -m_height/2), true);
+    item->setTransform(QTransform::fromTranslate(m_width*(0 - m_anchorX), m_height*(m_anchorY - 1.0)), true);
+
     item->setZValue(m_z);
     item->setVisible(m_isVisible);
     item->setFlag(QGraphicsItem::ItemIsMovable, !m_isFixed);

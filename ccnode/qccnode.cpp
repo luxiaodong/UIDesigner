@@ -156,6 +156,61 @@ QString QCCNode::luaVariableName()
     return str;
 }
 
+QPoint QCCNode::dockOffset()
+{
+    QCCNode* parent = this->m_parent;
+    if(parent == 0)
+    {
+        return QPoint(0,0);
+    }
+
+    int parentWidth = parent->m_width;
+    int offsetX = 0;
+    if(m_dockHorizontal == kCCHorizontalDockLeft)
+    {
+        offsetX = 0 - m_width*m_anchorX;
+    }
+    else if(m_dockHorizontal == kCCHorizontalDockCenter)
+    {
+        offsetX = parentWidth/2 - m_width*m_anchorX;
+    }
+    else if(m_dockHorizontal == kCCHorizontalDockRight)
+    {
+        offsetX = parentWidth - m_width*m_anchorX;
+    }
+
+    int parentHeight = parent->m_height;
+    int offsetY = 0;
+    if(m_dockVertical == kCCVerticalDockBottom)
+    {
+        offsetY = 0 - m_height*m_anchorY;
+    }
+    else if(m_dockVertical == kCCVerticalDockCenter)
+    {
+        offsetY = parentHeight/2 - m_height*m_anchorY;
+    }
+    else if(m_dockVertical == kCCVerticalDockTop)
+    {
+        offsetY = parentHeight - m_height*m_anchorY;
+    }
+qDebug()<<parentWidth<<parentHeight;
+qDebug()<<offsetX<<offsetY;
+    return QPoint(offsetX, offsetY);
+}
+
+// offset + node = item
+QPoint QCCNode::convertToNodePoint(int x, int y)
+{
+    QPoint offset = this->dockOffset();
+    return QPoint(x,y) - offset;
+}
+
+QPoint QCCNode::convertToItemPoint(int x, int y)
+{
+    QPoint offset = this->dockOffset();
+    return offset + QPoint(x,y);
+}
+
 QCCNode::QCCNode()
 {
     m_name = "undefined";
@@ -179,6 +234,8 @@ QCCNode::QCCNode()
     m_isVisible = true;
     m_isSkipCreate = false;
     m_isSkipInit = false;
+    m_dockHorizontal = 0;
+    m_dockVertical = 0;
 }
 
 QCCNode::~QCCNode()
@@ -208,6 +265,8 @@ void QCCNode::importData(QMap<QString, QString>& map)
     m_isVisible = map.value("visible", QString("1")).toInt();
     m_isSkipCreate = map.value("skipCreate", QString("0")).toInt();
     m_isSkipInit = map.value("skipInit", QString("0")).toInt();
+    m_dockHorizontal = map.value("dockHorizontal", QString("0")).toInt();
+    m_dockVertical = map.value("dockVertical", QString("0")).toInt();
 }
 
 QMap<QString, QString> QCCNode::exportData()
@@ -236,8 +295,8 @@ QMap<QString, QString> QCCNode::exportData()
         map.insert("rotation", QString("%1").arg(m_rotation));
     }
 
-//    map.insert("anchorX", QString("%1").arg(m_anchorX));
-//    map.insert("anchorY", QString("%1").arg(m_anchorY));
+    map.insert("anchorX", QString("%1").arg(m_anchorX));
+    map.insert("anchorY", QString("%1").arg(m_anchorY));
 
     if(m_scaleX < 0.99 || m_scaleX > 1.01)
     {
@@ -264,6 +323,12 @@ QMap<QString, QString> QCCNode::exportData()
         map.insert("skipInit", "1");
     }
 
+    if(m_dockHorizontal > 0)
+    {
+        map.insert("dockHorizontal", QString("%1").arg(m_dockHorizontal));
+        map.insert("dockVertical", QString("%1").arg(m_dockVertical));
+    }
+
     return map;
 }
 
@@ -277,14 +342,13 @@ QGraphicsItem* QCCNode::createGraphicsItem()
 void QCCNode::updateGraphicsItem()
 {
     QGraphicsRectItem* item = dynamic_cast<QGraphicsRectItem*>(m_graphicsItem);
-    item->setRect(0,0,1,1);
+    item->setRect(0,0,0,0);
     item->resetTransform();
     item->setTransform(QTransform().rotate(m_rotation), true);
     item->setTransform(QTransform::fromScale(m_scaleX,m_scaleY), true);
-    //item->setTransform(QTransform::fromTranslate(0, -m_height), true);
+    item->setTransform(QTransform::fromTranslate(0, 0), true);
     item->setZValue(m_z);
     item->setVisible(m_isVisible);
     item->setFlag(QGraphicsItem::ItemIsMovable, !m_isFixed);
     item->setBrush( QBrush(Qt::NoBrush) );
 }
-

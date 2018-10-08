@@ -9,6 +9,4 @@ public:
     QCCUiButton();
 };
 
-
-
 #endif // QCCUIBUTTON_H

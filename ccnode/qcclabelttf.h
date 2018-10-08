@@ -28,6 +28,4 @@ public:
     QColor m_strikeColor;
 };
 
-
-
 #endif // QCCLABELTTF_H

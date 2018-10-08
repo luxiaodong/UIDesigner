@@ -105,7 +105,7 @@ void QCCScrollView::updateGraphicsItem()
     m_width = m_contentWidth;
     m_height = m_contentHeight;
     item->resetTransform();
-    item->setTransform(QTransform::fromTranslate(0, -m_height));
+    item->setTransform(QTransform::fromTranslate(m_width*(0 - m_anchorX), m_height*(m_anchorY - 1.0)), true);
     item->setZValue(m_z);
     item->setVisible(m_isVisible);
     item->setFlag(QGraphicsItem::ItemIsMovable, !m_isFixed);

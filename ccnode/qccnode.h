@@ -5,6 +5,7 @@
 #include <QGraphicsItem>
 #include <QGraphicsPixmapItem>
 #include <QGraphicsTextItem>
+#include <QPoint>
 
 //remeber set default value.
 class QCCNode
@@ -23,13 +24,16 @@ public:
     virtual QGraphicsItem* createGraphicsItem();
     virtual void updateGraphicsItem(); //尽量不要在这个函数里改变基础属性
 
-    //是不是应该把xml那块移动这边, 绘画那一块已经在这边了
-
 public:
     QString resourceFullPath(QString relationPath);
     QString luaVariableName();
     QString longPathToShortPath(QString longPath);
     QString shortPathToLongPath(QString longPath);
+    QPoint convertToNodePoint(int x, int y);
+    QPoint convertToItemPoint(int x, int y);
+
+private:
+    QPoint dockOffset();
 
 public:
     QString m_name;
@@ -49,6 +53,8 @@ public:
     bool m_isVisible;
     bool m_isSkipCreate;
     bool m_isSkipInit;
+    int m_dockHorizontal;
+    int m_dockVertical;
 
 public:
     QList<QCCNode*> m_children;
